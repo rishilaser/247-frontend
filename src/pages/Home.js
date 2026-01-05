@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function Home() {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Header scroll effect
   useEffect(() => {
@@ -15,6 +16,18 @@ function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
   
   useEffect(() => {
     // Wait for DOM and scripts to be ready
@@ -411,152 +424,372 @@ function Home() {
 
               </div>
 
-              <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvasNavbar"
-                aria-labelledby="offcanvasNavbarLabel">
-                <div className="offcanvas-header" style={{padding: '20px', borderBottom: '1px solid rgba(0,0,0,0.1)'}}>
-                  <div className="offcanvas-brand" id="offcanvasNavbarLabel" style={{display: 'flex', alignItems: 'center'}}>
-                    {/* <img src="https://www.247cutbend.in/assets/img/logo%20(2).png" alt="" /> */}
-                    <img src="/Logo.png" alt="247CutBend Logo" style={{
-                      height: '60px',
-                      width: 'auto',
-                      objectFit: 'contain',
-                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-                    }} />
-
-                  </div>
-                  <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
-                    <i className="far fa-xmark"></i>
-                  </button>
-                </div>
-                <div className="offcanvas-body gap-xl-4">
-                  <ul className="navbar-nav justify-content-end flex-grow-1" style={{alignItems: 'center'}}>
-                    <li className="nav-item">
-                      <a className="nav-link" href="/" style={{
-                        padding: '8px 16px',
-                        fontSize: '15px',
-                        fontWeight: '500',
-                        color: '#1a1a1a',
-                        position: 'relative',
-                        transition: 'all 0.3s ease',
-                        borderRadius: '6px',
-                        margin: '0 4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
-                        e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                        Home
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#about-area" style={{
-                        padding: '8px 16px',
-                        fontSize: '15px',
-                        fontWeight: '500',
-                        color: '#1a1a1a',
-                        position: 'relative',
-                        transition: 'all 0.3s ease',
-                        borderRadius: '6px',
-                        margin: '0 4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
-                        e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                        About Us
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#service-area" style={{
-                        padding: '8px 16px',
-                        fontSize: '15px',
-                        fontWeight: '500',
-                        color: '#1a1a1a',
-                        position: 'relative',
-                        transition: 'all 0.3s ease',
-                        borderRadius: '6px',
-                        margin: '0 4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
-                        e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                        Capabilities
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#quote-area" style={{
-                        padding: '8px 16px',
-                        fontSize: '15px',
-                        fontWeight: '500',
-                        color: '#1a1a1a',
-                        position: 'relative',
-                        transition: 'all 0.3s ease',
-                        borderRadius: '6px',
-                        margin: '0 4px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
-                        e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                        Contact Us
-                      </a>
-                    </li>
-                  </ul>
-                  <div className="nav-right">
-                    <div className="nav-btn">
-                      <a href="/signup" onClick={(e) => { e.preventDefault(); navigate('/signup'); }} className="theme-btn" style={{
-                        padding: '10px 24px',
-                        fontSize: '15px',
-                        fontWeight: '600',
-                        background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
-                        color: '#000',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
-                        transition: 'all 0.3s ease',
-                        border: 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        textDecoration: 'none'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #FFB300 0%, #FFA000 100%)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)';
-                      }}>
-                        Login
-                        <i className="fas fa-arrow-right" style={{fontSize: '12px', transition: 'transform 0.3s ease'}}></i>
-                      </a>
-                    </div>
+              {/* Desktop Menu - Hidden on mobile */}
+              <div className="d-none d-lg-flex align-items-center" style={{flex: 1, justifyContent: 'flex-end'}}>
+                <ul className="navbar-nav justify-content-end flex-grow-1" style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/" style={{
+                      padding: '8px 16px',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#1a1a1a',
+                      position: 'relative',
+                      transition: 'all 0.3s ease',
+                      borderRadius: '6px',
+                      margin: '0 4px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#FFC107';
+                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#1a1a1a';
+                      e.currentTarget.style.background = 'transparent';
+                    }}>
+                      Home
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="#about-area" style={{
+                      padding: '8px 16px',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#1a1a1a',
+                      position: 'relative',
+                      transition: 'all 0.3s ease',
+                      borderRadius: '6px',
+                      margin: '0 4px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#FFC107';
+                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#1a1a1a';
+                      e.currentTarget.style.background = 'transparent';
+                    }}>
+                      About Us
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="#service-area" style={{
+                      padding: '8px 16px',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#1a1a1a',
+                      position: 'relative',
+                      transition: 'all 0.3s ease',
+                      borderRadius: '6px',
+                      margin: '0 4px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#FFC107';
+                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#1a1a1a';
+                      e.currentTarget.style.background = 'transparent';
+                    }}>
+                      Capabilities
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="#quote-area" style={{
+                      padding: '8px 16px',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#1a1a1a',
+                      position: 'relative',
+                      transition: 'all 0.3s ease',
+                      borderRadius: '6px',
+                      margin: '0 4px'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#FFC107';
+                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#1a1a1a';
+                      e.currentTarget.style.background = 'transparent';
+                    }}>
+                      Contact Us
+                    </a>
+                  </li>
+                </ul>
+                <div className="nav-right">
+                  <div className="nav-btn">
+                    <a href="/signup" onClick={(e) => { e.preventDefault(); navigate('/signup'); }} className="theme-btn" style={{
+                      padding: '10px 24px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      color: '#000',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                      transition: 'all 0.3s ease',
+                      border: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      textDecoration: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #FFB300 0%, #FFA000 100%)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)';
+                    }}>
+                      Login
+                      <i className="fas fa-arrow-right" style={{fontSize: '12px', transition: 'transform 0.3s ease'}}></i>
+                    </a>
                   </div>
                 </div>
               </div>
+
+              {/* Mobile Menu Toggle Button - Visible only on mobile */}
+              <button 
+                className="d-lg-none navbar-toggler"
+                type="button"
+                onClick={() => setIsMobileMenuOpen(true)}
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  padding: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  outline: 'none'
+                }}
+                aria-label="Toggle navigation"
+              >
+                <i className="fas fa-bars" style={{
+                  fontSize: '24px',
+                  color: '#1a1a1a',
+                  transition: 'color 0.3s ease'
+                }}></i>
+              </button>
             </div>
           </nav>
         </div>
       </header>
+
+      {/* Mobile Sidebar - Outside navbar for full screen coverage */}
+      <div 
+        className="mobile-sidebar-overlay"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 9999,
+          opacity: isMobileMenuOpen ? 1 : 0,
+          visibility: isMobileMenuOpen ? 'visible' : 'hidden',
+          transition: 'all 0.3s ease',
+          pointerEvents: isMobileMenuOpen ? 'auto' : 'none'
+        }}
+        onClick={() => setIsMobileMenuOpen(false)}
+      ></div>
+      
+      <div 
+        className="mobile-sidebar"
+        style={{
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          width: '280px',
+          height: '100vh',
+          background: '#fff',
+          zIndex: 10000,
+          boxShadow: '-2px 0 10px rgba(0,0,0,0.1)',
+          transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 0.3s ease',
+          overflowY: 'auto'
+        }}
+      >
+        <div style={{
+          padding: '20px',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <img src="/Logo.png" alt="247CutBend Logo" style={{
+            height: '50px',
+            width: 'auto',
+            objectFit: 'contain'
+          }} />
+          <button 
+            type="button"
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{
+              border: 'none',
+              background: 'transparent',
+              fontSize: '24px',
+              color: '#1a1a1a',
+              cursor: 'pointer',
+              padding: '5px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <i className="fas fa-bars"></i>
+          </button>
+        </div>
+        
+        <div style={{padding: '20px 0'}}>
+          <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
+              <a 
+                href="/" 
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'block',
+                  padding: '16px 20px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: '#1a1a1a',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#1a1a1a';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Home
+              </a>
+            </li>
+            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
+              <a 
+                href="#about-area" 
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'block',
+                  padding: '16px 20px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: '#1a1a1a',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#1a1a1a';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                About Us
+              </a>
+            </li>
+            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
+              <a 
+                href="#service-area" 
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'block',
+                  padding: '16px 20px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: '#1a1a1a',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#1a1a1a';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Capabilities
+              </a>
+            </li>
+            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
+              <a 
+                href="#quote-area" 
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'block',
+                  padding: '16px 20px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: '#1a1a1a',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#1a1a1a';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Contact Us
+              </a>
+            </li>
+          </ul>
+          
+          <div style={{padding: '20px', display: 'flex', justifyContent: 'flex-start'}}>
+            <a 
+              href="/signup" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                setIsMobileMenuOpen(false);
+                navigate('/signup'); 
+              }} 
+              className="theme-btn" 
+              style={{
+                padding: '10px 16px',
+                fontSize: '14px',
+                fontWeight: '600',
+                background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                color: '#000',
+                borderRadius: '8px',
+                boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                transition: 'all 0.3s ease',
+                border: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                textDecoration: 'none',
+                width: 'auto',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Login
+              <i className="fas fa-arrow-right" style={{fontSize: '11px'}}></i>
+            </a>
+          </div>
+        </div>
+      </div>
 
       {/* Popup Search */}
       <div className="search-popup">
