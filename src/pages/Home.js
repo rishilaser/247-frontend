@@ -893,7 +893,7 @@ function Home() {
         {/* Partner Area */}
         <div className="partner-area pt-negative">
           <div className="container-fluid">
-            <div className="col-lg-12">
+            <div className="col-lg-8">
               <div className="partner-wrap">
                 <div className="partner-wrapper partner-slider owl-carousel owl-theme">
                   <img className="partner-wrapper-img" src="/assets/img/partner/01.jpg" alt="thumb" />
