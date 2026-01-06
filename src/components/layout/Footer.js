@@ -4,7 +4,7 @@ import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline
 
 const Footer = () => {
   return (
-    <footer className="bg-[#002C5B] text-white relative overflow-hidden" style={{ position: 'relative' }}>
+    <footer className="bg-[#2d3992] text-white relative overflow-hidden" style={{ position: 'relative' }}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10" style={{ zIndex: 0 }}>
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -65,7 +65,7 @@ const Footer = () => {
                       background: 'transparent'
                     }}>
                       <i className="far fa-envelope" style={{
-                        color: '#FFC107',
+                        color: '#f15925',
                         fontSize: '16px',
                         display: 'flex',
                         alignItems: 'center'
@@ -86,7 +86,7 @@ const Footer = () => {
                       }}
                     />
                     <button type="submit" style={{
-                      background: '#FFC107',
+                      background: '#f15925',
                       color: '#000',
                       border: 'none',
                       padding: '10px 20px',
@@ -97,10 +97,10 @@ const Footer = () => {
                       transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#FFB300';
+                      e.currentTarget.style.background = '#f15925';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#FFC107';
+                      e.currentTarget.style.background = '#f15925';
                     }}>
                       Subscribe
                     </button>
@@ -127,7 +127,7 @@ const Footer = () => {
                   left: 0,
                   width: '40px',
                   height: '3px',
-                  background: '#FFC107',
+                  background: '#f15925',
                   borderRadius: '2px'
                 }}></span>
               </h4>
@@ -248,7 +248,7 @@ const Footer = () => {
                   left: 0,
                   width: '40px',
                   height: '3px',
-                  background: '#FFC107',
+                  background: '#f15925',
                   borderRadius: '2px'
                 }}></span>
               </h4>
@@ -258,7 +258,7 @@ const Footer = () => {
                   <div style={{
                     width: '24px',
                     height: '24px',
-                    background: '#FFC107',
+                    background: '#f15925',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -290,7 +290,7 @@ const Footer = () => {
                   <div style={{
                     width: '24px',
                     height: '24px',
-                    background: '#FFC107',
+                    background: '#f15925',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -314,7 +314,7 @@ const Footer = () => {
                       textDecoration: 'none',
                       transition: 'color 0.2s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
                     onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
                       +91 9004073379
                     </a>
@@ -326,7 +326,7 @@ const Footer = () => {
                   <div style={{
                     width: '24px',
                     height: '24px',
-                    background: '#FFC107',
+                    background: '#f15925',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -350,7 +350,7 @@ const Footer = () => {
                       textDecoration: 'none',
                       transition: 'color 0.2s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
                     onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
                       sales@247cutbend.in
                     </a>

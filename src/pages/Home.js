@@ -283,7 +283,9 @@ function Home() {
       <div className="bg-blue-900 text-white py-2" style={{
         position: 'sticky',
         top: 0,
-        zIndex: 1001
+        zIndex: 1001,
+        background: 'linear-gradient(90deg, #2d3992 0%, #2d3992 50%, #2d3992 100%)',
+        boxShadow: '0 2px 10px rgba(45, 57, 146, 0.3)'
       }}>
         <div className="container">
           <div className="row align-items-center">
@@ -339,7 +341,7 @@ function Home() {
                   }}>
                     <i className="fab fa-twitter" style={{ fontSize: '14px' }}></i>
                   </a>
-                  <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
+                  <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer" className="text-white d-flex align-items-center justify-content-center" style={{
                     width: '32px',
                     height: '32px',
                     borderRadius: '4px',
@@ -415,7 +417,7 @@ function Home() {
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                 {/* <img src="https://www.247cutbend.in/assets/img/logo%20(2).png" alt="logo" /> */}
                 <img src="/Logo.png" alt="247CutBend logo" style={{
-                  height: isScrolled ? '55px' : '65px',
+                  height: isScrolled ? '30px' : '35px',
                   width: 'auto',
                   objectFit: 'contain',
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
@@ -439,8 +441,8 @@ function Home() {
                       margin: '0 4px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#FFC107';
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                      e.currentTarget.style.color = '#f15925';
+                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = '#1a1a1a';
@@ -461,8 +463,8 @@ function Home() {
                       margin: '0 4px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#FFC107';
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                      e.currentTarget.style.color = '#f15925';
+                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = '#1a1a1a';
@@ -483,8 +485,8 @@ function Home() {
                       margin: '0 4px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#FFC107';
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                      e.currentTarget.style.color = '#f15925';
+                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = '#1a1a1a';
@@ -505,8 +507,8 @@ function Home() {
                       margin: '0 4px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#FFC107';
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
+                      e.currentTarget.style.color = '#f15925';
+                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = '#1a1a1a';
@@ -518,31 +520,36 @@ function Home() {
                 </ul>
                 <div className="nav-right">
                   <div className="nav-btn">
-                    <a href="/signup" onClick={(e) => { e.preventDefault(); navigate('/signup'); }} className="theme-btn" style={{
-                      padding: '10px 24px',
-                      fontSize: '15px',
-                      fontWeight: '600',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
-                      color: '#000',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
-                      transition: 'all 0.3s ease',
-                      border: 'none',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      textDecoration: 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #FFB300 0%, #FFA000 100%)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)';
-                    }}>
+                    <a
+                      href="/signup"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="theme-btn"
+                      style={{
+                        padding: '10px 24px',
+                        fontSize: '15px',
+                        fontWeight: '600',
+                        background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
+                        color: '#000',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
+                        transition: 'all 0.3s ease',
+                        border: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        textDecoration: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(241, 89, 37, 0.4)';
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(241, 89, 37, 0.3)';
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
+                      }}>
                       Login
                       <i className="fas fa-arrow-right" style={{fontSize: '12px', transition: 'transform 0.3s ease'}}></i>
                     </a>
@@ -621,7 +628,7 @@ function Home() {
           alignItems: 'center'
         }}>
           <img src="/Logo.png" alt="247CutBend Logo" style={{
-            height: '50px',
+            height: '35px',
             width: 'auto',
             objectFit: 'contain'
           }} />
@@ -662,7 +669,7 @@ function Home() {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.color = '#f15925';
                   e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
                 }}
                 onMouseLeave={(e) => {
@@ -689,7 +696,7 @@ function Home() {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.color = '#f15925';
                   e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
                 }}
                 onMouseLeave={(e) => {
@@ -716,7 +723,7 @@ function Home() {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.color = '#f15925';
                   e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
                 }}
                 onMouseLeave={(e) => {
@@ -743,7 +750,7 @@ function Home() {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#FFC107';
+                  e.currentTarget.style.color = '#f15925';
                   e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
                 }}
                 onMouseLeave={(e) => {
@@ -758,18 +765,16 @@ function Home() {
           
           <div style={{padding: '20px', display: 'flex', justifyContent: 'flex-start'}}>
             <a 
-              href="/signup" 
-              onClick={(e) => { 
-                e.preventDefault(); 
-                setIsMobileMenuOpen(false);
-                navigate('/signup'); 
-              }} 
+              href="/signup"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="theme-btn" 
               style={{
                 padding: '10px 16px',
                 fontSize: '14px',
                 fontWeight: '600',
-                background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                 color: '#000',
                 borderRadius: '8px',
                 boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
@@ -806,7 +811,7 @@ function Home() {
       <div className="sidebar-popup offcanvas offcanvas-end" tabIndex="-1" id="sidebarPopup">
         <div className="offcanvas-header">
           <div className="sidebar-popup-logo">
-            <img src="/Logo.png" alt="" />
+            <img src="/Logo.png" alt="" style={{height: '35px', width: 'auto'}} />
           </div>
           <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
             <i className="far fa-xmark"></i>
@@ -854,7 +859,7 @@ function Home() {
               <h4>Follow Us</h4>
               <a href="#"><i className="fab fa-facebook"></i></a>
               <a href="#"><i className="fab fa-x-twitter"></i></a>
-              <a href="#"><i className="fab fa-instagram"></i></a>
+              <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
               <a href="#"><i className="fab fa-linkedin-in"></i></a>
             </div>
           </div>
@@ -914,7 +919,7 @@ function Home() {
               <div className="col-lg-8 mx-auto">
                 <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s">
                   <h2 className="site-title mb-4" style={{fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a'}}>
-                    How It <span style={{color: '#FFC107'}}>Works</span>
+                How It <span style={{color: '#f15925'}}>Works</span>
                   </h2>
                   <p style={{fontSize: '1.1rem', color: '#666', marginBottom: '3rem'}}>
                     Simple steps to get your fabrication done quickly and efficiently
@@ -931,7 +936,7 @@ function Home() {
                   left: '12%',
                   right: '12%',
                   height: '3px',
-                  background: 'linear-gradient(90deg, #002C5B 0%, #FFC107 50%, #002C5B 100%)',
+                  background: 'linear-gradient(90deg, #2d3992 0%, #f15925 50%, #2d3992 100%)',
                   zIndex: 0,
                   borderRadius: '2px'
                 }}></div>
@@ -951,7 +956,7 @@ function Home() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 193, 7, 0.2)';
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
@@ -964,7 +969,7 @@ function Home() {
                       fontSize: '3rem',
                       fontWeight: '800',
                       color: 'transparent',
-                      WebkitTextStroke: '2px #002C5B',
+                      WebkitTextStroke: '2px #2d3992',
                       lineHeight: '1',
                       opacity: '0.15'
                     }}>01</span>
@@ -972,12 +977,12 @@ function Home() {
                       width: '90px',
                       height: '90px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
@@ -996,7 +1001,7 @@ function Home() {
                       <h4 style={{
                         fontSize: '1.3rem',
                         fontWeight: '700',
-                        color: '#002C5B',
+                        color: '#2d3992',
                         marginBottom: '12px',
                         lineHeight: '1.3'
                       }}>Upload Your Files</h4>
@@ -1025,7 +1030,7 @@ function Home() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 193, 7, 0.2)';
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
@@ -1038,7 +1043,7 @@ function Home() {
                       fontSize: '3rem',
                       fontWeight: '800',
                       color: 'transparent',
-                      WebkitTextStroke: '2px #002C5B',
+                      WebkitTextStroke: '2px #2d3992',
                       lineHeight: '1',
                       opacity: '0.15'
                     }}>02</span>
@@ -1046,12 +1051,12 @@ function Home() {
                       width: '90px',
                       height: '90px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
@@ -1070,7 +1075,7 @@ function Home() {
                       <h4 style={{
                         fontSize: '1.3rem',
                         fontWeight: '700',
-                        color: '#002C5B',
+                        color: '#2d3992',
                         marginBottom: '12px',
                         lineHeight: '1.3'
                       }}>Get a Quote in 2 Hours</h4>
@@ -1099,7 +1104,7 @@ function Home() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 193, 7, 0.2)';
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
@@ -1112,7 +1117,7 @@ function Home() {
                       fontSize: '3rem',
                       fontWeight: '800',
                       color: 'transparent',
-                      WebkitTextStroke: '2px #002C5B',
+                      WebkitTextStroke: '2px #2d3992',
                       lineHeight: '1',
                       opacity: '0.15'
                     }}>03</span>
@@ -1120,12 +1125,12 @@ function Home() {
                       width: '90px',
                       height: '90px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
@@ -1144,7 +1149,7 @@ function Home() {
                       <h4 style={{
                         fontSize: '1.3rem',
                         fontWeight: '700',
-                        color: '#002C5B',
+                        color: '#2d3992',
                         marginBottom: '12px',
                         lineHeight: '1.3'
                       }}>Confirm Your Order</h4>
@@ -1186,7 +1191,7 @@ function Home() {
                       fontSize: '3rem',
                       fontWeight: '800',
                       color: 'transparent',
-                      WebkitTextStroke: '2px #002C5B',
+                      WebkitTextStroke: '2px #2d3992',
                       lineHeight: '1',
                       opacity: '0.15'
                     }}>04</span>
@@ -1194,7 +1199,7 @@ function Home() {
                       width: '90px',
                       height: '90px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1218,7 +1223,7 @@ function Home() {
                       <h4 style={{
                         fontSize: '1.3rem',
                         fontWeight: '700',
-                        color: '#002C5B',
+                        color: '#2d3992',
                         marginBottom: '12px',
                         lineHeight: '1.3'
                       }}>Dispatched in 48 Hours</h4>
@@ -1363,11 +1368,11 @@ function Home() {
                   <h2 className="site-title" style={{
                     fontSize: '2.8rem',
                     fontWeight: '700',
-                    color: '#002C5B',
+                    color: '#2d3992',
                     marginBottom: '20px',
                     lineHeight: '1.2'
                   }}>
-                    Our <span style={{color: '#FFC107'}}>Capabilities</span>
+                Our <span style={{color: '#f15925'}}>Capabilities</span>
                   </h2>
                 </div>
               </div>
@@ -1399,7 +1404,7 @@ function Home() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(241, 89, 37, 0.15)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
@@ -1447,7 +1452,7 @@ function Home() {
                     <h4 className="service-title" style={{
                       fontSize: '1.35rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
@@ -1456,8 +1461,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#002C5B'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         The GN Laser Cutting Machine
                       </a>
                     </h4>
@@ -1474,10 +1479,10 @@ function Home() {
                       padding: '12px 24px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       color: '#000',
                       borderRadius: '8px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
                       transition: 'all 0.3s ease',
                       border: 'none',
                       display: 'inline-flex',
@@ -1489,11 +1494,11 @@ function Home() {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(241, 89, 37, 0.4)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(241, 89, 37, 0.3)';
                     }}>
                       Learn More
                       <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
@@ -1566,7 +1571,7 @@ function Home() {
                     <h4 className="service-title" style={{
                       fontSize: '1.35rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
@@ -1575,8 +1580,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#002C5B'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Advanced Press Brake
                       </a>
                     </h4>
@@ -1593,7 +1598,7 @@ function Home() {
                       padding: '12px 24px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       color: '#000',
                       borderRadius: '8px',
                       boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
@@ -1685,7 +1690,7 @@ function Home() {
                     <h4 className="service-title" style={{
                       fontSize: '1.35rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
@@ -1694,8 +1699,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#002C5B'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Precision Welding Services
                       </a>
                     </h4>
@@ -1712,7 +1717,7 @@ function Home() {
                       padding: '12px 24px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       color: '#000',
                       borderRadius: '8px',
                       boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
@@ -1804,7 +1809,7 @@ function Home() {
                     <h4 className="service-title" style={{
                       fontSize: '1.35rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
@@ -1813,8 +1818,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#002C5B'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Design & Development
                       </a>
                     </h4>
@@ -1831,7 +1836,7 @@ function Home() {
                       padding: '12px 24px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                       color: '#000',
                       borderRadius: '8px',
                       boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
@@ -1997,11 +2002,11 @@ function Home() {
                   <h2 className="site-title" style={{
                     fontSize: '2.8rem',
                     fontWeight: '700',
-                    color: '#002C5B',
+                    color: '#2d3992',
                     marginBottom: '15px',
                     lineHeight: '1.2'
                   }}>
-                    Why <span style={{color: '#FFC107'}}>Choose</span> <span style={{color: '#FFC107'}}>247Cutbend</span>?
+                    Why <span style={{color: '#f15925'}}>Choose</span> <span style={{color: '#f15925'}}>247Cutbend</span>?
                   </h2>
                   <p style={{
                     fontSize: '1.15rem',
@@ -2009,7 +2014,7 @@ function Home() {
                     fontWeight: '500',
                     margin: 0
                   }}>
-                    <span style={{color: '#FFC107', fontWeight: '700', fontSize: '1.3rem'}}>1200+</span> Ton per Month of Laser cutting capacity
+                    <span style={{color: '#f15925', fontWeight: '700', fontSize: '1.3rem'}}>1200+</span> Ton per Month of Laser cutting capacity
                   </p>
                 </div>
               </div>
@@ -2041,7 +2046,7 @@ function Home() {
                         minWidth: '70px',
                         borderRadius: '50%',
                         background: '#ffffff',
-                        border: '3px dashed #FFC107',
+                        border: '3px dashed #f15925',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -2050,11 +2055,11 @@ function Home() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#FFB300';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#FFC107';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}>
                         <img src="/assets/img/icon/money.svg" alt="Save Time" style={{
                           width: '35px',
@@ -2066,7 +2071,7 @@ function Home() {
                         <h4 style={{
                           fontSize: '1.25rem',
                           fontWeight: '700',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           marginBottom: '10px',
                           lineHeight: '1.3'
                         }}>Save Time, Get Instant Estimates</h4>
@@ -2102,7 +2107,7 @@ function Home() {
                         minWidth: '70px',
                         borderRadius: '50%',
                         background: '#ffffff',
-                        border: '3px dashed #FFC107',
+                        border: '3px dashed #f15925',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -2111,11 +2116,11 @@ function Home() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#FFB300';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#FFC107';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}>
                         <img src="/assets/img/icon/team.svg" alt="Material Management" style={{
                           width: '35px',
@@ -2127,7 +2132,7 @@ function Home() {
                         <h4 style={{
                           fontSize: '1.25rem',
                           fontWeight: '700',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           marginBottom: '10px',
                           lineHeight: '1.3'
                         }}>Skip the Hassle of Material Management</h4>
@@ -2163,7 +2168,7 @@ function Home() {
                         minWidth: '70px',
                         borderRadius: '50%',
                         background: '#ffffff',
-                        border: '3px dashed #FFC107',
+                        border: '3px dashed #f15925',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -2172,11 +2177,11 @@ function Home() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#FFB300';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#FFC107';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}>
                         <img src="/assets/img/icon/certified.svg" alt="Consolidate Vendors" style={{
                           width: '35px',
@@ -2188,7 +2193,7 @@ function Home() {
                         <h4 style={{
                           fontSize: '1.25rem',
                           fontWeight: '700',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           marginBottom: '10px',
                           lineHeight: '1.3'
                         }}>Consolidate Your Vendors</h4>
@@ -2224,7 +2229,7 @@ function Home() {
                         minWidth: '70px',
                         borderRadius: '50%',
                         background: '#ffffff',
-                        border: '3px dashed #FFC107',
+                        border: '3px dashed #f15925',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -2233,11 +2238,11 @@ function Home() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#FFB300';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#FFC107';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}>
                         <img src="/assets/img/icon/certified.svg" alt="Capacity and Precision" style={{
                           width: '35px',
@@ -2249,7 +2254,7 @@ function Home() {
                         <h4 style={{
                           fontSize: '1.25rem',
                           fontWeight: '700',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           marginBottom: '10px',
                           lineHeight: '1.3'
                         }}>Unmatched Capacity and Precision</h4>
@@ -2285,7 +2290,7 @@ function Home() {
                         minWidth: '70px',
                         borderRadius: '50%',
                         background: '#ffffff',
-                        border: '3px dashed #FFC107',
+                        border: '3px dashed #f15925',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -2294,11 +2299,11 @@ function Home() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#FFB300';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#FFC107';
+                        e.currentTarget.style.borderColor = '#f15925';
                       }}>
                         <img src="/assets/img/icon/certified.svg" alt="247Cutbend" style={{
                           width: '35px',
@@ -2310,7 +2315,7 @@ function Home() {
                         <h4 style={{
                           fontSize: '1.25rem',
                           fontWeight: '700',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           marginBottom: '10px',
                           lineHeight: '1.3'
                         }}>247Cutbend</h4>
@@ -2363,23 +2368,23 @@ function Home() {
                   borderRadius: '16px',
                   padding: '30px',
                   textAlign: 'center',
-                  border: '2px dashed #FFC107'
+                  border: '2px dashed #f15925'
                 }}>
                   <p style={{
                     fontSize: '1.1rem',
-                    color: '#002C5B',
+                    color: '#2d3992',
                     marginBottom: '10px',
                     fontWeight: '600'
                   }}>
-                    You have purchased <span style={{color: '#FFC107', fontWeight: '700'}}>@ Rs. 53/kg</span> material + Loading charges + Transport + You nest it + You added Transportation + Again loaded !!!!!
+                    You have purchased <span style={{color: '#f15925', fontWeight: '700'}}>@ Rs. 53/kg</span> material + Loading charges + Transport + You nest it + You added Transportation + Again loaded !!!!!
                   </p>
                   <p style={{
                     fontSize: '1.3rem',
-                    color: '#002C5B',
+                    color: '#2d3992',
                     margin: 0,
                     fontWeight: '700'
                   }}>
-                    Turnout price - <span style={{color: '#FFC107', fontSize: '1.5rem'}}>Rs. 62 / Kg</span>
+                    Turnout price - <span style={{color: '#f15925', fontSize: '1.5rem'}}>Rs. 62 / Kg</span>
                   </p>
                 </div>
               </div>
@@ -2421,11 +2426,11 @@ function Home() {
                     <h3 style={{
                       fontSize: '2.2rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '15px',
                       lineHeight: '1.2'
                     }}>
-                      Request A <span style={{color: '#FFC107'}}>Quote</span>
+                      Request A <span style={{color: '#f15925'}}>Quote</span>
                     </h3>
                     <p style={{
                       fontSize: '1rem',
@@ -2449,7 +2454,7 @@ function Home() {
                               <i className="far fa-user-tie" style={{
                                 position: 'absolute',
                                 left: '18px',
-                                color: '#FFC107',
+                                color: '#f15925',
                                 fontSize: '18px',
                                 zIndex: 2
                               }}></i>
@@ -2467,7 +2472,7 @@ function Home() {
                                   outline: 'none'
                                 }}
                                 onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#FFC107';
+                                  e.currentTarget.style.borderColor = '#f15925';
                                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
                                 }}
                                 onBlur={(e) => {
@@ -2488,7 +2493,7 @@ function Home() {
                               <i className="far fa-envelope" style={{
                                 position: 'absolute',
                                 left: '18px',
-                                color: '#FFC107',
+                                color: '#f15925',
                                 fontSize: '18px',
                                 zIndex: 2
                               }}></i>
@@ -2506,7 +2511,7 @@ function Home() {
                                   outline: 'none'
                                 }}
                                 onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#FFC107';
+                                  e.currentTarget.style.borderColor = '#f15925';
                                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
                                 }}
                                 onBlur={(e) => {
@@ -2527,7 +2532,7 @@ function Home() {
                               <i className="far fa-phone" style={{
                                 position: 'absolute',
                                 left: '18px',
-                                color: '#FFC107',
+                                color: '#f15925',
                                 fontSize: '18px',
                                 zIndex: 2
                               }}></i>
@@ -2545,7 +2550,7 @@ function Home() {
                                   outline: 'none'
                                 }}
                                 onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#FFC107';
+                                  e.currentTarget.style.borderColor = '#f15925';
                                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
                                 }}
                                 onBlur={(e) => {
@@ -2578,7 +2583,7 @@ function Home() {
                                     width: '20px',
                                     height: '20px',
                                     cursor: 'pointer',
-                                    accentColor: '#FFC107'
+                                    accentColor: '#f15925'
                                   }}
                                 />
                                 <label 
@@ -2586,7 +2591,7 @@ function Home() {
                                   htmlFor="flexCheckDefaultCutting"
                                   style={{
                                     fontSize: '15px',
-                                    color: '#002C5B',
+                                    color: '#2d3992',
                                     fontWeight: '500',
                                     cursor: 'pointer',
                                     margin: 0
@@ -2608,7 +2613,7 @@ function Home() {
                                     width: '20px',
                                     height: '20px',
                                     cursor: 'pointer',
-                                    accentColor: '#FFC107'
+                                    accentColor: '#f15925'
                                   }}
                                 />
                                 <label 
@@ -2616,7 +2621,7 @@ function Home() {
                                   htmlFor="flexCheckDefaultCutting&Bending"
                                   style={{
                                     fontSize: '15px',
-                                    color: '#002C5B',
+                                    color: '#2d3992',
                                     fontWeight: '500',
                                     cursor: 'pointer',
                                     margin: 0
@@ -2638,7 +2643,7 @@ function Home() {
                                 position: 'absolute',
                                 left: '18px',
                                 top: '18px',
-                                color: '#FFC107',
+                                color: '#f15925',
                                 fontSize: '18px',
                                 zIndex: 2
                               }}></i>
@@ -2660,7 +2665,7 @@ function Home() {
                                   fontFamily: 'inherit'
                                 }}
                                 onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#FFC107';
+                                  e.currentTarget.style.borderColor = '#f15925';
                                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
                                 }}
                                 onBlur={(e) => {
@@ -2679,7 +2684,7 @@ function Home() {
                               padding: '16px 32px',
                               fontSize: '16px',
                               fontWeight: '600',
-                              background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                              background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                               color: '#000',
                               borderRadius: '12px',
                               boxShadow: '0 6px 20px rgba(255, 193, 7, 0.4)',
@@ -2695,12 +2700,12 @@ function Home() {
                             onMouseEnter={(e) => {
                               e.currentTarget.style.transform = 'translateY(-2px)';
                               e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 193, 7, 0.5)';
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #FFB300 0%, #FFA000 100%)';
+                              e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)';
+                              e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
                             }}
                           >
                             Register Now
@@ -2726,11 +2731,11 @@ function Home() {
                     <h2 className="site-title" style={{
                       fontSize: '2.5rem',
                       fontWeight: '700',
-                      color: '#002C5B',
+                      color: '#2d3992',
                       marginBottom: '20px',
                       lineHeight: '1.2'
                     }}>
-                      General <span style={{color: '#FFC107'}}>Frequently</span> Asked Questions
+                      General <span style={{color: '#f15925'}}>Frequently</span> Asked Questions
                     </h2>
                   </div>
                   <p style={{
@@ -2753,7 +2758,7 @@ function Home() {
                     padding: '14px 28px',
                     fontSize: '15px',
                     fontWeight: '600',
-                    background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                    background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                     color: '#000',
                     borderRadius: '10px',
                     boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
@@ -2811,7 +2816,7 @@ function Home() {
                           textAlign: 'left',
                           fontSize: '1.1rem',
                           fontWeight: '600',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           boxShadow: 'none'
                         }}>
                         <span style={{
@@ -2819,7 +2824,7 @@ function Home() {
                           height: '50px',
                           minWidth: '50px',
                           borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                          background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -2828,7 +2833,7 @@ function Home() {
                           <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
                         </span>
                         <span style={{flex: 1}}>How Long Does A Service Take?</span>
-                        <i className="fas fa-chevron-up" style={{color: '#FFC107', fontSize: '14px'}}></i>
+                        <i className="fas fa-chevron-up" style={{color: '#f15925', fontSize: '14px'}}></i>
                       </button>
                     </h2>
                     <div id="collapseOne" className="accordion-collapse collapse show"
@@ -2872,7 +2877,7 @@ function Home() {
                           textAlign: 'left',
                           fontSize: '1.1rem',
                           fontWeight: '600',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           boxShadow: 'none'
                         }}>
                         <span style={{
@@ -2880,7 +2885,7 @@ function Home() {
                           height: '50px',
                           minWidth: '50px',
                           borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                          background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -2889,7 +2894,7 @@ function Home() {
                           <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
                         </span>
                         <span style={{flex: 1}}>How Can I Become A Member?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#FFC107', fontSize: '14px'}}></i>
+                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
                       </button>
                     </h2>
                     <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -2934,7 +2939,7 @@ function Home() {
                           textAlign: 'left',
                           fontSize: '1.1rem',
                           fontWeight: '600',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           boxShadow: 'none'
                         }}>
                         <span style={{
@@ -2942,7 +2947,7 @@ function Home() {
                           height: '50px',
                           minWidth: '50px',
                           borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                          background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -2951,7 +2956,7 @@ function Home() {
                           <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
                         </span>
                         <span style={{flex: 1}}>What Payment Gateway You Support?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#FFC107', fontSize: '14px'}}></i>
+                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
                       </button>
                     </h2>
                     <div id="collapseThree" className="accordion-collapse collapse"
@@ -2996,7 +3001,7 @@ function Home() {
                           textAlign: 'left',
                           fontSize: '1.1rem',
                           fontWeight: '600',
-                          color: '#002C5B',
+                          color: '#2d3992',
                           boxShadow: 'none'
                         }}>
                         <span style={{
@@ -3004,7 +3009,7 @@ function Home() {
                           height: '50px',
                           minWidth: '50px',
                           borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)',
+                          background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -3013,7 +3018,7 @@ function Home() {
                           <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
                         </span>
                         <span style={{flex: 1}}>How Can I Cancel My Request?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#FFC107', fontSize: '14px'}}></i>
+                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
                       </button>
                     </h2>
                     <div id="collapseFour" className="accordion-collapse collapse"
@@ -3034,8 +3039,8 @@ function Home() {
           </div>
         </div>
 
-        {/* Blog Area */}
-        <div className="blog-area py-100 bg">
+        {/* Blog Area - Commented out for now */}
+        {/* <div className="blog-area py-100 bg">
           <div className="container">
             <div className="row">
               <div className="col-lg-6 mx-auto">
@@ -3126,12 +3131,12 @@ function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </main>
 
       {/* Footer Area */}
       <footer className="footer-area" style={{
-        background: '#002C5B',
+        background: '#2d3992',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -3159,7 +3164,7 @@ function Home() {
                 <div className="col-lg-5">
                   <div className="footer-widget-box about-us">
                     <div className="footer-logo" style={{display: 'inline-block', marginBottom: '20px'}}>
-                      <img src="/Logo.png" alt="247CutBend Logo" style={{height: '50px', width: 'auto'}} />
+                      <img src="/Whitelogo.png" alt="247CutBend Logo" style={{height: '35px', width: 'auto'}} />
                     </div>
                     <p style={{
                       color: 'rgba(255,255,255,0.8)',
@@ -3188,7 +3193,7 @@ function Home() {
                             }}>
                               {/* <i className="far fa-envelope" style={{
                                 padding: '8px 10px',
-                                color: '#FFC107',
+                                color: '#f15925',
                                 fontSize: '14px',
                                 display: 'flex',
                                 alignItems: 'center'
@@ -3208,7 +3213,7 @@ function Home() {
                                 }}
                               />
                               <button className="theme-btn" type="submit" style={{
-                                background: '#FFC107',
+                                background: '#f15925',
                                 color: '#000',
                                 border: 'none',
                                 // padding: '8px 16px',
@@ -3220,10 +3225,10 @@ function Home() {
                                 transition: 'all 0.2s ease'
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.background = '#FFB300';
+                                e.currentTarget.style.background = '#f15925';
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#FFC107';
+                                e.currentTarget.style.background = '#f15925';
                               }}>
                                 Subscribe
                               </button>
@@ -3251,7 +3256,7 @@ function Home() {
                         left: 0,
                         width: '40px',
                         height: '3px',
-                        background: '#FFC107',
+                        background: '#f15925',
                         borderRadius: '2px'
                       }}></span>
                     </h4>
@@ -3273,7 +3278,7 @@ function Home() {
                         gap: '8px'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
+                        e.currentTarget.style.color = '#f15925';
                         e.currentTarget.style.transform = 'translateX(5px)';
                       }}
                       onMouseLeave={(e) => {
@@ -3293,7 +3298,7 @@ function Home() {
                         gap: '8px'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
+                        e.currentTarget.style.color = '#f15925';
                         e.currentTarget.style.transform = 'translateX(5px)';
                       }}
                       onMouseLeave={(e) => {
@@ -3313,7 +3318,7 @@ function Home() {
                         gap: '8px'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
+                        e.currentTarget.style.color = '#f15925';
                         e.currentTarget.style.transform = 'translateX(5px)';
                       }}
                       onMouseLeave={(e) => {
@@ -3333,7 +3338,7 @@ function Home() {
                         gap: '8px'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
+                        e.currentTarget.style.color = '#f15925';
                         e.currentTarget.style.transform = 'translateX(5px)';
                       }}
                       onMouseLeave={(e) => {
@@ -3353,7 +3358,7 @@ function Home() {
                         gap: '8px'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#FFC107';
+                        e.currentTarget.style.color = '#f15925';
                         e.currentTarget.style.transform = 'translateX(5px)';
                       }}
                       onMouseLeave={(e) => {
@@ -3383,7 +3388,7 @@ function Home() {
                         left: 0,
                         width: '40px',
                         height: '3px',
-                        background: '#FFC107',
+                        background: '#f15925',
                         borderRadius: '2px'
                       }}></span>
                     </h4>
@@ -3401,7 +3406,7 @@ function Home() {
                           height: '40px',
                           minWidth: '40px',
                           borderRadius: '50%',
-                          background: '#FFC107',
+                          background: '#f15925',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -3431,7 +3436,7 @@ function Home() {
                           height: '40px',
                           minWidth: '40px',
                           borderRadius: '50%',
-                          background: '#FFC107',
+                          background: '#f15925',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -3453,7 +3458,7 @@ function Home() {
                             fontSize: '0.9rem',
                             transition: 'color 0.3s ease'
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
                           onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
                             +91 9004073379
                           </a>
@@ -3465,7 +3470,7 @@ function Home() {
                           height: '40px',
                           minWidth: '40px',
                           borderRadius: '50%',
-                          background: '#FFC107',
+                          background: '#f15925',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -3487,7 +3492,7 @@ function Home() {
                             fontSize: '0.9rem',
                             transition: 'color 0.3s ease'
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#FFC107'}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
                           onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
                             sales@247cutbend.in
                           </a>
@@ -3513,7 +3518,7 @@ function Home() {
                   margin: 0
                 }}>
                   &copy; Copyright <span id="date"></span> <a href="#" style={{
-                    color: '#FFC107',
+                    color: '#f15925',
                     textDecoration: 'none',
                     fontWeight: '600'
                   }}>Cutbend</a> All Rights Reserved.
@@ -3544,7 +3549,7 @@ function Home() {
                     fontWeight: 'bold'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FFC107';
+                    e.currentTarget.style.background = '#f15925';
                     e.currentTarget.style.color = '#000';
                     e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
@@ -3568,7 +3573,7 @@ function Home() {
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FFC107';
+                    e.currentTarget.style.background = '#f15925';
                     e.currentTarget.style.color = '#000';
                     e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
@@ -3594,7 +3599,7 @@ function Home() {
                     fontWeight: 'bold'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FFC107';
+                    e.currentTarget.style.background = '#f15925';
                     e.currentTarget.style.color = '#000';
                     e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
