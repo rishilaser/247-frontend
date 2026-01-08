@@ -1,11 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { roleUtils } from '../utils/authUtils';
 
 function Home() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
+  // Handle CTA button clicks - redirect based on auth status and role
+  const handleCTAClick = (e, targetPath = '/upload') => {
+    e.preventDefault();
+    
+    if (!user) {
+      // Not logged in - redirect to signup
+      navigate('/signup');
+    } else {
+      // Logged in - redirect based on role
+      const userRole = roleUtils.getUserRole(user);
+      
+      if (roleUtils.isAdmin(user) || roleUtils.isBackOffice(user) || roleUtils.isSubAdmin(user)) {
+        // Admin/BackOffice/SubAdmin - redirect to admin dashboard
+        navigate('/admin/dashboard');
+      } else {
+        // Customer - redirect to customer dashboard or target path
+        navigate(targetPath);
+      }
+    }
+  };
+
   // Header scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +52,7 @@ function Home() {
       document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
-  
+
   useEffect(() => {
     // Wait for DOM and scripts to be ready
     const initializePlugins = () => {
@@ -36,7 +60,7 @@ function Home() {
         setTimeout(initializePlugins, 100);
         return;
       }
-      
+
       const $ = window.jQuery;
       // Multi level dropdown menu
       $('.dropdown-menu a.dropdown-toggle').on('click', function (e) {
@@ -67,11 +91,11 @@ function Home() {
       });
 
       // Sidebar popup
-      $('.sidebar-btn').on('click', function() {
+      $('.sidebar-btn').on('click', function () {
         $('.sidebar-popup').addClass('open');
         $('.sidebar-wrapper').addClass('open');
       });
-      $('.close-sidebar-popup, .sidebar-popup').on('click', function() {
+      $('.close-sidebar-popup, .sidebar-popup').on('click', function () {
         $('.sidebar-popup').removeClass('open');
         $('.sidebar-wrapper').removeClass('open');
       });
@@ -95,11 +119,11 @@ function Home() {
           "<i class='far fa-long-arrow-left'></i>",
           "<i class='far fa-long-arrow-right'></i>"
         ],
-        onInitialized: function(event) {
+        onInitialized: function (event) {
           var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
           doAnimations($firstAnimatingElements);
         },
-        onChanged: function(event){
+        onChanged: function (event) {
           var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
           doAnimations($firstAnimatingElements);
         }
@@ -313,14 +337,14 @@ function Home() {
                     transition: 'all 0.3s ease',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     <i className="fab fa-facebook-f" style={{ fontSize: '14px' }}></i>
                   </a>
                   <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
@@ -331,14 +355,14 @@ function Home() {
                     transition: 'all 0.3s ease',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     <i className="fab fa-twitter" style={{ fontSize: '14px' }}></i>
                   </a>
                   <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer" className="text-white d-flex align-items-center justify-content-center" style={{
@@ -349,14 +373,14 @@ function Home() {
                     transition: 'all 0.3s ease',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     <i className="fab fa-instagram" style={{ fontSize: '14px' }}></i>
                   </a>
                   <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
@@ -367,14 +391,14 @@ function Home() {
                     transition: 'all 0.3s ease',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     <i className="fab fa-linkedin-in" style={{ fontSize: '14px' }}></i>
                   </a>
                 </div>
@@ -387,12 +411,12 @@ function Home() {
       {/* Header Area */}
       <header className="header" style={{
         padding: '0',
-        background: isScrolled 
-          ? 'linear-gradient(180deg, rgba(243,244,246,0.99) 0%, rgba(243,244,246,0.98) 100%)' 
+        background: isScrolled
+          ? 'linear-gradient(180deg, rgba(243,244,246,0.99) 0%, rgba(243,244,246,0.98) 100%)'
           : 'linear-gradient(180deg, rgba(243,244,246,0.98) 0%, rgba(243,244,246,0.95) 100%)',
         backdropFilter: 'blur(10px)',
-        boxShadow: isScrolled 
-          ? '0 4px 30px rgba(0,0,0,0.12)' 
+        boxShadow: isScrolled
+          ? '0 4px 30px rgba(0,0,0,0.12)'
           : '0 2px 20px rgba(0,0,0,0.08)',
         transition: 'all 0.3s ease',
         position: 'sticky',
@@ -400,7 +424,7 @@ function Home() {
         zIndex: 1000
       }}>
         {/* Navbar */}
-        <div className="main-navigation" style={{padding: '0'}}>
+        <div className="main-navigation" style={{ padding: '0' }}>
           <nav className="navbar navbar-expand-lg" style={{
             padding: isScrolled ? '12px 0' : '16px 0',
             minHeight: isScrolled ? '75px' : '90px',
@@ -413,8 +437,8 @@ function Home() {
                 alignItems: 'center',
                 transition: 'transform 0.3s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                 {/* <img src="https://www.247cutbend.in/assets/img/logo%20(2).png" alt="logo" /> */}
                 <img src="/Logo.png" alt="247CutBend logo" style={{
                   height: isScrolled ? '30px' : '35px',
@@ -427,8 +451,8 @@ function Home() {
               </div>
 
               {/* Desktop Menu - Hidden on mobile */}
-              <div className="d-none d-lg-flex align-items-center" style={{flex: 1, justifyContent: 'flex-end'}}>
-                <ul className="navbar-nav justify-content-end flex-grow-1" style={{alignItems: 'center', flexDirection: 'row'}}>
+              <div className="d-none d-lg-flex align-items-center" style={{ flex: 1, justifyContent: 'flex-end' }}>
+                <ul className="navbar-nav justify-content-end flex-grow-1" style={{ alignItems: 'center', flexDirection: 'row' }}>
                   <li className="nav-item">
                     <a className="nav-link" href="/" style={{
                       padding: '8px 16px',
@@ -440,14 +464,14 @@ function Home() {
                       borderRadius: '6px',
                       margin: '0 4px'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#f15925';
-                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#1a1a1a';
-                      e.currentTarget.style.background = 'transparent';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#f15925';
+                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#1a1a1a';
+                        e.currentTarget.style.background = 'transparent';
+                      }}>
                       Home
                     </a>
                   </li>
@@ -462,14 +486,14 @@ function Home() {
                       borderRadius: '6px',
                       margin: '0 4px'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#f15925';
-                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#1a1a1a';
-                      e.currentTarget.style.background = 'transparent';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#f15925';
+                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#1a1a1a';
+                        e.currentTarget.style.background = 'transparent';
+                      }}>
                       About Us
                     </a>
                   </li>
@@ -484,14 +508,14 @@ function Home() {
                       borderRadius: '6px',
                       margin: '0 4px'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#f15925';
-                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#1a1a1a';
-                      e.currentTarget.style.background = 'transparent';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#f15925';
+                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#1a1a1a';
+                        e.currentTarget.style.background = 'transparent';
+                      }}>
                       Capabilities
                     </a>
                   </li>
@@ -506,14 +530,14 @@ function Home() {
                       borderRadius: '6px',
                       margin: '0 4px'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#f15925';
-                      e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#1a1a1a';
-                      e.currentTarget.style.background = 'transparent';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#f15925';
+                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#1a1a1a';
+                        e.currentTarget.style.background = 'transparent';
+                      }}>
                       Contact Us
                     </a>
                   </li>
@@ -530,7 +554,7 @@ function Home() {
                         fontSize: '15px',
                         fontWeight: '600',
                         background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
-                        color: '#000',
+                        color: '#ffffff',
                         borderRadius: '8px',
                         boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
                         transition: 'all 0.3s ease',
@@ -551,14 +575,14 @@ function Home() {
                         e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
                       }}>
                       Login
-                      <i className="fas fa-arrow-right" style={{fontSize: '12px', transition: 'transform 0.3s ease'}}></i>
+                      <i className="fas fa-arrow-right" style={{ fontSize: '12px', transition: 'transform 0.3s ease' }}></i>
                     </a>
                   </div>
                 </div>
               </div>
 
               {/* Mobile Menu Toggle Button - Visible only on mobile */}
-              <button 
+              <button
                 className="d-lg-none navbar-toggler"
                 type="button"
                 onClick={() => setIsMobileMenuOpen(true)}
@@ -586,7 +610,7 @@ function Home() {
       </header>
 
       {/* Mobile Sidebar - Outside navbar for full screen coverage */}
-      <div 
+      <div
         className="mobile-sidebar-overlay"
         style={{
           position: 'fixed',
@@ -603,8 +627,8 @@ function Home() {
         }}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
-      
-      <div 
+
+      <div
         className="mobile-sidebar"
         style={{
           position: 'fixed',
@@ -632,7 +656,7 @@ function Home() {
             width: 'auto',
             objectFit: 'contain'
           }} />
-          <button 
+          <button
             type="button"
             onClick={() => setIsMobileMenuOpen(false)}
             style={{
@@ -650,12 +674,12 @@ function Home() {
             <i className="fas fa-bars"></i>
           </button>
         </div>
-        
-        <div style={{padding: '20px 0'}}>
-          <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
-              <a 
-                href="/" 
+
+        <div style={{ padding: '20px 0' }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+              <a
+                href="/"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
                 }}
@@ -680,9 +704,9 @@ function Home() {
                 Home
               </a>
             </li>
-            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
-              <a 
-                href="#about-area" 
+            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+              <a
+                href="#about-area"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
                 }}
@@ -707,9 +731,9 @@ function Home() {
                 About Us
               </a>
             </li>
-            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
-              <a 
-                href="#service-area" 
+            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+              <a
+                href="#service-area"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
                 }}
@@ -734,9 +758,9 @@ function Home() {
                 Capabilities
               </a>
             </li>
-            <li style={{borderBottom: '1px solid rgba(0,0,0,0.05)'}}>
-              <a 
-                href="#quote-area" 
+            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+              <a
+                href="#quote-area"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
                 }}
@@ -762,14 +786,14 @@ function Home() {
               </a>
             </li>
           </ul>
-          
-          <div style={{padding: '20px', display: 'flex', justifyContent: 'flex-start'}}>
-            <a 
+
+          <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-start' }}>
+            <a
               href="/signup"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="theme-btn" 
+              className="theme-btn"
               style={{
                 padding: '10px 16px',
                 fontSize: '14px',
@@ -790,7 +814,7 @@ function Home() {
               }}
             >
               Login
-              <i className="fas fa-arrow-right" style={{fontSize: '11px'}}></i>
+              <i className="fas fa-arrow-right" style={{ fontSize: '11px' }}></i>
             </a>
           </div>
         </div>
@@ -811,7 +835,7 @@ function Home() {
       <div className="sidebar-popup offcanvas offcanvas-end" tabIndex="-1" id="sidebarPopup">
         <div className="offcanvas-header">
           <div className="sidebar-popup-logo">
-            <img src="/Logo.png" alt="" style={{height: '35px', width: 'auto'}} />
+            <img src="/Logo.png" alt="" style={{ height: '35px', width: 'auto' }} />
           </div>
           <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
             <i className="far fa-xmark"></i>
@@ -877,16 +901,23 @@ function Home() {
               <div className="container">
                 <div className="row align-items-center">
                   <div className="col-md-12 col-lg-8">
-                    <div className="hero-content">
-                      <h6 className="hero-sub-title" data-animation="fadeInUp" data-delay=".25s">
-                        Laser cutting & Bending - 24x7 ONLINE
-                      </h6>
-                      <h1 className="hero-title" data-animation="fadeInRight" data-delay=".50s">
-                        Instant quote <br/> Fastest delivery <br/> best price
-                      </h1>
-                      {/* <div className="hero-btn" data-animation="fadeInUp" data-delay="1s">
-                        <a href="https://workdrive.zohopublic.in/collection/pgd574e5ce61888a2407c93078e287e399d18/external" target="_blank" rel="noopener noreferrer" className="theme-btn">Upload Files<i className="fas fa-arrow-right"></i></a>
-                      </div> */}
+                    <div className="hero-content" style={{ padding: 0, margin: 0 }}>
+                      <p className="hero-sub-title" data-animation="fadeInUp" data-delay=".25s" style={{ fontSize: '1.3rem', marginBottom: '10px' }}>
+                        247 Cut Bend Your partner for custom <br /> metal fabrication
+                      </p>
+                      <h2 className="hero-title" data-animation="fadeInRight" data-delay=".50s" style={{ marginBottom: '15px', marginTop: '10px' }}>
+                        Your Production <br /> Never Stops.<br /> Neither Do We.
+                      </h2>
+                      <div className="hero-btn" data-animation="fadeInUp" data-delay="1s" style={{ marginTop: '15px' }}>
+                        <a 
+                          href="#" 
+                          className="theme-btn"
+                          onClick={(e) => handleCTAClick(e, '/upload')}
+                        >
+                          Click to Upload Your File
+                          <i className="fas fa-arrow-right"></i>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -895,8 +926,8 @@ function Home() {
           </div>
         </div>
 
-        {/* Partner Area */}
-        <div className="partner-area pt-negative">
+        {/* Partner Area - Commented out for now */}
+        {false && <div className="partner-area pt-negative">
           <div className="container-fluid">
             <div className="col-lg-12">
               <div className="partner-wrap">
@@ -910,330 +941,464 @@ function Home() {
               </div>
             </div>
           </div>
+        </div>}
+
+        {/* Quote Banner */}
+        <div className="quote-banner">
+          {/* Light Orange SVG Decorative Element */}
+          <div className="quote-banner-svg-decoration">
+            <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="150" cy="150" r="120" fill="rgba(255, 193, 7, 0.2)" opacity="0.6"/>
+              <circle cx="150" cy="150" r="80" fill="rgba(255, 193, 7, 0.15)" opacity="0.5"/>
+              <circle cx="150" cy="150" r="40" fill="rgba(255, 193, 7, 0.1)" opacity="0.4"/>
+              <path d="M150 30 L170 90 L230 90 L180 130 L200 190 L150 150 L100 190 L120 130 L70 90 L130 90 Z" fill="rgba(255, 193, 7, 0.25)" opacity="0.5"/>
+            </svg>
+          </div>
+          <div className="container quote-banner-container">
+            <div className="quote-banner-content">
+              <div className="quote-banner-icon">
+                <div className="loader">
+                  <div className="truckWrapper">
+                    <div className="truckBody">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 198 93"
+                        className="trucksvg"
+                      >
+                        <path
+                          strokeWidth="3"
+                          stroke="#282828"
+                          fill="#F83D3D"
+                          d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"
+                        />
+                        <path
+                          strokeWidth="3"
+                          stroke="#282828"
+                          fill="#7D7C7C"
+                          d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"
+                        />
+                        <path
+                          strokeWidth="2"
+                          stroke="#282828"
+                          fill="#282828"
+                          d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"
+                        />
+                        <rect
+                          strokeWidth="2"
+                          stroke="#282828"
+                          fill="#FFFCAB"
+                          rx="1"
+                          height="7"
+                          width="5"
+                          y="63"
+                          x="187"
+                        />
+                        <rect
+                          strokeWidth="2"
+                          stroke="#282828"
+                          fill="#282828"
+                          rx="1"
+                          height="11"
+                          width="4"
+                          y="81"
+                          x="193"
+                        />
+                        <rect
+                          strokeWidth="3"
+                          stroke="#282828"
+                          fill="#DFDFDF"
+                          rx="2.5"
+                          height="90"
+                          width="121"
+                          y="1.5"
+                          x="6.5"
+                        />
+                        <rect
+                          strokeWidth="2"
+                          stroke="#282828"
+                          fill="#DFDFDF"
+                          rx="2"
+                          height="4"
+                          width="6"
+                          y="84"
+                          x="1"
+                        />
+                      </svg>
+                    </div>
+                    <div className="truckTires">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 30 30"
+                        className="tiresvg"
+                      >
+                        <circle
+                          strokeWidth="3"
+                          stroke="#282828"
+                          fill="#282828"
+                          r="13.5"
+                          cy="15"
+                          cx="15"
+                        />
+                        <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 30 30"
+                        className="tiresvg"
+                      >
+                        <circle
+                          strokeWidth="3"
+                          stroke="#282828"
+                          fill="#282828"
+                          r="13.5"
+                          cy="15"
+                          cx="15"
+                        />
+                        <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
+                      </svg>
+                    </div>
+                    <div className="road"></div>
+                    <svg
+                      viewBox="0 0 453.459 453.459"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="lampPost"
+                    >
+                      <path
+                        d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
+                        c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
+                        c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
+                        c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
+                        h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
+                        v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
+                        V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
+                        M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
+                        h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="quote-banner-text">
+                <p>
+                  "Just upload your design and confirm your material. We deliver accurate, machine-calibrated, quality-inspected parts within 24-36 hours".
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
+
         {/* Process Area */}
-        <div className="process-area py-100" style={{background: '#f8f9fa'}}>
+        <div className="process-area" style={{ background: '#ffffff', paddingTop: '60px', paddingBottom: '60px' }}>
           <div className="container">
             <div className="row">
-              <div className="col-lg-8 mx-auto">
-                <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s">
-                  <h2 className="site-title mb-4" style={{fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a'}}>
-                How It <span style={{color: '#f15925'}}>Works</span>
+              <div className="col-lg-10 mx-auto">
+                <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s" style={{ marginBottom: '30px' }}>
+                  <h2 className="site-title" style={{ fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '10px' }}>
+                    How It <span style={{ color: '#f15925' }}>Works</span>
                   </h2>
-                  <p style={{fontSize: '1.1rem', color: '#666', marginBottom: '3rem'}}>
-                    Simple steps to get your fabrication done quickly and efficiently
+                  <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: 0, maxWidth: '700px', margin: '0 auto' }}>
+                    Fast, factory-direct metal parts in just a few clicks. From file upload to delivery, we make production simple and transparent.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="process-wrap mt-3 wow fadeInUp" data-wow-delay=".25s">
-              <div className="row g-4 justify-content-center" style={{position: 'relative'}}>
-                {/* Connecting Line - Desktop Only */}
-                <div className="d-none d-lg-block" style={{
+
+            {/* Process Flow Line with Numbered Circles */}
+            <div className="row d-none d-lg-flex" style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>
+              <div className="col-12" style={{ position: 'relative', height: '60px' }}>
+                {/* Horizontal Line */}
+                <div style={{
                   position: 'absolute',
-                  top: '80px',
-                  left: '12%',
-                  right: '12%',
-                  height: '3px',
-                  background: 'linear-gradient(90deg, #2d3992 0%, #f15925 50%, #2d3992 100%)',
-                  zIndex: 0,
-                  borderRadius: '2px'
+                  top: '50%',
+                  left: '10%',
+                  right: '10%',
+                  height: '4px',
+                  background: '#f15925',
+                  transform: 'translateY(-50%)',
+                  zIndex: 0
                 }}></div>
-                
-                <div className="col-md-6 col-lg-3 col-xl-3">
-                  <div className="process-item" style={{
-                    background: '#ffffff',
-                    borderRadius: '16px',
-                    padding: '35px 25px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    height: '100%',
-                    zIndex: 1
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-                  }}>
-                    <span className="count" style={{
+
+                {/* Numbered Circles - Evenly spaced for 5 items */}
+                {[1, 2, 3, 4, 5].map((num, index) => {
+                  const positions = [10, 30, 50, 70, 90]; // Evenly distributed percentages
+                  return (
+                    <div key={num} style={{
                       position: 'absolute',
-                      top: '15px',
-                      right: '20px',
-                      fontSize: '3rem',
-                      fontWeight: '800',
-                      color: 'transparent',
-                      WebkitTextStroke: '2px #2d3992',
-                      lineHeight: '1',
-                      opacity: '0.15'
-                    }}>01</span>
-                    <div className="icon" style={{
-                      width: '90px',
-                      height: '90px',
+                      top: '50%',
+                      left: `${positions[index]}%`,
+                      transform: 'translate(-50%, -50%)',
+                      width: '50px',
+                      height: '50px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
+                      background: '#2d3992',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                      zIndex: 1,
+                      boxShadow: '0 4px 15px rgba(45, 57, 146, 0.3)'
                     }}>
-                      <img src="/assets/img/1.png" alt="Upload" style={{
+                      <span style={{
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        color: '#ffffff'
+                      }}>{num}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Process Steps Cards */}
+            <div className="process-wrap wow fadeInUp" data-wow-delay=".25s" style={{ marginTop: '10px' }}>
+              <div className="row" style={{ display: 'flex', flexWrap: 'nowrap', margin: 0, gap: '10px' }}>
+                {/* Step 1 */}
+                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                  <a 
+                    href="#" 
+                    style={{ textDecoration: 'none', display: 'block' }}
+                    onClick={(e) => handleCTAClick(e, '/dashboard')}
+                  >
+                    <div className="process-item" style={{
+                      background: '#ffffff',
+                      borderRadius: '12px',
+                      padding: '18px 15px',
+                      border: '3px solid #e0e0e0',
+                      height: '100%',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-5px)';
+                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                        e.currentTarget.style.borderColor = '#f15925';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.borderColor = '#e0e0e0';
+                      }}>
+                      <div className="icon" style={{
                         width: '50px',
                         height: '50px',
-                        filter: 'brightness(0) invert(1)'
-                      }} />
-                    </div>
-                    <div className="content">
+                        borderRadius: '8px',
+                        background: '#f15925',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginBottom: '15px'
+                      }}>
+                        <i className="fas fa-upload" style={{ color: '#ffffff', fontSize: '20px' }}></i>
+                      </div>
                       <h4 style={{
-                        fontSize: '1.3rem',
+                        fontSize: '1.1rem',
                         fontWeight: '700',
                         color: '#2d3992',
-                        marginBottom: '12px',
+                        marginBottom: '8px',
                         lineHeight: '1.3'
                       }}>Upload Your Files</h4>
                       <p style={{
-                        fontSize: '0.95rem',
+                        fontSize: '0.9rem',
                         color: '#666',
-                        lineHeight: '1.6',
+                        lineHeight: '1.5',
                         margin: 0
-                      }}>We accept dwg, dxf, step, jpg, hand sketches etc.</p>
+                      }}>Redirect to upload section in Dashboard</p>
                     </div>
-                  </div>
+                  </a>
                 </div>
-                
-                <div className="col-md-6 col-lg-3 col-xl-3">
+
+                {/* Step 2 */}
+                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
-                    borderRadius: '16px',
-                    padding: '35px 25px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid rgba(0,0,0,0.05)',
+                    borderRadius: '12px',
+                    padding: '18px 15px',
+                    border: '3px solid #e0e0e0',
                     height: '100%',
-                    zIndex: 1
+                    transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-                  }}>
-                    <span className="count" style={{
-                      position: 'absolute',
-                      top: '15px',
-                      right: '20px',
-                      fontSize: '3rem',
-                      fontWeight: '800',
-                      color: 'transparent',
-                      WebkitTextStroke: '2px #2d3992',
-                      lineHeight: '1',
-                      opacity: '0.15'
-                    }}>02</span>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                      e.currentTarget.style.borderColor = '#f15925';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e0e0e0';
+                    }}>
                     <div className="icon" style={{
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      background: '#f15925',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                      marginBottom: '15px'
                     }}>
-                      <img src="/assets/img/2.png" alt="Quote" style={{
-                        width: '50px',
-                        height: '50px',
-                        filter: 'brightness(0) invert(1)'
-                      }} />
+                      <i className="fas fa-file-invoice-dollar" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                     </div>
-                    <div className="content">
-                      <h4 style={{
-                        fontSize: '1.3rem',
-                        fontWeight: '700',
-                        color: '#2d3992',
-                        marginBottom: '12px',
-                        lineHeight: '1.3'
-                      }}>Get a Quote in 2 Hours</h4>
-                      <p style={{
-                        fontSize: '0.95rem',
-                        color: '#666',
-                        lineHeight: '1.6',
-                        margin: 0
-                      }}>As low as RS. 65/Kg * We save OUR material for you.</p>
-                    </div>
+                    <h4 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '700',
+                      color: '#2d3992',
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>Get a Quote in 2 Hours</h4>
+                    <p style={{
+                      fontSize: '0.9rem',
+                      color: '#666',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>Receive detailed pricing and quote within 2 hours of file submission</p>
                   </div>
                 </div>
-                
-                <div className="col-md-6 col-lg-3 col-xl-3">
+
+                {/* Step 3 */}
+                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
-                    borderRadius: '16px',
-                    padding: '35px 25px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid rgba(0,0,0,0.05)',
+                    borderRadius: '12px',
+                    padding: '18px 15px',
+                    border: '3px solid #e0e0e0',
                     height: '100%',
-                    zIndex: 1
+                    transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(241, 89, 37, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-                  }}>
-                    <span className="count" style={{
-                      position: 'absolute',
-                      top: '15px',
-                      right: '20px',
-                      fontSize: '3rem',
-                      fontWeight: '800',
-                      color: 'transparent',
-                      WebkitTextStroke: '2px #2d3992',
-                      lineHeight: '1',
-                      opacity: '0.15'
-                    }}>03</span>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                      e.currentTarget.style.borderColor = '#f15925';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e0e0e0';
+                    }}>
                     <div className="icon" style={{
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      background: '#f15925',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                      marginBottom: '15px'
                     }}>
-                      <img src="/assets/img/3.png" alt="Confirm" style={{
-                        width: '50px',
-                        height: '50px',
-                        filter: 'brightness(0) invert(1)'
-                      }} />
+                      <i className="fas fa-check-circle" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                     </div>
-                    <div className="content">
-                      <h4 style={{
-                        fontSize: '1.3rem',
-                        fontWeight: '700',
-                        color: '#2d3992',
-                        marginBottom: '12px',
-                        lineHeight: '1.3'
-                      }}>Confirm Your Order</h4>
-                      <p style={{
-                        fontSize: '0.95rem',
-                        color: '#666',
-                        lineHeight: '1.6',
-                        margin: 0
-                      }}>Your order history remains to your account</p>
-                    </div>
+                    <h4 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '700',
+                      color: '#2d3992',
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>Order Acknowledgement</h4>
+                    <p style={{
+                      fontSize: '0.9rem',
+                      color: '#666',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>Order acknowledgement within 10 minutes</p>
                   </div>
                 </div>
-                
-                <div className="col-md-6 col-lg-3 col-xl-3">
-                  <div className="process-item last-item" style={{
+
+                {/* Step 4 */}
+                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                  <div className="process-item" style={{
                     background: '#ffffff',
-                    borderRadius: '16px',
-                    padding: '35px 25px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid rgba(0,0,0,0.05)',
+                    borderRadius: '12px',
+                    padding: '18px 15px',
+                    border: '3px solid #e0e0e0',
                     height: '100%',
-                    zIndex: 1
+                    transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 193, 7, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-                  }}>
-                    <span className="count" style={{
-                      position: 'absolute',
-                      top: '15px',
-                      right: '20px',
-                      fontSize: '3rem',
-                      fontWeight: '800',
-                      color: 'transparent',
-                      WebkitTextStroke: '2px #2d3992',
-                      lineHeight: '1',
-                      opacity: '0.15'
-                    }}>04</span>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                      e.currentTarget.style.borderColor = '#f15925';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e0e0e0';
+                    }}>
                     <div className="icon" style={{
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      background: '#f15925',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto 25px',
-                      boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
-                      transition: 'all 0.3s ease'
-                    }}
+                      marginBottom: '15px'
+                    }}>
+                      <i className="fas fa-clock" style={{ color: '#ffffff', fontSize: '20px' }}></i>
+                    </div>
+                    <h4 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '700',
+                      color: '#2d3992',
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>Delivery Time Confirmation</h4>
+                    <p style={{
+                      fontSize: '0.9rem',
+                      color: '#666',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>Delivery time confirmation in 1 hour</p>
+                  </div>
+                </div>
+
+                {/* Step 5 */}
+                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                  <div className="process-item" style={{
+                    background: '#ffffff',
+                    borderRadius: '12px',
+                    padding: '18px 15px',
+                    border: '3px solid #e0e0e0',
+                    height: '100%',
+                    transition: 'all 0.3s ease'
+                  }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                      e.currentTarget.style.borderColor = '#f15925';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e0e0e0';
                     }}>
-                      <img src="/assets/img/5.png" alt="Dispatch" style={{
-                        width: '50px',
-                        height: '50px',
-                        filter: 'brightness(0) invert(1)'
-                      }} />
+                    <div className="icon" style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      background: '#f15925',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '15px'
+                    }}>
+                      <i className="fas fa-truck-fast" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                     </div>
-                    <div className="content">
-                      <h4 style={{
-                        fontSize: '1.3rem',
-                        fontWeight: '700',
-                        color: '#2d3992',
-                        marginBottom: '12px',
-                        lineHeight: '1.3'
-                      }}>Dispatched in 48 Hours</h4>
-                      <p style={{
-                        fontSize: '0.95rem',
-                        color: '#666',
-                        lineHeight: '1.6',
-                        margin: 0
-                      }}>Guaranteed delivery at your door step</p>
-                    </div>
+                    <h4 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '700',
+                      color: '#2d3992',
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>Fast Delivery</h4>
+                    <p style={{
+                      fontSize: '0.9rem',
+                      color: '#666',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>Fast delivery within 24–36 hours</p>
                   </div>
                 </div>
               </div>
@@ -1241,14 +1406,48 @@ function Home() {
           </div>
         </div>
 
+        <div className="row  mx-3">
+          <div className="col-lg-12">
+            <div className="note-banner">
+              <div className="note-banner-content">
+                <div className="note-banner-icon">
+                  <i className="fas fa-info-circle"></i>
+                </div>
+                <div className="note-banner-text">
+                  <strong>Important Note</strong>
+                  <p>
+                    <span className="highlight">Advance payment</span> ensures immediate processing and guaranteed production slotting
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* Counter Area */}
-        <div className="counter-area pt-40 pb-40">
+        <div className="counter-area pt-20 pb-20">
           <div className="container">
             <div className="row g-4 justify-content-center">
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="counter-item wow fadeInUp" data-wow-delay=".25s">
-                  <div className="icon">
-                    <img src="/assets/img/icon/construction.svg" alt="" />
+                  <div className="icon" style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    border: '2px solid #f15925'
+                  }}>
+                    <img src="/assets/img/icon/construction.svg" alt="" style={{
+                      width: '48px',
+                      height: '48px',
+                      objectFit: 'contain',
+                      filter: 'brightness(0) saturate(100%) invert(49%) sepia(94%) saturate(1352%) hue-rotate(349deg) brightness(104%) contrast(96%)'
+                    }} />
                   </div>
                   <div className="content">
                     <div className="info">
@@ -1261,8 +1460,23 @@ function Home() {
               </div>
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="counter-item wow fadeInDown" data-wow-delay=".25s">
-                  <div className="icon">
-                    <img src="/assets/img/icon/happy.svg" alt="" />
+                  <div className="icon" style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    border: '2px solid #f15925'
+                  }}>
+                    <img src="/assets/img/icon/happy.svg" alt="" style={{
+                      width: '48px',
+                      height: '48px',
+                      objectFit: 'contain',
+                      filter: 'brightness(0) saturate(100%) invert(49%) sepia(94%) saturate(1352%) hue-rotate(349deg) brightness(104%) contrast(96%)'
+                    }} />
                   </div>
                   <div className="content">
                     <div className="info">
@@ -1275,8 +1489,23 @@ function Home() {
               </div>
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="counter-item wow fadeInUp" data-wow-delay=".25s">
-                  <div className="icon">
-                    <img src="/assets/img/icon/team-2.svg" alt="" />
+                  <div className="icon" style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    border: '2px solid #f15925'
+                  }}>
+                    <img src="/assets/img/icon/team-2.svg" alt="" style={{
+                      width: '48px',
+                      height: '48px',
+                      objectFit: 'contain',
+                      filter: 'brightness(0) saturate(100%) invert(49%) sepia(94%) saturate(1352%) hue-rotate(349deg) brightness(104%) contrast(96%)'
+                    }} />
                   </div>
                   <div className="content">
                     <div className="info">
@@ -1289,8 +1518,23 @@ function Home() {
               </div>
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="counter-item wow fadeInDown" data-wow-delay=".25s">
-                  <div className="icon">
-                    <img src="/assets/img/icon/award.svg" alt="" />
+                  <div className="icon" style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    border: '2px solid #f15925'
+                  }}>
+                    <img src="/assets/img/icon/award.svg" alt="" style={{
+                      width: '48px',
+                      height: '48px',
+                      objectFit: 'contain',
+                      filter: 'brightness(0) saturate(100%) invert(49%) sepia(94%) saturate(1352%) hue-rotate(349deg) brightness(104%) contrast(96%)'
+                    }} />
                   </div>
                   <div className="content">
                     <div className="info">
@@ -1306,50 +1550,177 @@ function Home() {
         </div>
 
         {/* About Area */}
-        <div className="about-area py-120" id="about-area">
+        <div className="about-area" id="about-area" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
           <div className="container">
-            <div className="row">
-              <div className="col-lg-6">
-                <div className="about-left wow fadeInLeft" data-wow-delay=".25s">
-                  <div className="about-img">
+            <div className="row" style={{ display: 'flex', alignItems: 'stretch', margin: 0 }}>
+              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '15px', paddingRight: '15px' }}>
+                <div className="about-left wow fadeInLeft" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between', margin: 0 }}>
+                  <div className="about-img" style={{ flex: 1, margin: 0 }}>
                     <img className="img-1" src="/assets/img/cutting-tool.jpg" alt="" />
                     <img className="img-2" src="/assets/img/laserrr.jpg" alt="" />
                   </div>
-                  <div className="about-experience">
+                  <div className="about-experience" style={{ marginTop: '15px' }}>
                     <h5>30<span>+</span></h5>
                     <p>Years Of Experience</p>
                   </div>
                 </div>
               </div>
-              <div className="col-lg-6">
-                <div className="about-right wow fadeInUp" data-wow-delay=".25s">
-                  <div className="site-heading mb-3">
-                    <h2 className="site-title">We Are The <span>Best and Expert</span> For 247CutBend</h2>
+              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '15px', paddingRight: '15px' }}>
+                <div className="about-right wow fadeInUp" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', margin: 0 }}>
+                  <div className="site-heading" style={{ marginBottom: '8px' }}>
+                    <h3 className="site-title" style={{
+                      fontSize: '2.5rem',
+                      fontWeight: '700',
+                      marginBottom: 0,
+                      marginTop: 0,
+                      lineHeight: '1.2'
+                    }}>
+                      <span style={{ color: '#2d3992' }}>Manufacturing</span>{' '}
+                      <span style={{ color: '#f15925' }}>Capabilities</span>
+                    </h3>
                   </div>
-                  <p className="about-text">247CutBend, your trusted partner for precision cutting, bending, and metal fabrication services. With advanced technology and a commitment to quality, we provide a comprehensive range of services, including laser cutting, bending, welding, punching, and design & development, tailored to meet each client's unique requirements. Operating in major cities across India—Bangalore, Delhi NCR, Chennai, and more—we bring top-tier fabrication solutions closer to you.</p>
-                  <div className="about-content">
-                    <div className="row g-3">
-                      <div className="col-md-12">
-                        <div className="about-item border-bottom pe-2">
-                          <div className="icon">
-                            <img src="/assets/img/icon/team-2.svg" alt="" />
-                          </div>
-                          <div className="content">
-                            <h6>Cutting</h6>
-                            <p>We provide precise laser cutting services for intricate designs and large-scale projects, ensuring clean, accurate results every time.</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-12">
-                        <div className="about-item">
-                          <div className="icon">
-                            <img src="/assets/img/icon/material.svg" alt="" />
-                          </div>
-                          <div className="content">
-                            <h6>Bending</h6>
-                            <p>Our advanced bending services deliver exact angles and curves, shaping materials to meet complex design specifications with precision.</p>
-                          </div>
-                        </div>
+                  <p className="about-text" style={{ marginBottom: '12px', marginTop: '8px', fontSize: '1rem', color: '#666', lineHeight: '1.7' }}>
+                    247CutBend is your partner in custom- cut metal plates and bend products. We are at your service day and night for the perfect semi-finished metal parts.
+                  </p>
+
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderLeft: '4px solid #f15925',
+                    padding: '12px 15px',
+                    marginBottom: '12px',
+                    borderRadius: '8px',
+                    fontStyle: 'italic',
+                    color: '#2d3992',
+                    fontSize: '1rem',
+                    lineHeight: '1.6'
+                  }}>
+                    "Our facility handles more than 5,000 tons of stainless steel and carbon steel annually, ensuring consistent capacity, reliability, and high-volume production capability."
+                  </div>
+
+                  <div className="about-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <p style={{
+                        fontSize: '0.95rem',
+                        color: '#666',
+                        marginBottom: '12px',
+                        marginTop: 0,
+                        lineHeight: '1.6'
+                      }}>
+                        Based in <strong style={{ color: '#2d3992' }}>Vadodara</strong>, our production centre spans <strong style={{ color: '#2d3992' }}>5,000 m²</strong>, and operates with:
+                      </p>
+
+                      <div style={{
+                        background: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        padding: '15px 18px',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+                      }}>
+                        <ul style={{
+                          listStyle: 'none',
+                          padding: 0,
+                          margin: 0
+                        }}>
+                          <li style={{
+                            padding: '8px 0',
+                            borderBottom: '1px solid #f0f0f0',
+                            fontSize: '0.95rem',
+                            color: '#333',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.paddingLeft = '5px';
+                              e.currentTarget.style.color = '#2d3992';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.paddingLeft = '0';
+                              e.currentTarget.style.color = '#333';
+                            }}>
+                            <span style={{
+                              color: '#f15925',
+                              marginRight: '12px',
+                              fontSize: '1.3rem',
+                              fontWeight: 'bold'
+                            }}>•</span>
+                            <strong style={{ color: '#2d3992', marginRight: '8px', fontSize: '1.05rem' }}>10</strong> laser cutting machines
+                          </li>
+                          <li style={{
+                            padding: '8px 0',
+                            borderBottom: '1px solid #f0f0f0',
+                            fontSize: '0.95rem',
+                            color: '#333',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.paddingLeft = '5px';
+                              e.currentTarget.style.color = '#2d3992';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.paddingLeft = '0';
+                              e.currentTarget.style.color = '#333';
+                            }}>
+                            <span style={{
+                              color: '#f15925',
+                              marginRight: '12px',
+                              fontSize: '1.3rem',
+                              fontWeight: 'bold'
+                            }}>•</span>
+                            <strong style={{ color: '#2d3992', marginRight: '8px', fontSize: '1.05rem' }}>15</strong> high-precision bending machines
+                          </li>
+                          <li style={{
+                            padding: '8px 0',
+                            borderBottom: '1px solid #f0f0f0',
+                            fontSize: '0.95rem',
+                            color: '#333',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.paddingLeft = '5px';
+                              e.currentTarget.style.color = '#2d3992';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.paddingLeft = '0';
+                              e.currentTarget.style.color = '#333';
+                            }}>
+                            <span style={{
+                              color: '#f15925',
+                              marginRight: '12px',
+                              fontSize: '1.3rem',
+                              fontWeight: 'bold'
+                            }}>•</span>
+                            <strong style={{ color: '#2d3992', marginRight: '8px', fontSize: '1.05rem' }}>60</strong> skilled metal-fabrication professionals
+                          </li>
+                          <li style={{
+                            padding: '8px 0',
+                            fontSize: '0.95rem',
+                            color: '#333',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.paddingLeft = '5px';
+                              e.currentTarget.style.color = '#2d3992';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.paddingLeft = '0';
+                              e.currentTarget.style.color = '#333';
+                            }}>
+                            <span style={{
+                              color: '#f15925',
+                              marginRight: '12px',
+                              fontSize: '1.3rem',
+                              fontWeight: 'bold'
+                            }}>•</span>
+                            <span style={{ marginRight: '8px' }}>Materials processed:</span> <strong style={{ color: '#2d3992', fontSize: '1.05rem' }}>Stainless Steel</strong> & <strong style={{ color: '#f15925', fontSize: '1.05rem' }}> Carbon Steel </strong>
+                          </li>
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -1359,8 +1730,8 @@ function Home() {
           </div>
         </div>
 
-        {/* Service Area */}
-        <div className="service-area bg py-100" id="service-area" style={{background: '#ffffff'}}>
+        {/* Service Area - Commented out for now */}
+        {false && <div className="service-area bg py-100" id="service-area" style={{ background: '#ffffff' }}>
           <div className="container">
             <div className="row g-4 align-items-center mb-5">
               <div className="col-lg-6">
@@ -1372,7 +1743,7 @@ function Home() {
                     marginBottom: '20px',
                     lineHeight: '1.2'
                   }}>
-                Our <span style={{color: '#f15925'}}>Capabilities</span>
+                    Our <span style={{ color: '#f15925' }}>Capabilities</span>
                   </h2>
                 </div>
               </div>
@@ -1402,14 +1773,14 @@ function Home() {
                   flexDirection: 'column',
                   border: '1px solid rgba(0,0,0,0.05)'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(241, 89, 37, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(241, 89, 37, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
+                  }}>
                   <span className="count" style={{
                     position: 'absolute',
                     bottom: '15px',
@@ -1434,12 +1805,12 @@ function Home() {
                       objectFit: 'cover',
                       transition: 'transform 0.4s ease'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }} />
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }} />
                   </div>
                   <div className="service-content" style={{
                     padding: '25px',
@@ -1461,8 +1832,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         The GN Laser Cutting Machine
                       </a>
                     </h4>
@@ -1492,16 +1863,16 @@ function Home() {
                       width: 'fit-content',
                       marginTop: 'auto'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(241, 89, 37, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(241, 89, 37, 0.3)';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(5px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(241, 89, 37, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(241, 89, 37, 0.3)';
+                      }}>
                       Learn More
-                      <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
+                      <i className="fas fa-arrow-right" style={{ fontSize: '12px' }}></i>
                     </a>
                   </div>
                 </div>
@@ -1521,14 +1892,14 @@ function Home() {
                   flexDirection: 'column',
                   border: '1px solid rgba(0,0,0,0.05)'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
+                  }}>
                   <span className="count" style={{
                     position: 'absolute',
                     bottom: '15px',
@@ -1553,12 +1924,12 @@ function Home() {
                       objectFit: 'cover',
                       transition: 'transform 0.4s ease'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }} />
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }} />
                   </div>
                   <div className="service-content" style={{
                     padding: '25px',
@@ -1580,8 +1951,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Advanced Press Brake
                       </a>
                     </h4>
@@ -1611,16 +1982,16 @@ function Home() {
                       width: 'fit-content',
                       marginTop: 'auto'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(5px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                      }}>
                       Learn More
-                      <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
+                      <i className="fas fa-arrow-right" style={{ fontSize: '12px' }}></i>
                     </a>
                   </div>
                 </div>
@@ -1640,14 +2011,14 @@ function Home() {
                   flexDirection: 'column',
                   border: '1px solid rgba(0,0,0,0.05)'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
+                  }}>
                   <span className="count" style={{
                     position: 'absolute',
                     bottom: '15px',
@@ -1672,12 +2043,12 @@ function Home() {
                       objectFit: 'cover',
                       transition: 'transform 0.4s ease'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }} />
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }} />
                   </div>
                   <div className="service-content" style={{
                     padding: '25px',
@@ -1699,8 +2070,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Precision Welding Services
                       </a>
                     </h4>
@@ -1730,16 +2101,16 @@ function Home() {
                       width: 'fit-content',
                       marginTop: 'auto'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(5px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                      }}>
                       Learn More
-                      <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
+                      <i className="fas fa-arrow-right" style={{ fontSize: '12px' }}></i>
                     </a>
                   </div>
                 </div>
@@ -1759,14 +2130,14 @@ function Home() {
                   flexDirection: 'column',
                   border: '1px solid rgba(0,0,0,0.05)'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 193, 7, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.08)';
+                  }}>
                   <span className="count" style={{
                     position: 'absolute',
                     bottom: '15px',
@@ -1791,12 +2162,12 @@ function Home() {
                       objectFit: 'cover',
                       transition: 'transform 0.4s ease'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }} />
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }} />
                   </div>
                   <div className="service-content" style={{
                     padding: '25px',
@@ -1818,8 +2189,8 @@ function Home() {
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#2d3992'}>
                         Design & Development
                       </a>
                     </h4>
@@ -1849,26 +2220,26 @@ function Home() {
                       width: 'fit-content',
                       marginTop: 'auto'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                    }}>
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(5px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                      }}>
                       Learn More
-                      <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
+                      <i className="fas fa-arrow-right" style={{ fontSize: '12px' }}></i>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Testimonial Area */}
-        <div className="testimonial-area ts-bg pt-90 pb-40">
+        <div className="testimonial-area ts-bg pt-90 pb-10">
           <div className="container">
             <div className="row">
               <div className="col-lg-4">
@@ -1994,27 +2365,16 @@ function Home() {
         </div>
 
         {/* Choose Area */}
-        <div className="choose-area bg py-100" style={{background: '#ffffff'}}>
+        <div className="choose-area bg">
           <div className="container">
-            <div className="row mb-5">
+            <div className="row">
               <div className="col-lg-12">
-                <div className="site-heading text-center mb-4">
-                  <h2 className="site-title" style={{
-                    fontSize: '2.8rem',
-                    fontWeight: '700',
-                    color: '#2d3992',
-                    marginBottom: '15px',
-                    lineHeight: '1.2'
-                  }}>
-                    Why <span style={{color: '#f15925'}}>Choose</span> <span style={{color: '#f15925'}}>247Cutbend</span>?
+                <div className="site-heading text-center">
+                  <h2 className="site-title">
+                    Why <span className="text-orange">Choose</span> <span className="text-orange">247Cutbend</span>?
                   </h2>
-                  <p style={{
-                    fontSize: '1.15rem',
-                    color: '#666',
-                    fontWeight: '500',
-                    margin: 0
-                  }}>
-                    <span style={{color: '#f15925', fontWeight: '700', fontSize: '1.3rem'}}>1200+</span> Ton per Month of Laser cutting capacity
+                  <p>
+                    <span className="text-orange">1200+</span> Ton per Month of Laser cutting capacity
                   </p>
                 </div>
               </div>
@@ -2022,370 +2382,62 @@ function Home() {
             <div className="row align-items-center">
               <div className="col-lg-6">
                 <div className="choose-content wow fadeInUp" data-wow-delay=".25s">
-                  <div className="choose-content-wrap" style={{display: 'flex', flexDirection: 'column', gap: '25px'}}>
-                    <div className="choose-item" style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '20px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      transition: 'all 0.3s ease',
-                      background: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.05)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}>
-                      <div className="choose-item-icon" style={{
-                        width: '70px',
-                        height: '70px',
-                        minWidth: '70px',
-                        borderRadius: '50%',
-                        background: '#ffffff',
-                        border: '3px dashed #f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.2)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}>
-                        <img src="/assets/img/icon/money.svg" alt="Save Time" style={{
-                          width: '35px',
-                          height: '35px',
-                          filter: 'brightness(0) saturate(100%) invert(77%) sepia(99%) saturate(1352%) hue-rotate(358deg) brightness(102%) contrast(101%)'
-                        }} />
+                  <div className="choose-content-wrap">
+                    <div className="choose-item">
+                      <div className="choose-item-icon">
+                        <img src="/assets/img/icon/money.svg" alt="Save Time" />
                       </div>
-                      <div className="choose-item-info" style={{flex: 1}}>
-                        <h4 style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#2d3992',
-                          marginBottom: '10px',
-                          lineHeight: '1.3'
-                        }}>Save Time, Get Instant Estimates</h4>
-                        <p style={{
-                          fontSize: '0.95rem',
-                          color: '#666',
-                          lineHeight: '1.7',
-                          margin: 0
-                        }}>No more waiting for quotes—get your estimates in minutes, not days.</p>
+                      <div className="choose-item-info">
+                        <h4>Save Time, Get Instant Estimates</h4>
+                        <p>No more waiting for quotes—get your estimates in minutes, not days.</p>
                       </div>
                     </div>
 
-                    <div className="choose-item" style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '20px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      transition: 'all 0.3s ease',
-                      background: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.05)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}>
-                      <div className="choose-item-icon" style={{
-                        width: '70px',
-                        height: '70px',
-                        minWidth: '70px',
-                        borderRadius: '50%',
-                        background: '#ffffff',
-                        border: '3px dashed #f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.2)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}>
-                        <img src="/assets/img/icon/team.svg" alt="Material Management" style={{
-                          width: '35px',
-                          height: '35px',
-                          filter: 'brightness(0) saturate(100%) invert(77%) sepia(99%) saturate(1352%) hue-rotate(358deg) brightness(102%) contrast(101%)'
-                        }} />
+                    <div className="choose-item">
+                      <div className="choose-item-icon">
+                        <img src="/assets/img/icon/team.svg" alt="Material Management" />
                       </div>
-                      <div className="choose-item-info" style={{flex: 1}}>
-                        <h4 style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#2d3992',
-                          marginBottom: '10px',
-                          lineHeight: '1.3'
-                        }}>Skip the Hassle of Material Management</h4>
-                        <p style={{
-                          fontSize: '0.95rem',
-                          color: '#666',
-                          lineHeight: '1.7',
-                          margin: 0
-                        }}>Forget sourcing, loading, unloading, and outsourcing. We handle it all for you.</p>
+                      <div className="choose-item-info">
+                        <h4>Skip the Hassle of Material Management</h4>
+                        <p>Forget sourcing, loading, unloading, and outsourcing. We handle it all for you.</p>
                       </div>
                     </div>
 
-                    <div className="choose-item" style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '20px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      transition: 'all 0.3s ease',
-                      background: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.05)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}>
-                      <div className="choose-item-icon" style={{
-                        width: '70px',
-                        height: '70px',
-                        minWidth: '70px',
-                        borderRadius: '50%',
-                        background: '#ffffff',
-                        border: '3px dashed #f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.2)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}>
-                        <img src="/assets/img/icon/certified.svg" alt="Consolidate Vendors" style={{
-                          width: '35px',
-                          height: '35px',
-                          filter: 'brightness(0) saturate(100%) invert(77%) sepia(99%) saturate(1352%) hue-rotate(358deg) brightness(102%) contrast(101%)'
-                        }} />
+                    <div className="choose-item">
+                      <div className="choose-item-icon">
+                        <img src="/assets/img/icon/certified.svg" alt="Consolidate Vendors" />
                       </div>
-                      <div className="choose-item-info" style={{flex: 1}}>
-                        <h4 style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#2d3992',
-                          marginBottom: '10px',
-                          lineHeight: '1.3'
-                        }}>Consolidate Your Vendors</h4>
-                        <p style={{
-                          fontSize: '0.95rem',
-                          color: '#666',
-                          lineHeight: '1.7',
-                          margin: 0
-                        }}>Why deal with multiple suppliers for your cutting and bending needs? With us, one partner does it all.</p>
+                      <div className="choose-item-info">
+                        <h4>Consolidate Your Vendors</h4>
+                        <p>Why deal with multiple suppliers for your cutting and bending needs? With us, one partner does it all.</p>
                       </div>
                     </div>
 
-                    <div className="choose-item" style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '20px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      transition: 'all 0.3s ease',
-                      background: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.05)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}>
-                      <div className="choose-item-icon" style={{
-                        width: '70px',
-                        height: '70px',
-                        minWidth: '70px',
-                        borderRadius: '50%',
-                        background: '#ffffff',
-                        border: '3px dashed #f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.2)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}>
-                        <img src="/assets/img/icon/certified.svg" alt="Capacity and Precision" style={{
-                          width: '35px',
-                          height: '35px',
-                          filter: 'brightness(0) saturate(100%) invert(77%) sepia(99%) saturate(1352%) hue-rotate(358deg) brightness(102%) contrast(101%)'
-                        }} />
+                    <div className="choose-item">
+                      <div className="choose-item-icon">
+                        <img src="/assets/img/icon/certified.svg" alt="Capacity and Precision" />
                       </div>
-                      <div className="choose-item-info" style={{flex: 1}}>
-                        <h4 style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#2d3992',
-                          marginBottom: '10px',
-                          lineHeight: '1.3'
-                        }}>Unmatched Capacity and Precision</h4>
-                        <p style={{
-                          fontSize: '0.95rem',
-                          color: '#666',
-                          lineHeight: '1.7',
-                          margin: 0
-                        }}>With 15 state-of-the-art laser cutting machines and 9 advanced press brakes, paired with a large selection of tools, we ensure your projects are completed with speed, precision, and quality.</p>
+                      <div className="choose-item-info">
+                        <h4>Unmatched Capacity and Precision</h4>
+                        <p>With 15 state-of-the-art laser cutting machines and 9 advanced press brakes, paired with a large selection of tools, we ensure your projects are completed with speed, precision, and quality.</p>
                       </div>
                     </div>
 
-                    <div className="choose-item" style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '20px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      transition: 'all 0.3s ease',
-                      background: 'transparent'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 193, 7, 0.05)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}>
-                      <div className="choose-item-icon" style={{
-                        width: '70px',
-                        height: '70px',
-                        minWidth: '70px',
-                        borderRadius: '50%',
-                        background: '#ffffff',
-                        border: '3px dashed #f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 15px rgba(255, 193, 7, 0.2)',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}>
-                        <img src="/assets/img/icon/certified.svg" alt="247Cutbend" style={{
-                          width: '35px',
-                          height: '35px',
-                          filter: 'brightness(0) saturate(100%) invert(77%) sepia(99%) saturate(1352%) hue-rotate(358deg) brightness(102%) contrast(101%)'
-                        }} />
+                    <div className="choose-item">
+                      <div className="choose-item-icon">
+                        <img src="/assets/img/icon/certified.svg" alt="247Cutbend" />
                       </div>
-                      <div className="choose-item-info" style={{flex: 1}}>
-                        <h4 style={{
-                          fontSize: '1.25rem',
-                          fontWeight: '700',
-                          color: '#2d3992',
-                          marginBottom: '10px',
-                          lineHeight: '1.3'
-                        }}>247Cutbend</h4>
-                        <p style={{
-                          fontSize: '0.95rem',
-                          color: '#666',
-                          lineHeight: '1.7',
-                          margin: 0
-                        }}>Your trusted, one-stop solution for all laser cutting and bending needs. Let's simplify your workflow!</p>
+                      <div className="choose-item-info">
+                        <h4>247Cutbend</h4>
+                        <p>Your trusted, one-stop solution for all laser cutting and bending needs. Let's simplify your workflow!</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-lg-6">
-                <div className="choose-img" style={{
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-                  transition: 'all 0.4s ease',
-                  position: 'relative'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(0,0,0,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(0,0,0,0.15)';
-                }}>
-                  <img src="/assets/img/cutting-tool.jpg" alt="Laser Cutting Machine" style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                    transition: 'transform 0.4s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }} />
-                </div>
-              </div>
-            </div>
-            <div className="row mt-5">
-              <div className="col-lg-12">
-                <div style={{
-                  background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 179, 0, 0.1) 100%)',
-                  borderRadius: '16px',
-                  padding: '30px',
-                  textAlign: 'center',
-                  border: '2px dashed #f15925'
-                }}>
-                  <p style={{
-                    fontSize: '1.1rem',
-                    color: '#2d3992',
-                    marginBottom: '10px',
-                    fontWeight: '600'
-                  }}>
-                    You have purchased <span style={{color: '#f15925', fontWeight: '700'}}>@ Rs. 53/kg</span> material + Loading charges + Transport + You nest it + You added Transportation + Again loaded !!!!!
-                  </p>
-                  <p style={{
-                    fontSize: '1.3rem',
-                    color: '#2d3992',
-                    margin: 0,
-                    fontWeight: '700'
-                  }}>
-                    Turnout price - <span style={{color: '#f15925', fontSize: '1.5rem'}}>Rs. 62 / Kg</span>
-                  </p>
+                <div className="choose-img">
+                  <img src="/assets/img/cutting-tool.jpg" alt="Laser Cutting Machine" />
                 </div>
               </div>
             </div>
@@ -2393,239 +2445,86 @@ function Home() {
         </div>
 
         {/* Quote Area */}
-        <div className="quote-area" style={{
-          backgroundImage: 'url(/assets/img/1.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          position: 'relative',
-          padding: '100px 0'
-        }} id="quote-area">
-          {/* Overlay */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(135deg, rgba(0, 44, 91, 0.85) 0%, rgba(0, 44, 91, 0.75) 100%)',
-            zIndex: 1
-          }}></div>
-          
-          <div className="container" style={{position: 'relative', zIndex: 2}}>
+        <div className="quote-area" id="quote-area">
+          <div className="container">
             <div className="row">
-              <div className="col-lg-7 ms-auto">
-                <div className="quote-content" style={{
-                  background: '#ffffff',
-                  borderRadius: '24px',
-                  padding: '45px 40px',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <div className="quote-head" style={{marginBottom: '30px'}}>
-                    <h3 style={{
-                      fontSize: '2.2rem',
-                      fontWeight: '700',
-                      color: '#2d3992',
-                      marginBottom: '15px',
-                      lineHeight: '1.2'
-                    }}>
-                      Request A <span style={{color: '#f15925'}}>Quote</span>
+              <div className="col-lg-6 col-md-8 ms-auto">
+                <div className="quote-content">
+                  <div className="quote-head">
+                    <h3>
+                      Request A <span className="text-orange">Quote</span>
                     </h3>
-                    <p style={{
-                      fontSize: '1rem',
-                      color: '#666',
-                      lineHeight: '1.7',
-                      margin: 0
-                    }}>
+                    <p>
                       Get an instant quote for your fabrication needs. Fill out the form below and our team will get back to you within 2 hours.
                     </p>
                   </div>
                   <div className="quote-form">
                     <form action="#">
-                      <div className="row g-3">
+                      <div className="row" style={{marginLeft: '-8px', marginRight: '-8px'}}>
                         <div className="col-lg-6">
-                          <div className="form-group" style={{marginBottom: '20px'}}>
-                            <div className="form-icon" style={{
-                              position: 'relative',
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}>
-                              <i className="far fa-user-tie" style={{
-                                position: 'absolute',
-                                left: '18px',
-                                color: '#f15925',
-                                fontSize: '18px',
-                                zIndex: 2
-                              }}></i>
-                              <input 
-                                type="text" 
-                                className="form-control" 
+                          <div className="form-group">
+                            <div className="form-icon">
+                              <i className="far fa-user-tie"></i>
+                              <input
+                                type="text"
+                                className="form-control"
                                 placeholder="Your Name"
-                                style={{
-                                  padding: '14px 18px 14px 50px',
-                                  border: '2px solid #e0e0e0',
-                                  borderRadius: '12px',
-                                  fontSize: '15px',
-                                  transition: 'all 0.3s ease',
-                                  width: '100%',
-                                  outline: 'none'
-                                }}
-                                onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#f15925';
-                                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
-                                }}
-                                onBlur={(e) => {
-                                  e.currentTarget.style.borderColor = '#e0e0e0';
-                                  e.currentTarget.style.boxShadow = 'none';
-                                }}
                               />
                             </div>
                           </div>
                         </div>
                         <div className="col-lg-6">
-                          <div className="form-group" style={{marginBottom: '20px'}}>
-                            <div className="form-icon" style={{
-                              position: 'relative',
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}>
-                              <i className="far fa-envelope" style={{
-                                position: 'absolute',
-                                left: '18px',
-                                color: '#f15925',
-                                fontSize: '18px',
-                                zIndex: 2
-                              }}></i>
-                              <input 
-                                type="email" 
-                                className="form-control" 
+                          <div className="form-group">
+                            <div className="form-icon">
+                              <i className="far fa-envelope"></i>
+                              <input
+                                type="email"
+                                className="form-control"
                                 placeholder="Your Email"
-                                style={{
-                                  padding: '14px 18px 14px 50px',
-                                  border: '2px solid #e0e0e0',
-                                  borderRadius: '12px',
-                                  fontSize: '15px',
-                                  transition: 'all 0.3s ease',
-                                  width: '100%',
-                                  outline: 'none'
-                                }}
-                                onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#f15925';
-                                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
-                                }}
-                                onBlur={(e) => {
-                                  e.currentTarget.style.borderColor = '#e0e0e0';
-                                  e.currentTarget.style.boxShadow = 'none';
-                                }}
                               />
                             </div>
                           </div>
                         </div>
                         <div className="col-lg-6">
-                          <div className="form-group" style={{marginBottom: '20px'}}>
-                            <div className="form-icon" style={{
-                              position: 'relative',
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}>
-                              <i className="far fa-phone" style={{
-                                position: 'absolute',
-                                left: '18px',
-                                color: '#f15925',
-                                fontSize: '18px',
-                                zIndex: 2
-                              }}></i>
-                              <input 
-                                type="text" 
-                                className="form-control" 
+                          <div className="form-group">
+                            <div className="form-icon">
+                              <i className="far fa-phone"></i>
+                              <input
+                                type="text"
+                                className="form-control"
                                 placeholder="Your Phone"
-                                style={{
-                                  padding: '14px 18px 14px 50px',
-                                  border: '2px solid #e0e0e0',
-                                  borderRadius: '12px',
-                                  fontSize: '15px',
-                                  transition: 'all 0.3s ease',
-                                  width: '100%',
-                                  outline: 'none'
-                                }}
-                                onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#f15925';
-                                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
-                                }}
-                                onBlur={(e) => {
-                                  e.currentTarget.style.borderColor = '#e0e0e0';
-                                  e.currentTarget.style.boxShadow = 'none';
-                                }}
                               />
                             </div>
                           </div>
                         </div>
                         <div className="col-lg-6">
-                          <div className="form-group" style={{marginBottom: '20px'}}>
-                            <div style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '12px',
-                              paddingTop: '14px'
-                            }}>
-                              <div className="form-check" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px'
-                              }}>
-                                <input 
-                                  className="form-check-input" 
-                                  type="checkbox" 
-                                  value="" 
+                          <div className="form-group">
+                            <div className="checkbox-group">
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value=""
                                   id="flexCheckDefaultCutting"
-                                  style={{
-                                    width: '20px',
-                                    height: '20px',
-                                    cursor: 'pointer',
-                                    accentColor: '#f15925'
-                                  }}
                                 />
-                                <label 
-                                  className="form-check-label" 
+                                <label
+                                  className="form-check-label"
                                   htmlFor="flexCheckDefaultCutting"
-                                  style={{
-                                    fontSize: '15px',
-                                    color: '#2d3992',
-                                    fontWeight: '500',
-                                    cursor: 'pointer',
-                                    margin: 0
-                                  }}>
+                                >
                                   Cutting
                                 </label>
                               </div>
-                              <div className="form-check" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px'
-                              }}>
-                                <input 
-                                  className="form-check-input" 
-                                  type="checkbox" 
-                                  value="" 
+                              <div className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  value=""
                                   id="flexCheckDefaultCutting&Bending"
-                                  style={{
-                                    width: '20px',
-                                    height: '20px',
-                                    cursor: 'pointer',
-                                    accentColor: '#f15925'
-                                  }}
                                 />
-                                <label 
-                                  className="form-check-label" 
+                                <label
+                                  className="form-check-label"
                                   htmlFor="flexCheckDefaultCutting&Bending"
-                                  style={{
-                                    fontSize: '15px',
-                                    color: '#2d3992',
-                                    fontWeight: '500',
-                                    cursor: 'pointer',
-                                    margin: 0
-                                  }}>
+                                >
                                   Cutting & Bending
                                 </label>
                               </div>
@@ -2633,83 +2532,25 @@ function Home() {
                           </div>
                         </div>
                         <div className="col-lg-12">
-                          <div className="form-group" style={{marginBottom: '25px'}}>
-                            <div className="form-icon" style={{
-                              position: 'relative',
-                              display: 'flex',
-                              alignItems: 'flex-start'
-                            }}>
-                              <i className="far fa-comment-lines" style={{
-                                position: 'absolute',
-                                left: '18px',
-                                top: '18px',
-                                color: '#f15925',
-                                fontSize: '18px',
-                                zIndex: 2
-                              }}></i>
-                              <textarea 
-                                className="form-control" 
-                                cols="30" 
-                                rows="4" 
+                          <div className="form-group">
+                            <div className="form-icon">
+                              <i className="far fa-comment-lines"></i>
+                              <textarea
+                                className="form-control"
+                                cols="30"
+                                rows="4"
                                 placeholder="Your Message"
-                                style={{
-                                  padding: '14px 18px 14px 50px',
-                                  border: '2px solid #e0e0e0',
-                                  borderRadius: '12px',
-                                  fontSize: '15px',
-                                  transition: 'all 0.3s ease',
-                                  width: '100%',
-                                  outline: 'none',
-                                  resize: 'vertical',
-                                  minHeight: '120px',
-                                  fontFamily: 'inherit'
-                                }}
-                                onFocus={(e) => {
-                                  e.currentTarget.style.borderColor = '#f15925';
-                                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 193, 7, 0.1)';
-                                }}
-                                onBlur={(e) => {
-                                  e.currentTarget.style.borderColor = '#e0e0e0';
-                                  e.currentTarget.style.boxShadow = 'none';
-                                }}
                               ></textarea>
                             </div>
                           </div>
                         </div>
                         <div className="col-lg-12">
-                          <button 
-                            type="submit" 
+                          <button
+                            type="submit"
                             className="theme-btn"
-                            style={{
-                              padding: '16px 32px',
-                              fontSize: '16px',
-                              fontWeight: '600',
-                              background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
-                              color: '#000',
-                              borderRadius: '12px',
-                              boxShadow: '0 6px 20px rgba(255, 193, 7, 0.4)',
-                              transition: 'all 0.3s ease',
-                              border: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '10px',
-                              cursor: 'pointer',
-                              width: '100%',
-                              justifyContent: 'center'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 193, 7, 0.5)';
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
-                            }}
                           >
                             Register Now
-                            <i className="fas fa-arrow-right" style={{fontSize: '14px', transition: 'transform 0.3s ease'}}></i>
+                            <i className="fas fa-arrow-right"></i>
                           </button>
                         </div>
                       </div>
@@ -2721,8 +2562,8 @@ function Home() {
           </div>
         </div>
 
-        {/* FAQ Area */}
-        <div className="faq-area py-100" style={{background: '#ffffff'}}>
+        {/* FAQ Area - Commented out for now */}
+        {false && <div className="faq-area py-100" style={{ background: '#ffffff' }}>
           <div className="container">
             <div className="row">
               <div className="col-lg-6">
@@ -2735,7 +2576,7 @@ function Home() {
                       marginBottom: '20px',
                       lineHeight: '1.2'
                     }}>
-                      General <span style={{color: '#f15925'}}>Frequently</span> Asked Questions
+                      General <span style={{ color: '#f15925' }}>Frequently</span> Asked Questions
                     </h2>
                   </div>
                   <p style={{
@@ -2769,16 +2610,16 @@ function Home() {
                     gap: '8px',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)';
+                    }}>
                     Have Any Question?
-                    <i className="fas fa-arrow-right" style={{fontSize: '12px'}}></i>
+                    <i className="fas fa-arrow-right" style={{ fontSize: '12px' }}></i>
                   </a>
                 </div>
               </div>
@@ -2796,12 +2637,12 @@ function Home() {
                     overflow: 'hidden',
                     transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+                    }}>
                     <h2 className="accordion-header" id="headingOne">
                       <button className="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
@@ -2830,10 +2671,10 @@ function Home() {
                           justifyContent: 'center',
                           boxShadow: '0 4px 10px rgba(255, 193, 7, 0.3)'
                         }}>
-                          <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
+                          <i className="far fa-question" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                         </span>
-                        <span style={{flex: 1}}>How Long Does A Service Take?</span>
-                        <i className="fas fa-chevron-up" style={{color: '#f15925', fontSize: '14px'}}></i>
+                        <span style={{ flex: 1 }}>How Long Does A Service Take?</span>
+                        <i className="fas fa-chevron-up" style={{ color: '#f15925', fontSize: '14px' }}></i>
                       </button>
                     </h2>
                     <div id="collapseOne" className="accordion-collapse collapse show"
@@ -2857,12 +2698,12 @@ function Home() {
                     overflow: 'hidden',
                     transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+                    }}>
                     <h2 className="accordion-header" id="headingTwo">
                       <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"
@@ -2891,10 +2732,10 @@ function Home() {
                           justifyContent: 'center',
                           boxShadow: '0 4px 10px rgba(255, 193, 7, 0.3)'
                         }}>
-                          <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
+                          <i className="far fa-question" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                         </span>
-                        <span style={{flex: 1}}>How Can I Become A Member?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
+                        <span style={{ flex: 1 }}>How Can I Become A Member?</span>
+                        <i className="fas fa-chevron-down" style={{ color: '#f15925', fontSize: '14px' }}></i>
                       </button>
                     </h2>
                     <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -2918,12 +2759,12 @@ function Home() {
                     overflow: 'hidden',
                     transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+                    }}>
                     <h2 className="accordion-header" id="headingThree">
                       <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseThree" aria-expanded="false"
@@ -2953,10 +2794,10 @@ function Home() {
                           justifyContent: 'center',
                           boxShadow: '0 4px 10px rgba(255, 193, 7, 0.3)'
                         }}>
-                          <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
+                          <i className="far fa-question" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                         </span>
-                        <span style={{flex: 1}}>What Payment Gateway You Support?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
+                        <span style={{ flex: 1 }}>What Payment Gateway You Support?</span>
+                        <i className="fas fa-chevron-down" style={{ color: '#f15925', fontSize: '14px' }}></i>
                       </button>
                     </h2>
                     <div id="collapseThree" className="accordion-collapse collapse"
@@ -2980,12 +2821,12 @@ function Home() {
                     overflow: 'hidden',
                     transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+                    }}>
                     <h2 className="accordion-header" id="headingFour">
                       <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseFour" aria-expanded="false"
@@ -3015,10 +2856,10 @@ function Home() {
                           justifyContent: 'center',
                           boxShadow: '0 4px 10px rgba(255, 193, 7, 0.3)'
                         }}>
-                          <i className="far fa-question" style={{color: '#ffffff', fontSize: '20px'}}></i>
+                          <i className="far fa-question" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                         </span>
-                        <span style={{flex: 1}}>How Can I Cancel My Request?</span>
-                        <i className="fas fa-chevron-down" style={{color: '#f15925', fontSize: '14px'}}></i>
+                        <span style={{ flex: 1 }}>How Can I Cancel My Request?</span>
+                        <i className="fas fa-chevron-down" style={{ color: '#f15925', fontSize: '14px' }}></i>
                       </button>
                     </h2>
                     <div id="collapseFour" className="accordion-collapse collapse"
@@ -3037,7 +2878,7 @@ function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Blog Area - Commented out for now */}
         {/* <div className="blog-area py-100 bg">
@@ -3134,6 +2975,31 @@ function Home() {
         </div> */}
       </main>
 
+      {/* Pre-Footer CTA Section */}
+      <div className="pre-footer-cta">
+        <div className="container pre-footer-cta-container">
+          <div className="pre-footer-cta-content">
+            <h2 className="pre-footer-cta-heading">
+              Instant Quotes & Fast Turnaround
+            </h2>
+            <p className="pre-footer-cta-subheading">
+              Laser Cutting<span className="divider">|</span>CNC Bending<span className="divider">|</span>Fabrication
+            </p>
+            <p className="pre-footer-cta-description">
+              Prototype to Mass Production
+            </p>
+            <a 
+              href="#" 
+              className="pre-footer-cta-button"
+              onClick={(e) => handleCTAClick(e, '/upload')}
+            >
+              Upload your drawings today
+              <i className="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Footer Area */}
       <footer className="footer-area" style={{
         background: '#2d3992',
@@ -3157,14 +3023,14 @@ function Home() {
           </svg>
         </div>
 
-        <div className="footer-widget" style={{position: 'relative', zIndex: 1}}>
+        <div className="footer-widget" style={{ position: 'relative', zIndex: 1 }}>
           <div className="container">
-            <div className="footer-widget-wrap" style={{padding: '50px 0 30px'}}>
+            <div className="footer-widget-wrap" style={{ padding: '50px 0 30px' }}>
               <div className="row g-4">
                 <div className="col-lg-5">
                   <div className="footer-widget-box about-us">
-                    <div className="footer-logo" style={{display: 'inline-block', marginBottom: '20px'}}>
-                      <img src="/Whitelogo.png" alt="247CutBend Logo" style={{height: '35px', width: 'auto'}} />
+                    <div className="footer-logo" style={{ display: 'inline-block', marginBottom: '20px' }}>
+                      <img src="/Whitelogo.png" alt="247CutBend Logo" style={{ height: '35px', width: 'auto' }} />
                     </div>
                     <p style={{
                       color: 'rgba(255,255,255,0.8)',
@@ -3183,7 +3049,7 @@ function Home() {
                       }}>Subscribe Our Newsletter</h6>
                       <div className="newsletter-form">
                         <form action="#" onSubmit={(e) => { e.preventDefault(); }}>
-                          <div className="form-group" style={{margin: 0}}>
+                          <div className="form-group" style={{ margin: 0 }}>
                             <div className="form-icon" style={{
                               display: 'flex',
                               background: '#ffffff',
@@ -3198,9 +3064,9 @@ function Home() {
                                 display: 'flex',
                                 alignItems: 'center'
                               }}></i> */}
-                              <input 
-                                type="email" 
-                                className="form-control" 
+                              <input
+                                type="email"
+                                className="form-control"
                                 placeholder="Your Email"
                                 required
                                 style={{
@@ -3214,22 +3080,24 @@ function Home() {
                               />
                               <button className="theme-btn" type="submit" style={{
                                 background: '#f15925',
-                                color: '#000',
+                                color: '#ffffff',
                                 border: 'none',
                                 // padding: '8px 16px',
                                 fontWeight: '600',
                                 fontSize: '13px',
-                                marginBottom:"10px",
+                                marginBottom: "10px",
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
                                 transition: 'all 0.2s ease'
                               }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = '#f15925';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#f15925';
-                              }}>
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = '#f15925';
+                                  e.currentTarget.style.color = '#ffffff';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = '#f15925';
+                                  e.currentTarget.style.color = '#ffffff';
+                                }}>
                                 Subscribe
                               </button>
                             </div>
@@ -3277,15 +3145,15 @@ function Home() {
                         alignItems: 'center',
                         gap: '8px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.transform = 'translateX(5px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}>
-                        <i className="far fa-angle-double-right" style={{fontSize: '12px'}}></i>
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         About Us
                       </a></li>
                       <li><a href="#" style={{
@@ -3297,15 +3165,15 @@ function Home() {
                         alignItems: 'center',
                         gap: '8px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.transform = 'translateX(5px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}>
-                        <i className="far fa-angle-double-right" style={{fontSize: '12px'}}></i>
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Blogs
                       </a></li>
                       <li><a href="#" style={{
@@ -3317,15 +3185,15 @@ function Home() {
                         alignItems: 'center',
                         gap: '8px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.transform = 'translateX(5px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}>
-                        <i className="far fa-angle-double-right" style={{fontSize: '12px'}}></i>
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Faqs
                       </a></li>
                       <li><a href="#" style={{
@@ -3337,15 +3205,15 @@ function Home() {
                         alignItems: 'center',
                         gap: '8px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.transform = 'translateX(5px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}>
-                        <i className="far fa-angle-double-right" style={{fontSize: '12px'}}></i>
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Terms & Conditions
                       </a></li>
                       <li><a href="#" style={{
@@ -3357,15 +3225,15 @@ function Home() {
                         alignItems: 'center',
                         gap: '8px'
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.transform = 'translateX(5px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}>
-                        <i className="far fa-angle-double-right" style={{fontSize: '12px'}}></i>
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Privacy Policy
                       </a></li>
                     </ul>
@@ -3400,7 +3268,7 @@ function Home() {
                       flexDirection: 'column',
                       gap: '18px'
                     }}>
-                      <li style={{display: 'flex', alignItems: 'flex-start', gap: '15px'}}>
+                      <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
                         <div className="icon" style={{
                           width: '40px',
                           height: '40px',
@@ -3412,7 +3280,7 @@ function Home() {
                           justifyContent: 'center',
                           flexShrink: 0
                         }}>
-                          <i className="far fa-location-dot" style={{color: '#000', fontSize: '18px'}}></i>
+                          <i className="far fa-location-dot" style={{ color: '#000', fontSize: '18px' }}></i>
                         </div>
                         <div className="content">
                           <h6 style={{
@@ -3430,7 +3298,7 @@ function Home() {
                           }}>578-587 Savli GIDC Rd, Vadodara, Manjusar, Gujarat 391770, India</p>
                         </div>
                       </li>
-                      <li style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                         <div className="icon" style={{
                           width: '40px',
                           height: '40px',
@@ -3442,7 +3310,7 @@ function Home() {
                           justifyContent: 'center',
                           flexShrink: 0
                         }}>
-                          <i className="far fa-phone" style={{color: '#000', fontSize: '18px'}}></i>
+                          <i className="far fa-phone" style={{ color: '#000', fontSize: '18px' }}></i>
                         </div>
                         <div className="content">
                           <h6 style={{
@@ -3458,13 +3326,13 @@ function Home() {
                             fontSize: '0.9rem',
                             transition: 'color 0.3s ease'
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
                             +91 9004073379
                           </a>
                         </div>
                       </li>
-                      <li style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                         <div className="icon" style={{
                           width: '40px',
                           height: '40px',
@@ -3476,7 +3344,7 @@ function Home() {
                           justifyContent: 'center',
                           flexShrink: 0
                         }}>
-                          <i className="far fa-envelope" style={{color: '#000', fontSize: '18px'}}></i>
+                          <i className="far fa-envelope" style={{ color: '#000', fontSize: '18px' }}></i>
                         </div>
                         <div className="content">
                           <h6 style={{
@@ -3492,8 +3360,8 @@ function Home() {
                             fontSize: '0.9rem',
                             transition: 'color 0.3s ease'
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
                             sales@247cutbend.in
                           </a>
                         </div>
@@ -3505,7 +3373,7 @@ function Home() {
             </div>
           </div>
         </div>
-        <div className="container" style={{position: 'relative', zIndex: 1}}>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="copyright" style={{
             borderTop: '1px solid rgba(255,255,255,0.1)',
             padding: '20px 0'
@@ -3548,16 +3416,16 @@ function Home() {
                     fontSize: '14px',
                     fontWeight: 'bold'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f15925';
-                    e.currentTarget.style.color = '#000';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.color = '#000';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     f
                   </a></li>
                   <li><a href="#" style={{
@@ -3572,17 +3440,17 @@ function Home() {
                     textDecoration: 'none',
                     transition: 'all 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f15925';
-                    e.currentTarget.style.color = '#000';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
-                    <i className="fab fa-x-twitter" style={{fontSize: '14px'}}></i>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.color = '#000';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
+                    <i className="fab fa-x-twitter" style={{ fontSize: '14px' }}></i>
                   </a></li>
                   <li><a href="#" style={{
                     width: '36px',
@@ -3598,16 +3466,16 @@ function Home() {
                     fontSize: '12px',
                     fontWeight: 'bold'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f15925';
-                    e.currentTarget.style.color = '#000';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}>
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.color = '#000';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
                     in
                   </a></li>
                 </ul>
@@ -3628,4 +3496,4 @@ function Home() {
 }
 
 export default Home;
- 
+
