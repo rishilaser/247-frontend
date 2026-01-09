@@ -252,8 +252,6 @@ body {
 
   margin: 0;
 
-  padding: 0;
-
   box-sizing: border-box;
 
 }
@@ -760,7 +758,7 @@ label {
 
 .py-80 {
 
-  padding: 80px 0;
+  padding: 0;
 
 }
 
@@ -768,7 +766,7 @@ label {
 
 .py-90 {
 
-  padding: 90px 0;
+  padding: 0;
 
 }
 
@@ -776,7 +774,7 @@ label {
 
 .py-100 {
 
-  padding: 100px 0;
+  padding: 0;
 
 }
 
@@ -784,7 +782,7 @@ label {
 
 .py-110 {
 
-  padding: 110px 0;
+  padding: 0;
 
 }
 
@@ -792,7 +790,7 @@ label {
 
 .py-120 {
 
-  padding: 120px 0;
+  padding: 0;
 
 }
 
@@ -1337,9 +1335,48 @@ label {
   .container-xl {
 
     max-width: 1200px;
+    padding-left: 400px;
+    padding-right: 400px;
 
   }
 
+}
+
+/* Add padding to all containers */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 576px) {
+  .container,
+  .container-sm {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container,
+  .container-sm,
+  .container-md {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
 
 
@@ -1558,7 +1595,7 @@ label {
 
 .site-heading {
 
-  margin-bottom: 50px;
+  /* margin-bottom: 50px; */
 
   position: relative;
 
@@ -1583,10 +1620,6 @@ label {
   background: var(--theme-color);
 
   border-radius: 50px;
-
-  padding: 2px 15px 2px 3px;
-
-  margin-bottom: 15px;
 
 }
 
@@ -1650,7 +1683,7 @@ label {
 
 .site-heading p {
 
-  margin-top: 15px;
+  /* margin-top: 15px; */
 
 }
 
@@ -2341,9 +2374,9 @@ label {
 
   .navbar .nav-item .nav-link {
 
-    margin-right: 22px;
+    /* margin-right: 22px; */
 
-    padding: 30px 0 30px 0;
+    /* padding: 30px 0 30px 0; */
 
     font-size: 17px;
 
@@ -7294,9 +7327,28 @@ video {
 }
 
 /* Responsive styles */
+.quote-text-content {
+  position: relative;
+  z-index: 2;
+}
+
 @media (max-width: 991px) {
   .quote-area {
-    padding: 40px 0;
+    padding: 0;
+  }
+  
+  .quote-text-content {
+    padding-right: 0;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .quote-text-content h2 {
+    font-size: 2rem !important;
+  }
+  
+  .quote-text-content p {
+    font-size: 1rem !important;
   }
   
   .quote-content {
@@ -7320,7 +7372,22 @@ video {
 
 @media (max-width: 767px) {
   .quote-area {
-    padding: 30px 0;
+    padding: 0;
+  }
+  
+  .quote-text-content {
+    padding-right: 0;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .quote-text-content h2 {
+    font-size: 1.75rem !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .quote-text-content p {
+    font-size: 0.95rem !important;
   }
   
   .quote-content {
@@ -7374,10 +7441,12 @@ video {
 Quote Banner / Delivery Banner
 ====================== */
 .quote-banner {
-  background:  linear-gradient(315deg, #ffbc00, #ff0058);
-  padding: 30px 0;
+  background: #ffffff;
+  padding: 70px 0;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .quote-banner::before {
@@ -7388,45 +7457,63 @@ Quote Banner / Delivery Banner
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, rgba(241, 89, 37, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 1;
+}
+
+.quote-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(241, 89, 37, 0.03) 0%, 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(79, 70, 229, 0.03) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .quote-banner-svg-decoration {
   position: absolute;
   top: 50%;
-  right: 5%;
+  right: 2%;
   transform: translateY(-50%);
-  opacity: 0.4;
+  opacity: 0.08;
   z-index: 0;
   pointer-events: none;
-  animation: float 6s ease-in-out infinite;
+  animation: float 10s ease-in-out infinite;
 }
 
 .quote-banner-svg-decoration svg {
-  width: 250px;
-  height: 250px;
-  filter: blur(1px);
+  width: 300px;
+  height: 300px;
+  filter: blur(3px);
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(-50%) translateX(0);
+    transform: translateY(-50%) translateX(0) scale(1);
   }
   50% {
-    transform: translateY(-50%) translateX(-10px);
+    transform: translateY(-50%) translateX(-15px) scale(1.05);
   }
 }
 
 @media (max-width: 991px) {
   .quote-banner-svg-decoration {
-    right: 2%;
+    right: 1%;
+    opacity: 0.1;
   }
   
   .quote-banner-svg-decoration svg {
-    width: 180px;
-    height: 180px;
+    width: 200px;
+    height: 200px;
   }
 }
 
@@ -7438,29 +7525,33 @@ Quote Banner / Delivery Banner
 
 .quote-banner-container {
   position: relative;
-  z-index: 1;
-  padding: 0 20px;
+  z-index: 2;
+  padding: 0 40px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .quote-banner-content {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  text-align: center;
+  justify-content: space-between;
+  gap: 50px;
+  text-align: left;
 }
 
 .quote-banner-icon {
-  width: 60px;
-  height: 60px;
-  padding-right: 100px;
-  min-width: 60px;
+  width: auto;
+  height: auto;
+  padding-right: 0;
+  min-width: 200px;
   background: transparent;
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
 }
 
 /* Truck loader inside quote banner */
@@ -7570,78 +7661,311 @@ Quote Banner / Delivery Banner
 
 .quote-banner-text {
   flex: 1;
-  max-width: 900px;
+  max-width: 850px;
+  position: relative;
+  z-index: 2;
 }
 
 .quote-banner-text p {
-  font-size: 1.2rem;
-  color: #ffffff;
-  font-weight: 600;
-  line-height: 1.6;
+  font-size: 1.4rem;
+  color: #2d3992;
+  font-weight: 500;
+  line-height: 1.75;
   margin: 0;
   text-shadow: none;
+  letter-spacing: 0.2px;
+  position: relative;
+  padding-left: 30px;
+}
+
+.quote-banner-text p::before {
+  content: '"';
+  position: absolute;
+  left: 0;
+  top: -8px;
+  font-size: 4rem;
+  color: rgba(241, 89, 37, 0.3);
+  font-family: Georgia, serif;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.quote-banner-text p::after {
+  content: '"';
+  font-size: 2rem;
+  color: rgba(79, 70, 229, 0.3);
+  font-family: Georgia, serif;
+  margin-left: 5px;
 }
 
 .quote-banner-text p .highlight {
-  color: #2d3992;
+  color: #f15925;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.3);
-  padding: 2px 8px;
+  background: rgba(241, 89, 37, 0.1);
+  padding: 4px 12px;
   border-radius: 6px;
   display: inline-block;
+  text-shadow: none;
 }
 
 /* Responsive styles for quote banner */
 @media (max-width: 991px) {
   .quote-banner {
-    padding: 25px 0;
-    border-radius: 16px;
+    padding: 40px 0;
+  }
+  
+  .quote-banner-container {
+    padding: 0 20px;
   }
   
   .quote-banner-content {
-    gap: 15px;
+    gap: 30px;
     flex-wrap: wrap;
+    justify-content: center;
   }
   
   .quote-banner-icon {
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
+    min-width: 150px;
   }
   
-  .quote-banner-icon i {
-    font-size: 20px;
+  .quote-banner-text {
+    text-align: center;
+    max-width: 100%;
   }
   
   .quote-banner-text p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    padding-left: 0;
+  }
+  
+  .quote-banner-text p::before {
+    display: none;
+  }
+  
+  .quote-banner-text p::after {
+    display: none;
   }
 }
 
 @media (max-width: 767px) {
   .quote-banner {
-    padding: 20px 0;
-    border-radius: 12px;
+    padding: 40px 0;
+  }
+  
+  .quote-banner-container {
+    padding: 0 20px;
   }
   
   .quote-banner-content {
     flex-direction: column;
-    gap: 15px;
+    gap: 30px;
+    text-align: center;
   }
   
   .quote-banner-icon {
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
+    min-width: 140px;
+    justify-content: center;
   }
   
-  .quote-banner-icon i {
-    font-size: 18px;
+  .quote-banner-text {
+    text-align: center;
   }
   
   .quote-banner-text p {
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    padding-left: 0;
+  }
+  
+  .quote-banner-text p::before {
+    display: none;
+  }
+  
+  .quote-banner-text p::after {
+    display: none;
+  }
+}
+
+/* ===================
+Company Stats & Features Banner
+====================== */
+.company-stats-banner {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%);
+  padding: 50px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-banner-svg-bg {
+  display: none;
+}
+
+.stats-banner-svg-bg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.company-stats-banner::before {
+  display: none;
+}
+
+.stats-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+  min-width: 250px;
+  padding: 30px 25px;
+  background: #f3f4f6;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #f15925 0%, #ff6b3d 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 25px;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(241, 89, 37, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item:hover .stat-icon-wrapper {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(241, 89, 37, 0.5);
+}
+
+.stat-icon-wrapper i {
+  color: #ffffff;
+  font-size: 32px;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.stat-text {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2d3992;
+  line-height: 1.6;
+  text-align: center;
+  padding: 0;
+  letter-spacing: 0.2px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.stat-divider {
+  display: none;
+}
+
+/* Responsive styles for company stats banner */
+@media (max-width: 991px) {
+  .company-stats-banner {
+    padding: 0;
+  }
+  
+  .stats-banner-content {
+    flex-wrap: wrap;
+    gap: 25px;
+  }
+  
+  .stat-item {
+    flex: 0 0 calc(33.333% - 17px);
+    min-width: 200px;
+    padding: 25px 20px;
+  }
+  
+  .stat-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-icon-wrapper i {
+    font-size: 28px;
+  }
+  
+  .stat-text {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .company-stats-banner {
+    padding: 0;
+  }
+  
+  .stats-banner-content {
+    flex-direction: column;
+    gap: 25px;
+  }
+  
+  .stat-item {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 30px 20px;
+  }
+  
+  .stat-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-icon-wrapper i {
+    font-size: 28px;
+  }
+  
+  .stat-text {
+    font-size: 1.05rem;
   }
 }
 
@@ -7649,7 +7973,7 @@ Quote Banner / Delivery Banner
 Pre-Footer CTA Sectiongr
 ====================== */
 .pre-footer-cta {
-  padding: 60px 0;
+  padding: 0;
   position: relative;
   overflow: hidden;
 }
@@ -7748,7 +8072,7 @@ Pre-Footer CTA Sectiongr
 /* Responsive styles for pre-footer CTA */
 @media (max-width: 991px) {
   .pre-footer-cta {
-    padding: 50px 0;
+    padding: 0;
   }
   
   .pre-footer-cta-heading {
@@ -7776,7 +8100,7 @@ Pre-Footer CTA Sectiongr
 
 @media (max-width: 767px) {
   .pre-footer-cta {
-    padding: 40px 0;
+    padding: 0;
   }
   
   .pre-footer-cta-heading {
@@ -8061,8 +8385,8 @@ Pre-Footer CTA Sectiongr
 .choose-area{
   position: relative;
   background: #ffffff;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .choose-area .container .row {
@@ -8071,7 +8395,7 @@ Pre-Footer CTA Sectiongr
 }
 
 .choose-area .container .row:first-child {
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .choose-area .col-lg-12 {
@@ -8080,14 +8404,14 @@ Pre-Footer CTA Sectiongr
 }
 
 .choose-area .site-heading {
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
 .choose-area .site-title {
   font-size: 2.8rem;
   font-weight: 700;
   color: #2d3992;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   margin-top: 0;
   line-height: 1.2;
 }
@@ -8125,14 +8449,14 @@ Pre-Footer CTA Sectiongr
 .choose-content-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .choose-item{
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px;
+  gap: 15px;
+  padding: 10px;
   border-radius: 12px;
   background: transparent;
   transition: all 0.3s ease;
@@ -8185,7 +8509,7 @@ Pre-Footer CTA Sectiongr
   font-size: 1.1rem;
   font-weight: 700;
   color: #2d3992;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   margin-top: 0;
   line-height: 1.2;
 }
@@ -8199,32 +8523,23 @@ Pre-Footer CTA Sectiongr
 
 .choose-img{
   position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s ease;
   margin: 0;
-  max-height: 500px;
   display: flex;
   align-items: center;
-}
-
-.choose-img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  background: transparent;
+  height: 100%;
+  min-height: 500px;
 }
 
 .choose-img img {
   width: 100%;
-  height: 100%;
-  max-height: 500px;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 600px;
+  height: auto;
   display: block;
-  transition: transform 0.4s ease;
-}
-
-.choose-img:hover img {
-  transform: scale(1.05);
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 /* Responsive styles */
@@ -8234,23 +8549,26 @@ Pre-Footer CTA Sectiongr
   }
   
   .choose-content-wrap {
-    gap: 12px;
-    margin-bottom: 30px;
+    gap: 18px;
+    margin-bottom: 0;
   }
   
   .choose-img {
-    max-height: 400px;
+    min-height: 400px;
   }
   
   .choose-img img {
+    width: 100%;
+    max-width: 100%;
     max-height: 400px;
+    height: auto;
   }
 }
 
 @media (max-width: 767px) {
   .choose-area {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   
   .choose-area .site-title {
@@ -8273,6 +8591,16 @@ Pre-Footer CTA Sectiongr
     height: 24px;
   }
   
+  .choose-img {
+    min-height: 300px;
+  }
+  
+  .choose-img img {
+    max-height: 300px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .choose-item-info h4 {
     font-size: 1rem;
   }
@@ -8286,147 +8614,82 @@ Pre-Footer CTA Sectiongr
 /* ===================
 Note Box / Info Banner
 ====================== */
-.note-banner {
-  background: linear-gradient(135deg, rgba(241, 89, 37, 0.08) 0%, rgba(241, 89, 37, 0.12) 100%);
-  border: 2px dashed #f15925;
-  border-radius: 16px;
-  padding: 20px 25px;
-  margin: 30px 0;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(241, 89, 37, 0.1);
-}
-
-.note-banner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s ease;
-}
-
-.note-banner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(241, 89, 37, 0.15);
-  border-color: #e04915;
-}
-
-.note-banner:hover::before {
-  left: 100%;
-}
-
 .note-banner-content {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   position: relative;
   z-index: 1;
+  margin: 30px 0;
 }
 
 .note-banner-icon {
-  width: 45px;
-  height: 45px;
-  min-width: 45px;
-  background: linear-gradient(135deg, #f15925 0%, #e04915 100%);
-  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(241, 89, 37, 0.3);
   flex-shrink: 0;
 }
 
 .note-banner-icon i {
-  color: #ffffff;
+  color: #f15925;
   font-size: 20px;
 }
 
 .note-banner-text {
   flex: 1;
-}
-
-.note-banner-text strong {
-  color: #2d3992;
-  font-weight: 700;
-  font-size: 1.05rem;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.note-banner-text p {
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   color: #2d3992;
   font-weight: 600;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
-.note-banner-text p .highlight {
+.note-banner-text .highlight {
   color: #f15925;
   font-weight: 700;
 }
 
 /* Responsive styles for note banner */
 @media (max-width: 991px) {
-  .note-banner {
-    padding: 18px 22px;
-  }
-  
   .note-banner-icon {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
   }
   
   .note-banner-icon i {
     font-size: 18px;
   }
   
-  .note-banner-text p {
-    font-size: 1rem;
+  .note-banner-text {
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 767px) {
-  .note-banner {
-    padding: 15px 18px;
+  .note-banner-content {
     margin: 20px 0;
   }
   
-  .note-banner-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
   .note-banner-icon {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
   }
   
-  .note-banner-text strong {
-    font-size: 0.95rem;
+  .note-banner-icon i {
+    font-size: 16px;
   }
   
-  .note-banner-text p {
-    font-size: 0.95rem;
+  .note-banner-text {
+    font-size: 0.75rem;
   }
 }
 
-.choose-img img{
-
-  width: 83%;
-
-  border: 10px solid var(--color-white);
-
-  border-radius: 100px 100px 0 100px;
-
-}
+/* Removed white border styling for choose-img */
 
 
 
@@ -11173,37 +11436,9 @@ Note Box / Info Banner
 
 
 .whatsapp-btn,
-
 .whatsapp-btn:focus,
-
 .whatsapp-btn:hover {
-
-	position: fixed;
-
-	bottom: 85px;
-
-	right: 20px;
-
-	background: #01e675;
-
-	height: 50px;
-
-	width: 50px;
-
-	color: #fff;
-
-	display: flex;
-
-	align-items: center;
-
-	text-align: center;
-
-	border-radius: 50%;
-
-	font-size: 25px;
-
-	z-index: 999;
-
+	display: none !important;
 }
 
 .fab.fa-whatsapp {

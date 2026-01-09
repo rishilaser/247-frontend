@@ -12,14 +12,14 @@ function Home() {
   // Handle CTA button clicks - redirect based on auth status and role
   const handleCTAClick = (e, targetPath = '/upload') => {
     e.preventDefault();
-    
+
     if (!user) {
-      // Not logged in - redirect to signup
-      navigate('/signup');
+      // Not logged in - open signup in new tab
+      window.open('/signup', '_blank');
     } else {
       // Logged in - redirect based on role
       const userRole = roleUtils.getUserRole(user);
-      
+
       if (roleUtils.isAdmin(user) || roleUtils.isBackOffice(user) || roleUtils.isSubAdmin(user)) {
         // Admin/BackOffice/SubAdmin - redirect to admin dashboard
         navigate('/admin/dashboard');
@@ -27,6 +27,37 @@ function Home() {
         // Customer - redirect to customer dashboard or target path
         navigate(targetPath);
       }
+    }
+  };
+
+  // Smooth scroll to element without adding hash to URL
+  const scrollToQuoteArea = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    const element = document.getElementById('quote-area');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToAboutArea = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    const element = document.getElementById('about-area');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToServiceArea = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    const element = document.getElementById('service-area');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -329,7 +360,7 @@ function Home() {
               <div className="d-flex align-items-center justify-content-end gap-3 flex-wrap">
                 <span className="text-white" style={{ fontSize: '14px' }}>Follow Us:</span>
                 <div className="d-flex align-items-center gap-2">
-                  <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
+                  <a href="https://www.facebook.com/247cutbend/" target="_blank" rel="noopener noreferrer" className="text-white d-flex align-items-center justify-content-center" style={{
                     width: '32px',
                     height: '32px',
                     borderRadius: '4px',
@@ -426,7 +457,6 @@ function Home() {
         {/* Navbar */}
         <div className="main-navigation" style={{ padding: '0' }}>
           <nav className="navbar navbar-expand-lg" style={{
-            padding: isScrolled ? '12px 0' : '16px 0',
             minHeight: isScrolled ? '75px' : '90px',
             transition: 'all 0.3s ease'
           }}>
@@ -476,7 +506,7 @@ function Home() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#about-area" style={{
+                    <a className="nav-link" href="/" onClick={scrollToAboutArea} style={{
                       padding: '8px 16px',
                       fontSize: '15px',
                       fontWeight: '500',
@@ -498,7 +528,7 @@ function Home() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#service-area" style={{
+                    <a className="nav-link" href="/" onClick={scrollToAboutArea} style={{
                       padding: '8px 16px',
                       fontSize: '15px',
                       fontWeight: '500',
@@ -520,7 +550,7 @@ function Home() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#quote-area" style={{
+                    <a className="nav-link" href="/" onClick={scrollToQuoteArea} style={{
                       padding: '8px 16px',
                       fontSize: '15px',
                       fontWeight: '500',
@@ -675,7 +705,7 @@ function Home() {
           </button>
         </div>
 
-        <div style={{ padding: '20px 0' }}>
+        <div style={{ padding: '15px 0' }}>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
               <a
@@ -685,7 +715,7 @@ function Home() {
                 }}
                 style={{
                   display: 'block',
-                  padding: '16px 20px',
+                  padding: '12px 15px',
                   fontSize: '16px',
                   fontWeight: '500',
                   color: '#1a1a1a',
@@ -706,13 +736,14 @@ function Home() {
             </li>
             <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
               <a
-                href="#about-area"
+                href="/"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
+                  scrollToAboutArea(e);
                 }}
                 style={{
                   display: 'block',
-                  padding: '16px 20px',
+                  padding: '12px 15px',
                   fontSize: '16px',
                   fontWeight: '500',
                   color: '#1a1a1a',
@@ -733,13 +764,14 @@ function Home() {
             </li>
             <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
               <a
-                href="#service-area"
+                href="/"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
+                  scrollToAboutArea(e);
                 }}
                 style={{
                   display: 'block',
-                  padding: '16px 20px',
+                  padding: '12px 15px',
                   fontSize: '16px',
                   fontWeight: '500',
                   color: '#1a1a1a',
@@ -760,13 +792,14 @@ function Home() {
             </li>
             <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
               <a
-                href="#quote-area"
+                href="/"
                 onClick={(e) => {
                   setIsMobileMenuOpen(false);
+                  scrollToQuoteArea(e);
                 }}
                 style={{
                   display: 'block',
-                  padding: '16px 20px',
+                  padding: '12px 15px',
                   fontSize: '16px',
                   fontWeight: '500',
                   color: '#1a1a1a',
@@ -787,7 +820,7 @@ function Home() {
             </li>
           </ul>
 
-          <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-start' }}>
+          <div style={{ padding: '15px', display: 'flex', justifyContent: 'flex-start' }}>
             <a
               href="/signup"
               target="_blank"
@@ -881,7 +914,7 @@ function Home() {
             </div>
             <div className="sidebar-popup-social">
               <h4>Follow Us</h4>
-              <a href="#"><i className="fab fa-facebook"></i></a>
+              <a href="https://www.facebook.com/247cutbend/" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook"></i></a>
               <a href="#"><i className="fab fa-x-twitter"></i></a>
               <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
               <a href="#"><i className="fab fa-linkedin-in"></i></a>
@@ -892,7 +925,7 @@ function Home() {
 
       <main className="main">
         {/* Hero Area */}
-        <div className="hero-section">
+        <div className="hero-section" id='home'>
           <div className="hero-slider owl-carousel">
             <div className="hero-single">
               <video muted loop autoPlay>
@@ -901,16 +934,18 @@ function Home() {
               <div className="container">
                 <div className="row align-items-center">
                   <div className="col-md-12 col-lg-8">
-                    <div className="hero-content" style={{ padding: 0, margin: 0 }}>
+                    <div className="hero-content">
                       <p className="hero-sub-title" data-animation="fadeInUp" data-delay=".25s" style={{ fontSize: '1.3rem', marginBottom: '10px' }}>
-                        247 Cut Bend Your partner for custom <br /> metal fabrication
+                        Quick Delivery & Cheapest Price at
                       </p>
-                      <h2 className="hero-title" data-animation="fadeInRight" data-delay=".50s" style={{ marginBottom: '15px', marginTop: '10px' }}>
-                        Your Production <br /> Never Stops.<br /> Neither Do We.
-                      </h2>
+                      <h3 className="hero-title" data-animation="fadeInRight" data-delay=".50s" style={{ marginBottom: '15px', marginTop: '10px' }}>
+                        247 Cut Bend<br />
+                        Your Partner for<br />
+                        Custom Metal Fabrication
+                      </h3>
                       <div className="hero-btn" data-animation="fadeInUp" data-delay="1s" style={{ marginTop: '15px' }}>
-                        <a 
-                          href="#" 
+                        <a
+                          href="#"
                           className="theme-btn"
                           onClick={(e) => handleCTAClick(e, '/upload')}
                         >
@@ -943,161 +978,62 @@ function Home() {
           </div>
         </div>}
 
-        {/* Quote Banner */}
-        <div className="quote-banner">
-          {/* Light Orange SVG Decorative Element */}
-          <div className="quote-banner-svg-decoration">
-            <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="150" cy="150" r="120" fill="rgba(255, 193, 7, 0.2)" opacity="0.6"/>
-              <circle cx="150" cy="150" r="80" fill="rgba(255, 193, 7, 0.15)" opacity="0.5"/>
-              <circle cx="150" cy="150" r="40" fill="rgba(255, 193, 7, 0.1)" opacity="0.4"/>
-              <path d="M150 30 L170 90 L230 90 L180 130 L200 190 L150 150 L100 190 L120 130 L70 90 L130 90 Z" fill="rgba(255, 193, 7, 0.25)" opacity="0.5"/>
+        {/* Company Stats & Features Banner */}
+        <div className="company-stats-banner">
+          {/* SVG Background Decoration */}
+          <div className="stats-banner-svg-bg">
+            <svg width="100%" height="100%" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              {/* Geometric patterns */}
+              <circle cx="100" cy="100" r="80" fill="rgba(241, 89, 37, 0.08)" opacity="0.6" />
+              <circle cx="1100" cy="100" r="90" fill="rgba(241, 89, 37, 0.06)" opacity="0.5" />
+              <path d="M600 20 L650 80 L750 80 L680 120 L720 180 L600 140 L480 180 L520 120 L450 80 L550 80 Z" fill="rgba(241, 89, 37, 0.05)" opacity="0.4" />
+              {/* Decorative lines */}
+              <line x1="0" y1="50" x2="1200" y2="50" stroke="rgba(241, 89, 37, 0.1)" strokeWidth="1" opacity="0.3" />
+              <line x1="0" y1="150" x2="1200" y2="150" stroke="rgba(241, 89, 37, 0.1)" strokeWidth="1" opacity="0.3" />
+              {/* Small decorative circles */}
+              <circle cx="200" cy="50" r="15" fill="rgba(241, 89, 37, 0.1)" opacity="0.4" />
+              <circle cx="1000" cy="150" r="20" fill="rgba(241, 89, 37, 0.08)" opacity="0.35" />
+              <circle cx="300" cy="150" r="12" fill="rgba(241, 89, 37, 0.12)" opacity="0.4" />
+              <circle cx="900" cy="50" r="18" fill="rgba(241, 89, 37, 0.09)" opacity="0.3" />
             </svg>
           </div>
-          <div className="container quote-banner-container">
-            <div className="quote-banner-content">
-              <div className="quote-banner-icon">
-                <div className="loader">
-                  <div className="truckWrapper">
-                    <div className="truckBody">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 198 93"
-                        className="trucksvg"
-                      >
-                        <path
-                          strokeWidth="3"
-                          stroke="#282828"
-                          fill="#F83D3D"
-                          d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"
-                        />
-                        <path
-                          strokeWidth="3"
-                          stroke="#282828"
-                          fill="#7D7C7C"
-                          d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"
-                        />
-                        <path
-                          strokeWidth="2"
-                          stroke="#282828"
-                          fill="#282828"
-                          d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"
-                        />
-                        <rect
-                          strokeWidth="2"
-                          stroke="#282828"
-                          fill="#FFFCAB"
-                          rx="1"
-                          height="7"
-                          width="5"
-                          y="63"
-                          x="187"
-                        />
-                        <rect
-                          strokeWidth="2"
-                          stroke="#282828"
-                          fill="#282828"
-                          rx="1"
-                          height="11"
-                          width="4"
-                          y="81"
-                          x="193"
-                        />
-                        <rect
-                          strokeWidth="3"
-                          stroke="#282828"
-                          fill="#DFDFDF"
-                          rx="2.5"
-                          height="90"
-                          width="121"
-                          y="1.5"
-                          x="6.5"
-                        />
-                        <rect
-                          strokeWidth="2"
-                          stroke="#282828"
-                          fill="#DFDFDF"
-                          rx="2"
-                          height="4"
-                          width="6"
-                          y="84"
-                          x="1"
-                        />
-                      </svg>
-                    </div>
-                    <div className="truckTires">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 30 30"
-                        className="tiresvg"
-                      >
-                        <circle
-                          strokeWidth="3"
-                          stroke="#282828"
-                          fill="#282828"
-                          r="13.5"
-                          cy="15"
-                          cx="15"
-                        />
-                        <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 30 30"
-                        className="tiresvg"
-                      >
-                        <circle
-                          strokeWidth="3"
-                          stroke="#282828"
-                          fill="#282828"
-                          r="13.5"
-                          cy="15"
-                          cx="15"
-                        />
-                        <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
-                      </svg>
-                    </div>
-                    <div className="road"></div>
-                    <svg
-                      viewBox="0 0 453.459 453.459"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="lampPost"
-                    >
-                      <path
-                        d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
-                        c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
-                        c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
-                        c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
-                        h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
-                        v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
-                        V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
-                        M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
-                        h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
-                      />
-                    </svg>
-                  </div>
+          <div className="container">
+            <div className="stats-banner-content">
+              <div className="stat-item">
+                <div className="stat-icon-wrapper">
+                  <i className="fas fa-bolt"></i>
                 </div>
+                <div className="stat-text">Instant Quotes & Fast Turnaround</div>
               </div>
-              <div className="quote-banner-text">
-                <p>
-                  "Just upload your design and confirm your material. We deliver accurate, machine-calibrated, quality-inspected parts within 24-36 hours".
-                </p>
+
+              <div className="stat-divider"></div>
+
+              <div className="stat-item">
+                <div className="stat-icon-wrapper">
+                  <i className="fas fa-industry"></i>
+                </div>
+                <div className="stat-text">Laser Cutting | CNC Bending | Fabrication</div>
+              </div>
+
+              <div className="stat-divider"></div>
+
+              <div className="stat-item">
+                <div className="stat-icon-wrapper">
+                  <i className="fas fa-chart-line"></i>
+                </div>
+                <div className="stat-text">Prototype to Mass Production</div>
               </div>
             </div>
           </div>
         </div>
 
-
         {/* Process Area */}
-        <div className="process-area" style={{ background: '#ffffff', paddingTop: '60px', paddingBottom: '60px' }}>
+        <div className="process-area" style={{ background: '#ffffff' }}>
           <div className="container">
             <div className="row">
               <div className="col-lg-10 mx-auto">
-                <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s" style={{ marginBottom: '30px' }}>
-                  <h2 className="site-title" style={{ fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '10px' }}>
+                <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s">
+                  <h2 className="site-title" style={{ fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a' }}>
                     How It <span style={{ color: '#f15925' }}>Works</span>
                   </h2>
                   <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: 0, maxWidth: '700px', margin: '0 auto' }}>
@@ -1157,15 +1093,15 @@ function Home() {
               <div className="row" style={{ display: 'flex', flexWrap: 'nowrap', margin: 0, gap: '10px' }}>
                 {/* Step 1 */}
                 <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     style={{ textDecoration: 'none', display: 'block' }}
                     onClick={(e) => handleCTAClick(e, '/dashboard')}
                   >
                     <div className="process-item" style={{
                       background: '#ffffff',
                       borderRadius: '12px',
-                      padding: '18px 15px',
+                      padding: '15px 12px',
                       border: '3px solid #e0e0e0',
                       height: '100%',
                       transition: 'all 0.3s ease',
@@ -1408,17 +1344,12 @@ function Home() {
 
         <div className="row  mx-3">
           <div className="col-lg-12">
-            <div className="note-banner">
-              <div className="note-banner-content">
-                <div className="note-banner-icon">
-                  <i className="fas fa-info-circle"></i>
-                </div>
-                <div className="note-banner-text">
-                  <strong>Important Note</strong>
-                  <p>
-                    <span className="highlight">Advance payment</span> ensures immediate processing and guaranteed production slotting
-                  </p>
-                </div>
+            <div className="note-banner-content">
+              <div className="note-banner-icon">
+                <i className="fas fa-info-circle"></i>
+              </div>
+              <div className="note-banner-text">
+                <span className="highlight">Advance payment</span> ensures immediate processing and guaranteed production slotting
               </div>
             </div>
           </div>
@@ -1550,10 +1481,10 @@ function Home() {
         </div>
 
         {/* About Area */}
-        <div className="about-area" id="about-area" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
+        <div className="about-area" id="about-area" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
           <div className="container">
             <div className="row" style={{ display: 'flex', alignItems: 'stretch', margin: 0 }}>
-              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '15px', paddingRight: '15px' }}>
+              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '10px' }}>
                 <div className="about-left wow fadeInLeft" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between', margin: 0 }}>
                   <div className="about-img" style={{ flex: 1, margin: 0 }}>
                     <img className="img-1" src="/assets/img/cutting-tool.jpg" alt="" />
@@ -1565,14 +1496,12 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '15px', paddingRight: '15px' }}>
+              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '10px' }}>
                 <div className="about-right wow fadeInUp" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', margin: 0 }}>
-                  <div className="site-heading" style={{ marginBottom: '8px' }}>
+                  <div className="site-heading">
                     <h3 className="site-title" style={{
                       fontSize: '2.5rem',
                       fontWeight: '700',
-                      marginBottom: 0,
-                      marginTop: 0,
                       lineHeight: '1.2'
                     }}>
                       <span style={{ color: '#2d3992' }}>Manufacturing</span>{' '}
@@ -1586,7 +1515,7 @@ function Home() {
                   <div style={{
                     background: '#f8f9fa',
                     borderLeft: '4px solid #f15925',
-                    padding: '12px 15px',
+                    padding: '10px 12px',
                     marginBottom: '12px',
                     borderRadius: '8px',
                     fontStyle: 'italic',
@@ -1613,7 +1542,7 @@ function Home() {
                         background: '#ffffff',
                         border: '1px solid #e0e0e0',
                         borderRadius: '12px',
-                        padding: '15px 18px',
+                        padding: '12px 15px',
                         boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
                       }}>
                         <ul style={{
@@ -1718,7 +1647,7 @@ function Home() {
                               fontSize: '1.3rem',
                               fontWeight: 'bold'
                             }}>•</span>
-                            <span style={{ marginRight: '8px' }}>Materials processed:</span> <strong style={{ color: '#2d3992', fontSize: '1.05rem' }}>Stainless Steel</strong> & <strong style={{ color: '#f15925', fontSize: '1.05rem' }}> Carbon Steel </strong>
+                            <span style={{ marginRight: '8px' }}>Materials processed:</span> <strong style={{ color: '#2d3992', fontSize: '1.05rem' }}>Stainless Steel</strong> <span style={{ margin: '0 6px' }}>&</span> <strong style={{ color: '#f15925', fontSize: '1.05rem' }}>Carbon Steel</strong>
                           </li>
                         </ul>
                       </div>
@@ -1813,7 +1742,7 @@ function Home() {
                       }} />
                   </div>
                   <div className="service-content" style={{
-                    padding: '25px',
+                    padding: '20px',
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
@@ -1847,7 +1776,7 @@ function Home() {
                       The GN Laser Cutting Machine (Model GN NCF3015-E, 2017) is a high-precision industrial laser cutter with 2.2KW laser power and a 3x1.5m working area, featuring Cypcut control for automation.
                     </p>
                     <a href="#" className="theme-btn" style={{
-                      padding: '12px 24px',
+                      padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
                       background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
@@ -1932,7 +1861,7 @@ function Home() {
                       }} />
                   </div>
                   <div className="service-content" style={{
-                    padding: '25px',
+                    padding: '20px',
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
@@ -1966,7 +1895,7 @@ function Home() {
                       Our advanced press brake machines deliver precise bending operations with high accuracy. Perfect for creating complex angles and shapes in various metal materials.
                     </p>
                     <a href="#" className="theme-btn" style={{
-                      padding: '12px 24px',
+                      padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
                       background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
@@ -2051,7 +1980,7 @@ function Home() {
                       }} />
                   </div>
                   <div className="service-content" style={{
-                    padding: '25px',
+                    padding: '20px',
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
@@ -2085,7 +2014,7 @@ function Home() {
                       Professional welding services using advanced techniques and equipment to ensure strong, durable joints for all your metal fabrication requirements.
                     </p>
                     <a href="#" className="theme-btn" style={{
-                      padding: '12px 24px',
+                      padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
                       background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
@@ -2170,7 +2099,7 @@ function Home() {
                       }} />
                   </div>
                   <div className="service-content" style={{
-                    padding: '25px',
+                    padding: '20px',
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
@@ -2204,7 +2133,7 @@ function Home() {
                       Complete design and development services from concept to production, helping you bring your ideas to life with expert engineering support.
                     </p>
                     <a href="#" className="theme-btn" style={{
-                      padding: '12px 24px',
+                      padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
                       background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
@@ -2239,7 +2168,7 @@ function Home() {
         </div>}
 
         {/* Testimonial Area */}
-        <div className="testimonial-area ts-bg pt-90 pb-10">
+        <div className="testimonial-area ts-bg pt-50">
           <div className="container">
             <div className="row">
               <div className="col-lg-4">
@@ -2249,7 +2178,10 @@ function Home() {
                     It is a long established fact that a reader will be distracted by the readable content
                     of a page when Internet tend to repeat predefined chunks.
                   </p>
-                  <a href="#" className="theme-btn mt-30">Know More <i className="fas fa-arrow-right"></i></a>
+                  <a className="theme-btn mt-30"
+                    onClick={() =>
+                      document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })
+                    }>Know More <i className="fas fa-arrow-right"></i></a>
                 </div>
               </div>
               <div className="col-lg-8">
@@ -2370,7 +2302,7 @@ function Home() {
             <div className="row">
               <div className="col-lg-12">
                 <div className="site-heading text-center">
-                  <h2 className="site-title">
+                  <h2 className="site-title mt-5">
                     Why <span className="text-orange">Choose</span> <span className="text-orange">247Cutbend</span>?
                   </h2>
                   <p>
@@ -2437,7 +2369,7 @@ function Home() {
               </div>
               <div className="col-lg-6">
                 <div className="choose-img">
-                  <img src="/assets/img/cutting-tool.jpg" alt="Laser Cutting Machine" />
+                  <img src="/assets/img/steel-laser-cutting-service-1000x1000.webp" alt="Laser Cutting Machine" />
                 </div>
               </div>
             </div>
@@ -2447,8 +2379,32 @@ function Home() {
         {/* Quote Area */}
         <div className="quote-area" id="quote-area">
           <div className="container">
-            <div className="row">
-              <div className="col-lg-6 col-md-8 ms-auto">
+            <div className="row align-items-center">
+              <div className="col-lg-6 col-md-6">
+                <div className="quote-text-content" style={{
+                  paddingRight: '40px',
+                  color: '#ffffff'
+                }}>
+                  <h2 style={{
+                    fontSize: '2.5rem',
+                    fontWeight: '700',
+                    color: '#ffffff',
+                    marginBottom: '20px',
+                    lineHeight: '1.3'
+                  }}>
+                    Fast, Affordable Laser Cutting & CNC Bending Services.
+                  </h2>
+                  <p style={{
+                    fontSize: '1.15rem',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    lineHeight: '1.8',
+                    margin: 0
+                  }}>
+                    Get reliable Metal Fabrication at highly competitive pricing delivered faster to meet your production timelines.
+                  </p>
+                </div>
+              </div>
+              <div className="col-lg-6 col-md-6">
                 <div className="quote-content">
                   <div className="quote-head">
                     <h3>
@@ -2460,7 +2416,7 @@ function Home() {
                   </div>
                   <div className="quote-form">
                     <form action="#">
-                      <div className="row" style={{marginLeft: '-8px', marginRight: '-8px'}}>
+                      <div className="row" style={{ marginLeft: '-8px', marginRight: '-8px' }}>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <div className="form-icon">
@@ -2595,7 +2551,7 @@ function Home() {
                   }}>
                     We're here to help you understand how we can assist with your laser cutting and bending needs, from initial quote to final delivery.
                   </p>
-                  <a href="#quote-area" className="theme-btn" style={{
+                  <a href="/" onClick={scrollToQuoteArea} className="theme-btn" style={{
                     padding: '14px 28px',
                     fontSize: '15px',
                     fontWeight: '600',
@@ -2649,7 +2605,7 @@ function Home() {
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          padding: '20px 25px',
+                          padding: '15px 20px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '15px',
@@ -2710,7 +2666,7 @@ function Home() {
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          padding: '20px 25px',
+                          padding: '15px 20px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '15px',
@@ -2772,7 +2728,7 @@ function Home() {
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          padding: '20px 25px',
+                          padding: '15px 20px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '15px',
@@ -2834,7 +2790,7 @@ function Home() {
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          padding: '20px 25px',
+                          padding: '15px 20px',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '15px',
@@ -2975,27 +2931,149 @@ function Home() {
         </div> */}
       </main>
 
-      {/* Pre-Footer CTA Section */}
-      <div className="pre-footer-cta">
-        <div className="container pre-footer-cta-container">
-          <div className="pre-footer-cta-content">
-            <h2 className="pre-footer-cta-heading">
-              Instant Quotes & Fast Turnaround
-            </h2>
-            <p className="pre-footer-cta-subheading">
-              Laser Cutting<span className="divider">|</span>CNC Bending<span className="divider">|</span>Fabrication
-            </p>
-            <p className="pre-footer-cta-description">
-              Prototype to Mass Production
-            </p>
-            <a 
-              href="#" 
-              className="pre-footer-cta-button"
-              onClick={(e) => handleCTAClick(e, '/upload')}
-            >
-              Upload your drawings today
-              <i className="fas fa-arrow-right"></i>
-            </a>
+      {/* Quote Banner */}
+      <div className="quote-banner">
+        {/* Light Orange SVG Decorative Element */}
+        <div className="quote-banner-svg-decoration">
+          <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="150" cy="150" r="120" fill="rgba(255, 193, 7, 0.2)" opacity="0.6" />
+            <circle cx="150" cy="150" r="80" fill="rgba(255, 193, 7, 0.15)" opacity="0.5" />
+            <circle cx="150" cy="150" r="40" fill="rgba(255, 193, 7, 0.1)" opacity="0.4" />
+            <path d="M150 30 L170 90 L230 90 L180 130 L200 190 L150 150 L100 190 L120 130 L70 90 L130 90 Z" fill="rgba(255, 193, 7, 0.25)" opacity="0.5" />
+          </svg>
+        </div>
+        <div className="container quote-banner-container">
+          <div className="quote-banner-content">
+            <div className="quote-banner-icon">
+              <div className="loader">
+                <div className="truckWrapper">
+                  <div className="truckBody">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 198 93"
+                      className="trucksvg"
+                    >
+                      <path
+                        strokeWidth="3"
+                        stroke="#282828"
+                        fill="#F83D3D"
+                        d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"
+                      />
+                      <path
+                        strokeWidth="3"
+                        stroke="#282828"
+                        fill="#7D7C7C"
+                        d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"
+                      />
+                      <path
+                        strokeWidth="2"
+                        stroke="#282828"
+                        fill="#282828"
+                        d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"
+                      />
+                      <rect
+                        strokeWidth="2"
+                        stroke="#282828"
+                        fill="#FFFCAB"
+                        rx="1"
+                        height="7"
+                        width="5"
+                        y="63"
+                        x="187"
+                      />
+                      <rect
+                        strokeWidth="2"
+                        stroke="#282828"
+                        fill="#282828"
+                        rx="1"
+                        height="11"
+                        width="4"
+                        y="81"
+                        x="193"
+                      />
+                      <rect
+                        strokeWidth="3"
+                        stroke="#282828"
+                        fill="#DFDFDF"
+                        rx="2.5"
+                        height="90"
+                        width="121"
+                        y="1.5"
+                        x="6.5"
+                      />
+                      <rect
+                        strokeWidth="2"
+                        stroke="#282828"
+                        fill="#DFDFDF"
+                        rx="2"
+                        height="4"
+                        width="6"
+                        y="84"
+                        x="1"
+                      />
+                    </svg>
+                  </div>
+                  <div className="truckTires">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 30 30"
+                      className="tiresvg"
+                    >
+                      <circle
+                        strokeWidth="3"
+                        stroke="#282828"
+                        fill="#282828"
+                        r="13.5"
+                        cy="15"
+                        cx="15"
+                      />
+                      <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
+                    </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 30 30"
+                      className="tiresvg"
+                    >
+                      <circle
+                        strokeWidth="3"
+                        stroke="#282828"
+                        fill="#282828"
+                        r="13.5"
+                        cy="15"
+                        cx="15"
+                      />
+                      <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
+                    </svg>
+                  </div>
+                  <div className="road"></div>
+                  <svg
+                    viewBox="0 0 453.459 453.459"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="lampPost"
+                  >
+                    <path
+                      d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
+                        c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
+                        c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
+                        c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
+                        h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
+                        v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
+                        V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
+                        M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
+                        h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="quote-banner-text">
+              <p>
+                "Just upload your design and confirm your material. We deliver accurate, machine-calibrated, quality-inspected parts within 24-36 hours".
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -3025,7 +3103,7 @@ function Home() {
 
         <div className="footer-widget" style={{ position: 'relative', zIndex: 1 }}>
           <div className="container">
-            <div className="footer-widget-wrap" style={{ padding: '50px 0 30px' }}>
+            <div className="footer-widget-wrap" style={{ padding: '40px 0 20px' }}>
               <div className="row g-4">
                 <div className="col-lg-5">
                   <div className="footer-widget-box about-us">
@@ -3040,69 +3118,118 @@ function Home() {
                     }}>
                       247CutBend, your trusted partner for precision cutting, bending, and metal fabrication services. With advanced technology and a commitment to quality.
                     </p>
-                    <div className="footer-newsletter">
+                    <div className="footer-social-media">
                       <h6 style={{
                         color: '#ffffff',
                         fontSize: '0.95rem',
                         fontWeight: '600',
-                        marginBottom: '10px'
-                      }}>Subscribe Our Newsletter</h6>
-                      <div className="newsletter-form">
-                        <form action="#" onSubmit={(e) => { e.preventDefault(); }}>
-                          <div className="form-group" style={{ margin: 0 }}>
-                            <div className="form-icon" style={{
-                              display: 'flex',
-                              background: '#ffffff',
-                              borderRadius: '6px',
-                              overflow: 'hidden',
-                              boxShadow: '0 1px 5px rgba(0,0,0,0.1)'
-                            }}>
-                              {/* <i className="far fa-envelope" style={{
-                                padding: '8px 10px',
-                                color: '#f15925',
-                                fontSize: '14px',
-                                display: 'flex',
-                                alignItems: 'center'
-                              }}></i> */}
-                              <input
-                                type="email"
-                                className="form-control"
-                                placeholder="Your Email"
-                                required
-                                style={{
-                                  flex: 1,
-                                  border: 'none',
-                                  padding: '8px 8px',
-                                  outline: 'none',
-                                  fontSize: '13px',
-                                  background: 'transparent'
-                                }}
-                              />
-                              <button className="theme-btn" type="submit" style={{
-                                background: '#f15925',
-                                color: '#ffffff',
-                                border: 'none',
-                                // padding: '8px 16px',
-                                fontWeight: '600',
-                                fontSize: '13px',
-                                marginBottom: "10px",
-                                cursor: 'pointer',
-                                whiteSpace: 'nowrap',
-                                transition: 'all 0.2s ease'
-                              }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = '#f15925';
-                                  e.currentTarget.style.color = '#ffffff';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.background = '#f15925';
-                                  e.currentTarget.style.color = '#ffffff';
-                                }}>
-                                Subscribe
-                              </button>
-                            </div>
-                          </div>
-                        </form>
+                        marginBottom: '15px'
+                      }}>Follow Us</h6>
+                      <div className="social-links" style={{
+                        display: 'flex',
+                        gap: '12px',
+                        alignItems: 'center'
+                      }}>
+                        <a href="https://www.facebook.com/247cutbend/" target="_blank" rel="noopener noreferrer" style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          fontSize: '16px'
+                        }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#f15925';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(-3px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}>
+                          <i className="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          fontSize: '16px'
+                        }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#f15925';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(-3px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}>
+                          <i className="fab fa-x-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer" style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          fontSize: '16px'
+                        }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#f15925';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(-3px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}>
+                          <i className="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          fontSize: '16px'
+                        }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#f15925';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(-3px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}>
+                          <i className="fab fa-linkedin-in"></i>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -3391,94 +3518,6 @@ function Home() {
                     fontWeight: '600'
                   }}>Cutbend</a> All Rights Reserved.
                 </p>
-              </div>
-              <div className="col-md-6">
-                <ul className="footer-social" style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: 0,
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: '12px',
-                  alignItems: 'center'
-                }}>
-                  <li><a href="#" style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    transition: 'all 0.3s ease',
-                    fontSize: '14px',
-                    fontWeight: 'bold'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f15925';
-                      e.currentTarget.style.color = '#000';
-                      e.currentTarget.style.transform = 'translateY(-3px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.color = '#ffffff';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    f
-                  </a></li>
-                  <li><a href="#" style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    transition: 'all 0.3s ease'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f15925';
-                      e.currentTarget.style.color = '#000';
-                      e.currentTarget.style.transform = 'translateY(-3px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.color = '#ffffff';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    <i className="fab fa-x-twitter" style={{ fontSize: '14px' }}></i>
-                  </a></li>
-                  <li><a href="#" style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    transition: 'all 0.3s ease',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f15925';
-                      e.currentTarget.style.color = '#000';
-                      e.currentTarget.style.transform = 'translateY(-3px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.color = '#ffffff';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    in
-                  </a></li>
-                </ul>
               </div>
             </div>
           </div>
