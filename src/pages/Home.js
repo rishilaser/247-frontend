@@ -927,7 +927,7 @@ function Home() {
         {/* Hero Area */}
         <div className="hero-section" id='home'>
           <div className="hero-slider owl-carousel">
-            <div className="hero-single">
+            <div className="hero-single px-5">
               <video muted loop autoPlay>
                 <source src="/assets/img/cns.mp4" type="video/mp4" />
               </video>
@@ -979,7 +979,7 @@ function Home() {
         </div>}
 
         {/* Company Stats & Features Banner */}
-        <div className="company-stats-banner">
+        <div className="company-stats-banner px-5">
           {/* SVG Background Decoration */}
           <div className="stats-banner-svg-bg">
             <svg width="100%" height="100%" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -1028,7 +1028,7 @@ function Home() {
         </div>
 
         {/* Process Area */}
-        <div className="process-area" style={{ background: '#ffffff' }}>
+        <div className="process-area px-5" style={{ background: '#ffffff'}}>
           <div className="container">
             <div className="row">
               <div className="col-lg-10 mx-auto">
@@ -1344,7 +1344,7 @@ function Home() {
 
         <div className="row  mx-3">
           <div className="col-lg-12">
-            <div className="note-banner-content">
+            <div className="note-banner-content px-5">
               <div className="note-banner-icon">
                 <i className="fas fa-info-circle"></i>
               </div>
@@ -1357,7 +1357,7 @@ function Home() {
 
 
         {/* Counter Area */}
-        <div className="counter-area pt-20 pb-20">
+        <div className="counter-area pt-20 pb-20 px-3">
           <div className="container">
             <div className="row g-4 justify-content-center">
               <div className="col-md-6 col-lg-4 col-xl-3">
@@ -1481,7 +1481,7 @@ function Home() {
         </div>
 
         {/* About Area */}
-        <div className="about-area" id="about-area" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+        <div className="about-area" id="about-area px-5" style={{ padding:'40px' }}>
           <div className="container">
             <div className="row" style={{ display: 'flex', alignItems: 'stretch', margin: 0 }}>
               <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '10px' }}>
@@ -1496,7 +1496,7 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '10px' }}>
+              <div className="col-lg-6 px-5" style={{ display: 'flex', alignItems: 'stretch' }}>
                 <div className="about-right wow fadeInUp" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', margin: 0 }}>
                   <div className="site-heading">
                     <h3 className="site-title" style={{
@@ -2168,7 +2168,7 @@ function Home() {
         </div>}
 
         {/* Testimonial Area */}
-        <div className="testimonial-area ts-bg pt-50">
+        <div className="testimonial-area ts-bg pt-50 px-3">
           <div className="container">
             <div className="row">
               <div className="col-lg-4">
@@ -2297,7 +2297,7 @@ function Home() {
         </div>
 
         {/* Choose Area */}
-        <div className="choose-area bg">
+        <div className="choose-area bg px-3">
           <div className="container">
             <div className="row">
               <div className="col-lg-12">
@@ -2377,7 +2377,7 @@ function Home() {
         </div>
 
         {/* Quote Area */}
-        <div className="quote-area" id="quote-area">
+        <div className="quote-area px-5" id="quote-area">
           <div className="container">
             <div className="row align-items-center">
               <div className="col-lg-6 col-md-6">
