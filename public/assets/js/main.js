@@ -7,7 +7,7 @@ Version         : 1.0
 
 
 (function ($) {
-    
+
     "use strict";
 
     // multi level dropdown menu
@@ -45,11 +45,11 @@ Version         : 1.0
 
 
     // sidebar popup 
-    $('.sidebar-btn').on('click', function() {
+    $('.sidebar-btn').on('click', function () {
         $('.sidebar-popup').addClass('open');
         $('.sidebar-wrapper').addClass('open');
     });
-    $('.close-sidebar-popup, .sidebar-popup').on('click', function() {
+    $('.close-sidebar-popup, .sidebar-popup').on('click', function () {
         $('.sidebar-popup').removeClass('open');
         $('.sidebar-wrapper').removeClass('open');
     });
@@ -74,36 +74,36 @@ Version         : 1.0
             "<i class='far fa-long-arrow-right'></i>"
         ],
 
-        onInitialized: function(event) {
-        var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
-        doAnimations($firstAnimatingElements);
+        onInitialized: function (event) {
+            var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
+            doAnimations($firstAnimatingElements);
         },
 
-        onChanged: function(event){
-        var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
-        doAnimations($firstAnimatingElements);
+        onChanged: function (event) {
+            var $firstAnimatingElements = $('.owl-item').eq(event.item.index).find("[data-animation]");
+            doAnimations($firstAnimatingElements);
         }
     });
 
     //hero slider do animations
     function doAnimations(elements) {
-		var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-		elements.each(function () {
-			var $this = $(this);
-			var $animationDelay = $this.data('delay');
-			var $animationDuration = $this.data('duration');
-			var $animationType = 'animated ' + $this.data('animation');
-			$this.css({
-				'animation-delay': $animationDelay,
-				'-webkit-animation-delay': $animationDelay,
+        var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        elements.each(function () {
+            var $this = $(this);
+            var $animationDelay = $this.data('delay');
+            var $animationDuration = $this.data('duration');
+            var $animationType = 'animated ' + $this.data('animation');
+            $this.css({
+                'animation-delay': $animationDelay,
+                '-webkit-animation-delay': $animationDelay,
                 'animation-duration': $animationDuration,
                 '-webkit-animation-duration': $animationDuration,
-			});
-			$this.addClass($animationType).one(animationEndEvents, function () {
-				$this.removeClass($animationType);
-			});
-		});
-	}
+            });
+            $this.addClass($animationType).one(animationEndEvents, function () {
+                $this.removeClass($animationType);
+            });
+        });
+    }
 
 
 
@@ -312,9 +312,9 @@ Version         : 1.0
 
 
     // countdown
-    $('[data-countdown]').each(function() {
+    $('[data-countdown]').each(function () {
         let finalDate = $(this).data('countdown');
-        $(this).countdown(finalDate, function(event) {
+        $(this).countdown(finalDate, function (event) {
             $(this).html(event.strftime(
                 '<div class="time-wrap">' + '<span class="time"><span>%-D</span><span class="unit">Day%!D</span></span>' + ' <span class="divider">:</span> ' + '<span class="time"><span>%H</span><span class="unit">Hour%!H</span></span>' + ' <span class="divider">:</span> ' + '<span class="time"><span>%M</span><span class="unit">Min%!M</span></span>' + ' <span class="divider">:</span> ' + '<span class="time"><span>%S</span><span class="unit">Sec%!S</span></span>' + '</div>'
             ));
@@ -332,7 +332,7 @@ Version         : 1.0
 
 
     // auth password view
-    $('.password-view').on('click', function(){
+    $('.password-view').on('click', function () {
         var pwd = document.getElementById('password');
         if (pwd.type === "password") {
             pwd.type = "text";
@@ -344,10 +344,10 @@ Version         : 1.0
     })
 
 
-     // location map
+    // location map
     $(".location-map").find(".location-item").on("mouseenter", function () {
         $(".location-map").find(".location-item").removeClass("active"),
-        $(this).addClass("active");
+            $(this).addClass("active");
     });
 
 

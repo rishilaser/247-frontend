@@ -1,8 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path, options) => (e) => {
+    e.preventDefault();
+    navigate(path, options);
+    const hasTargetState = options?.state?.targetId || options?.state?.targetSequence;
+    if (!hasTargetState) {
+      window.scrollTo(0, 0);
+    }
+  };
+
   return (
     <footer className="bg-[#2d3992] text-white relative overflow-hidden" style={{ position: 'relative' }}>
       {/* Background Pattern */}
@@ -19,17 +30,17 @@ const Footer = () => {
 
       <div className="relative" style={{ zIndex: 1 }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: '60px', paddingBottom: '40px' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-12">
             {/* Company Info & Newsletter */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 mb-6 md:mb-0">
               <div className="mb-8">
-                <img 
-                  src="/Logo.png" 
-                  alt="247CutBend Logo" 
+                <img
+                  src="/Logo.png"
+                  alt="247CutBend Logo"
                   style={{ height: '50px', width: 'auto', marginBottom: '24px' }}
                 />
               </div>
-              
+
               <p style={{
                 color: 'rgba(255,255,255,0.85)',
                 fontSize: '0.9rem',
@@ -52,12 +63,14 @@ const Footer = () => {
                 <form action="#" onSubmit={(e) => { e.preventDefault(); }}>
                   <div style={{
                     display: 'flex',
+                    flexDirection: 'column',
                     background: '#ffffff',
                     borderRadius: '8px',
                     overflow: 'hidden',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    maxWidth: '450px'
-                  }}>
+                    maxWidth: '100%'
+                  }}
+                    className="newsletter-form">
                     <div style={{
                       padding: '10px 12px',
                       display: 'flex',
@@ -71,8 +84,8 @@ const Footer = () => {
                         alignItems: 'center'
                       }}></i>
                     </div>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       placeholder="Your Email"
                       required
                       style={{
@@ -94,26 +107,105 @@ const Footer = () => {
                       fontSize: '14px',
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      width: '100%',
+                      marginTop: '10px'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f15925';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#f15925';
-                    }}>
+                      className="newsletter-submit-btn"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#f15925';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#f15925';
+                      }}>
                       Subscribe
                     </button>
                   </div>
                 </form>
               </div>
+
+              {/* Social Media Icons */}
+              <div style={{ marginTop: '24px' }}>
+                <h6 style={{
+                  color: '#ffffff',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  marginBottom: '16px',
+                  letterSpacing: '0.3px'
+                }}>Follow Us</h6>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#f15925',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#000',
+                    transition: 'all 0.3s ease'
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
+                    <i className="fab fa-linkedin-in"></i>
+                  </a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#f15925',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#000',
+                    transition: 'all 0.3s ease'
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
+                    <i className="fab fa-twitter"></i>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#f15925',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#000',
+                    transition: 'all 0.3s ease'
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#f15925';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
+                    <i className="fab fa-facebook-f"></i>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Quick Links */}
-            <div>
+            <div className="mb-6 md:mb-0">
               <h4 style={{
                 color: '#ffffff',
-                fontSize: '1.1rem',
+                fontSize: 'clamp(1rem, 2vw, 1.1rem)',
                 fontWeight: '700',
                 marginBottom: '24px',
                 position: 'relative',
@@ -133,97 +225,112 @@ const Footer = () => {
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 <li style={{ marginBottom: '14px' }}>
-                  <Link to="/about" style={{
-                    color: 'rgba(255,255,255,0.85)',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-block'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
+                  <Link
+                    to="/"
+                    onClick={handleNavigate('/', { state: { targetId: 'about-area' } })}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
                     About Us
                   </Link>
                 </li>
-                <li style={{ marginBottom: '14px' }}>
-                  <Link to="/blog" style={{
-                    color: 'rgba(255,255,255,0.85)',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-block'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
+                {/* <li style={{ marginBottom: '14px' }}>
+                  <Link
+                    to="/blog-area"
+                    state={{ targetId: 'blog-area' }}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
                     Blogs
                   </Link>
                 </li>
                 <li style={{ marginBottom: '14px' }}>
-                  <Link to="/faq" style={{
-                    color: 'rgba(255,255,255,0.85)',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-block'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
+                  <Link
+                    to="/faq-area"
+                    state={{ targetId: 'faq-area' }}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
                     Faqs
                   </Link>
-                </li>
+                </li> */}
                 <li style={{ marginBottom: '14px' }}>
-                  <Link to="/terms" style={{
-                    color: 'rgba(255,255,255,0.85)',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-block'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
+                  <Link
+                    to="/terms-and-conditions"
+                    onClick={handleNavigate('/terms-and-conditions')}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
                     Terms & Conditions
                   </Link>
                 </li>
                 <li style={{ marginBottom: '14px' }}>
-                  <Link to="/privacy" style={{
-                    color: 'rgba(255,255,255,0.85)',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-block'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.transform = 'translateX(4px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }}>
+                  <Link
+                    to="/privacy-policy"
+                    onClick={handleNavigate('/privacy-policy')}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
                     Privacy Policy
                   </Link>
                 </li>
@@ -231,10 +338,10 @@ const Footer = () => {
             </div>
 
             {/* Get In Touch */}
-            <div>
+            <div className="mb-6 md:mb-0">
               <h4 style={{
                 color: '#ffffff',
-                fontSize: '1.1rem',
+                fontSize: 'clamp(1rem, 2vw, 1.1rem)',
                 fontWeight: '700',
                 marginBottom: '24px',
                 position: 'relative',
@@ -314,8 +421,8 @@ const Footer = () => {
                       textDecoration: 'none',
                       transition: 'color 0.2s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
                       +91 9004073379
                     </a>
                   </div>
@@ -350,8 +457,8 @@ const Footer = () => {
                       textDecoration: 'none',
                       transition: 'color 0.2s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
                       sales@247cutbend.in
                     </a>
                   </div>
@@ -377,8 +484,8 @@ const Footer = () => {
             </p>
           </div>
         </div>
-      </div>
-    </footer>
+      </div >
+    </footer >
   );
 };
 

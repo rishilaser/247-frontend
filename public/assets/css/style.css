@@ -161,8 +161,10 @@ Table of contents
   --heading-font: "Poppins", sans-serif;
 
   /* Brand colors */
-  --theme-color: #f15925;          /* primary brand orange */
-  --theme-color2: #2d3992;         /* secondary brand indigo */
+  --theme-color: #f15925;
+  /* primary brand orange */
+  --theme-color2: #2d3992;
+  /* secondary brand indigo */
 
   --theme-bg-light: #F6F6F6;
 
@@ -293,7 +295,7 @@ body {
     padding-left: 30px;
     padding-right: 30px;
   }
-  
+
   .header-top,
   .header,
   .navbar,
@@ -309,7 +311,7 @@ body {
     padding-left: 40px;
     padding-right: 40px;
   }
-  
+
   .header-top,
   .header,
   .navbar,
@@ -325,7 +327,7 @@ body {
     padding-left: 50px;
     padding-right: 50px;
   }
-  
+
   .header-top,
   .header,
   .navbar,
@@ -341,7 +343,7 @@ body {
     padding-left: 60px;
     padding-right: 60px;
   }
-  
+
   .header-top,
   .header,
   .navbar,
@@ -356,7 +358,7 @@ body {
 
 a {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   display: inline-block;
 
@@ -428,7 +430,7 @@ h5,
 
 h6 {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   margin: 0px;
 
@@ -1260,7 +1262,7 @@ label {
 
 
 
-.form-group .form-label{
+.form-group .form-label {
 
   color: var(--color-dark);
 
@@ -1270,7 +1272,7 @@ label {
 
 .form-group .form-control,
 
-.form-group .form-select{
+.form-group .form-select {
 
   padding: 14px 20px 14px 20px;
 
@@ -1286,7 +1288,7 @@ label {
 
 
 
-.form-group .form-control::placeholder{
+.form-group .form-control::placeholder {
 
   color: var(--body-text-color);
 
@@ -1296,7 +1298,7 @@ label {
 
 .form-group .form-control:focus,
 
-.form-group .form-select:focus{
+.form-group .form-select:focus {
 
   border-color: var(--theme-color);
 
@@ -1306,7 +1308,7 @@ label {
 
 
 
-.form-group .form-icon{
+.form-group .form-icon {
 
   position: relative;
 
@@ -1314,7 +1316,7 @@ label {
 
 
 
-.form-group .form-icon i{
+.form-group .form-icon i {
 
   position: absolute;
 
@@ -1332,7 +1334,7 @@ label {
 
 .form-group .form-icon .form-control,
 
-.form-group .form-icon .form-select{
+.form-group .form-icon .form-select {
 
   padding-left: 50px;
 
@@ -1340,7 +1342,7 @@ label {
 
 
 
-.form-check{
+.form-check {
 
   margin-bottom: 20px;
 
@@ -1348,7 +1350,7 @@ label {
 
 
 
-.form-check .form-check-input{
+.form-check .form-check-input {
 
   border-radius: 6px;
 
@@ -1360,7 +1362,7 @@ label {
 
 
 
-.form-check .form-check-label{
+.form-check .form-check-label {
 
   color: var(--color-dark);
 
@@ -1368,17 +1370,16 @@ label {
 
 
 
-.form-check .form-check-input:checked{
+.form-check .form-check-input:checked {
 
   background-color: var(--theme-color);
 
   border-color: var(--theme-color)
-
 }
 
 
 
-.form-check .form-check-input:focus{
+.form-check .form-check-input:focus {
 
   border-color: var(--theme-color);
 
@@ -1466,7 +1467,7 @@ label {
 
 
 
-.nice-select{
+.nice-select {
 
   width: 100%;
 
@@ -1488,7 +1489,7 @@ label {
 
 
 
-.nice-select::after{
+.nice-select::after {
 
   width: 9px;
 
@@ -1497,22 +1498,20 @@ label {
   right: 20px;
 
   margin-top: -6.5px
-
 }
 
 
 
-.nice-select:focus{
+.nice-select:focus {
 
   border-color: var(--theme-color);
 
   box-shadow: 0 0 0 .25rem rgba(246, 88, 1, .25)
-
 }
 
 
 
-.nice-select .list{
+.nice-select .list {
 
   width: 100%;
 
@@ -1544,7 +1543,7 @@ label {
 
 
 
-.form-icon .nice-select{
+.form-icon .nice-select {
 
   padding-left: 50px;
 
@@ -1698,7 +1697,7 @@ label {
 
 
 
-.site-title-tagline.light{
+.site-title-tagline.light {
 
   background: var(--color-white);
 
@@ -1706,7 +1705,7 @@ label {
 
 
 
-.site-title-tagline i{
+.site-title-tagline i {
 
   font-size: 16px;
 
@@ -1746,7 +1745,7 @@ label {
 
 
 
-.site-title span{
+.site-title span {
 
   color: var(--theme-color);
 
@@ -1936,7 +1935,7 @@ label {
 
 
 
-.theme-btn:hover{
+.theme-btn:hover {
 
   color: var(--color-white);
 
@@ -1956,7 +1955,7 @@ label {
 
 .theme-btn i,
 
-.theme-btn2 i{
+.theme-btn2 i {
 
   margin-left: 8px;
 
@@ -1970,7 +1969,7 @@ label {
 
 .theme-btn:hover i,
 
-.theme-btn2:hover i{
+.theme-btn2:hover i {
 
   transform: rotate(0deg);
 
@@ -1988,7 +1987,7 @@ label {
 
 
 
-.theme-btn2{
+.theme-btn2 {
 
   background: var(--theme-color2);
 
@@ -2006,7 +2005,7 @@ label {
 
 
 
-.theme-btn2:hover{
+.theme-btn2:hover {
 
   color: var(--color-white);
 
@@ -2038,7 +2037,7 @@ label {
 
 
 
-.header-top::before{
+.header-top::before {
 
   content: "";
 
@@ -2060,7 +2059,7 @@ label {
 
 
 
-.header-top::after{
+.header-top::after {
 
   content: "";
 
@@ -2120,15 +2119,14 @@ label {
 
 
 
-.header-top-list a:hover{
+.header-top-list a:hover {
 
   color: var(--color-white)
-
 }
 
 
 
-.header-top-list a i{
+.header-top-list a i {
 
   color: var(--color-white);
 
@@ -2154,7 +2152,7 @@ label {
 
 
 
-.header-top-social span{
+.header-top-social span {
 
   color: var(--color-white);
 
@@ -2192,7 +2190,7 @@ label {
 
 
 
-.header-top-lang .top-lang{
+.header-top-lang .top-lang {
 
   color: var(--color-white);
 
@@ -2200,7 +2198,7 @@ label {
 
 
 
-.header-top-lang .dropdown-menu{
+.header-top-lang .dropdown-menu {
 
   min-width: 60px;
 
@@ -2216,7 +2214,7 @@ label {
 
 
 
-.header-top-lang .dropdown-item{
+.header-top-lang .dropdown-item {
 
   color: var(--color-dark);
 
@@ -2226,7 +2224,7 @@ label {
 
 
 
-.header-top-lang .dropdown-item:hover{
+.header-top-lang .dropdown-item:hover {
 
   background: var(--theme-color);
 
@@ -2238,7 +2236,7 @@ label {
 
 @media all and (max-width: 1199px) {
 
-  .header-top::before{
+  .header-top::before {
 
     left: 0;
 
@@ -2248,7 +2246,7 @@ label {
 
 
 
-  .header-top::after{
+  .header-top::after {
 
     display: none;
 
@@ -2256,7 +2254,7 @@ label {
 
 
 
-  .header-top-social span{
+  .header-top-social span {
 
     display: none;
 
@@ -2268,7 +2266,7 @@ label {
 
 @media all and (max-width: 991px) {
 
-  .header-top::before{
+  .header-top::before {
 
     width: 53%;
 
@@ -2276,7 +2274,7 @@ label {
 
 
 
-  .header-top-list ul li:last-child{
+  .header-top-list ul li:last-child {
 
     display: none;
 
@@ -2290,7 +2288,7 @@ label {
 
   .header-top::before,
 
-  .header-top::after{
+  .header-top::after {
 
     display: none;
 
@@ -2298,7 +2296,7 @@ label {
 
 
 
- .header-top-right{
+  .header-top-right {
 
     margin-top: 15px;
 
@@ -2324,7 +2322,7 @@ label {
 
 .navbar {
 
-  background:#00000000;
+  background: #00000000;
 
   padding-top: 0px;
 
@@ -2427,11 +2425,11 @@ label {
 
   vertical-align: baseline;
 
-  font-family: 'Font Awesome 6 Pro';
+  font-family: 'Font Awesome 6 Free';
 
   content: "\f107";
 
-  font-weight: 600;
+  font-weight: 900;
 
   border: none;
 
@@ -2463,7 +2461,7 @@ label {
 
 
 
-  .navbar.fixed-top .nav-item .nav-link{
+  .navbar.fixed-top .nav-item .nav-link {
 
     /* color: var(--color-white); */
     color: var(--color-dark);
@@ -2688,7 +2686,7 @@ label {
 
 
 
-  .navbar.fixed-top .nav-right-link{
+  .navbar.fixed-top .nav-right-link {
 
     color: var(--color-dark);
 
@@ -2696,7 +2694,7 @@ label {
 
 
 
-  .navbar.fixed-top .nav-right-link:hover{
+  .navbar.fixed-top .nav-right-link:hover {
 
     color: var(--theme-color);
 
@@ -2704,7 +2702,7 @@ label {
 
 
 
-  .nav-right .call-wrap{
+  .nav-right .call-wrap {
 
     display: flex;
 
@@ -2718,7 +2716,7 @@ label {
 
 
 
-  .nav-right .call-wrap .icon{
+  .nav-right .call-wrap .icon {
 
     width: 45px;
 
@@ -2742,17 +2740,17 @@ label {
 
 
 
-  .nav-right .call-wrap .content span{
+  .nav-right .call-wrap .content span {
 
-   color: var(--theme-color);
+    color: var(--theme-color);
 
-   font-weight: 500;
+    font-weight: 500;
 
   }
 
 
 
-  .nav-right .call-wrap .content h6 a{
+  .nav-right .call-wrap .content h6 a {
 
     color: var(--color-dark);
 
@@ -2762,7 +2760,7 @@ label {
 
 
 
-  .nav-right .sidebar-btn span{
+  .nav-right .sidebar-btn span {
 
     display: block;
 
@@ -2782,7 +2780,7 @@ label {
 
 
 
-  .nav-right .sidebar-btn span:first-child{
+  .nav-right .sidebar-btn span:first-child {
 
     width: 10px;
 
@@ -2792,7 +2790,7 @@ label {
 
 
 
-  .nav-right .sidebar-btn span:nth-child(3){
+  .nav-right .sidebar-btn span:nth-child(3) {
 
     width: 15px;
 
@@ -2802,7 +2800,7 @@ label {
 
   /* navbar light */
 
-  .navbar.light .nav-item .nav-link{
+  .navbar.light .nav-item .nav-link {
 
     color: var(--color-white);
 
@@ -2810,7 +2808,7 @@ label {
 
 
 
-  .navbar.light.fixed-top .nav-item .nav-link{
+  .navbar.light.fixed-top .nav-item .nav-link {
 
     color: var(--color-dark);
 
@@ -2828,7 +2826,7 @@ label {
 
 
 
-  .navbar.light .nav-right-link{
+  .navbar.light .nav-right-link {
 
     color: var(--color-white);
 
@@ -2836,7 +2834,7 @@ label {
 
 
 
-  .navbar.light.fixed-top .nav-right-link{
+  .navbar.light.fixed-top .nav-right-link {
 
     color: var(--color-dark);
 
@@ -2844,7 +2842,7 @@ label {
 
 
 
-  .navbar.light .nav-right-link:hover{
+  .navbar.light .nav-right-link:hover {
 
     color: var(--theme-color);
 
@@ -2852,7 +2850,7 @@ label {
 
 
 
-  .navbar.light .nav-right .sidebar-btn span{
+  .navbar.light .nav-right .sidebar-btn span {
 
     border-color: var(--color-white);
 
@@ -2860,7 +2858,7 @@ label {
 
 
 
-  .navbar.light.fixed-top .nav-right .sidebar-btn span{
+  .navbar.light.fixed-top .nav-right .sidebar-btn span {
 
     border-color: var(--color-dark);
 
@@ -2890,7 +2888,7 @@ label {
 
   .nav-right .sidebar-btn,
 
-  .nav-right .call-wrap{
+  .nav-right .call-wrap {
 
     display: none;
 
@@ -2932,7 +2930,7 @@ label {
 
 
 
-  .navbar .offcanvas{
+  .navbar .offcanvas {
 
     width: 300px;
 
@@ -2940,7 +2938,7 @@ label {
 
 
 
-  .navbar .offcanvas-header .btn-close{
+  .navbar .offcanvas-header .btn-close {
 
     background: var(--color-red);
 
@@ -2966,7 +2964,7 @@ label {
 
 
 
-  .navbar .offcanvas-brand{
+  .navbar .offcanvas-brand {
 
     width: 150px;
 
@@ -2976,7 +2974,7 @@ label {
 
   .navbar .nav-item .nav-link {
 
-    color:  var(--color-dark);
+    color: var(--color-dark);
 
     font-weight: 700;
 
@@ -3034,7 +3032,7 @@ label {
 
 
 
-  .navbar-toggler span{
+  .navbar-toggler span {
 
     display: block;
 
@@ -3050,7 +3048,7 @@ label {
 
 
 
-  .navbar-toggler span:first-child{
+  .navbar-toggler span:first-child {
 
     margin-top: 0;
 
@@ -3058,7 +3056,7 @@ label {
 
 
 
-  .navbar-toggler span:nth-child(2){
+  .navbar-toggler span:nth-child(2) {
 
     width: 15px;
 
@@ -3092,7 +3090,7 @@ label {
 
 
 
-  .navbar .mobile-menu-right .nav-right-link:hover{
+  .navbar .mobile-menu-right .nav-right-link:hover {
 
     color: var(--theme-color);
 
@@ -3110,7 +3108,7 @@ label {
 
   /* navbar light */
 
-  .navbar.light .navbar-toggler span{
+  .navbar.light .navbar-toggler span {
 
     border-color: var(--color-white);
 
@@ -3118,7 +3116,7 @@ label {
 
 
 
-  .navbar.light.fixed-top .navbar-toggler span{
+  .navbar.light.fixed-top .navbar-toggler span {
 
     border-color: var(--color-dark);
 
@@ -3142,7 +3140,7 @@ label {
 
 
 
-  .navbar.light .mobile-menu-right .nav-right-link:hover{
+  .navbar.light .mobile-menu-right .nav-right-link:hover {
 
     color: var(--theme-color);
 
@@ -3206,7 +3204,7 @@ label {
 
 
 
-.navbar .nav-item .dropdown-submenu a:focus{
+.navbar .nav-item .dropdown-submenu a:focus {
 
   background: transparent;
 
@@ -3242,10 +3240,9 @@ label {
 
 @media all and (max-width: 991px) {
 
-  .navbar .nav-item .dropdown-menu .dropdown-item{
+  .navbar .nav-item .dropdown-menu .dropdown-item {
 
     color: var(--color-dark)
-
   }
 
 
@@ -3298,7 +3295,7 @@ label {
 
 
 
-@media all and (min-width: 992px){
+@media all and (min-width: 992px) {
 
   .nav-item.mega-menu {
 
@@ -3306,19 +3303,19 @@ label {
 
   }
 
-  
 
-  .navbar .nav-item.mega-menu .dropdown-menu{
+
+  .navbar .nav-item.mega-menu .dropdown-menu {
 
     width: 98.2%;
 
     left: 12px;
 
-  } 
+  }
 
 
 
-  .navbar .mega-menu .mega-content{
+  .navbar .mega-menu .mega-content {
 
     padding: 12px;
 
@@ -3326,7 +3323,7 @@ label {
 
 
 
-  .navbar .mega-menu .mega-menu-title{
+  .navbar .mega-menu .mega-menu-title {
 
     font-size: 17px;
 
@@ -3338,7 +3335,7 @@ label {
 
 
 
-  .navbar .mega-menu-img img{
+  .navbar .mega-menu-img img {
 
     border-radius: 15px;
 
@@ -3346,7 +3343,7 @@ label {
 
 
 
-  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item{
+  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item {
 
     padding-left: 0;
 
@@ -3354,7 +3351,7 @@ label {
 
 
 
-  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item::before{
+  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item::before {
 
     left: 0;
 
@@ -3362,7 +3359,7 @@ label {
 
 
 
-  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item:hover{
+  .navbar .nav-item.mega-menu .dropdown-menu .dropdown-item:hover {
 
     padding-left: 15px;
 
@@ -3380,7 +3377,7 @@ label {
 
 
 
-  .navbar .mega-menu.small .dropdown-menu{
+  .navbar .mega-menu.small .dropdown-menu {
 
     width: 340px;
 
@@ -3388,7 +3385,7 @@ label {
 
     transform: translateX(-50%);
 
-  } 
+  }
 
 }
 
@@ -3396,9 +3393,9 @@ label {
 
 
 
-@media all and (max-width: 991px){
+@media all and (max-width: 991px) {
 
-  .navbar .mega-menu-img{
+  .navbar .mega-menu-img {
 
     display: none;
 
@@ -3406,7 +3403,7 @@ label {
 
 
 
-  .navbar .mega-menu .mega-content h5{
+  .navbar .mega-menu .mega-content h5 {
 
     margin: 15px 0;
 
@@ -3528,7 +3525,7 @@ label {
 
 
 
-.search-active .search-popup .close-search span{
+.search-active .search-popup .close-search span {
 
   transition: var(--transition);
 
@@ -3536,7 +3533,7 @@ label {
 
 
 
-.search-active .search-popup .close-search:hover span{
+.search-active .search-popup .close-search:hover span {
 
   transform: rotate(180deg);
 
@@ -3622,7 +3619,7 @@ label {
 
 
 
-.search-popup .form-control::placeholder{
+.search-popup .form-control::placeholder {
 
   color: var(--color-white);
 
@@ -3664,7 +3661,7 @@ label {
 
 
 
-.search-popup .form-group button:hover{
+.search-popup .form-group button:hover {
 
   color: var(--theme-color);
 
@@ -3684,7 +3681,7 @@ label {
 
 
 
-.sidebar-popup{
+.sidebar-popup {
 
   padding: 20px;
 
@@ -3692,7 +3689,7 @@ label {
 
 
 
-.sidebar-popup .btn-close{
+.sidebar-popup .btn-close {
 
   background: var(--theme-color);
 
@@ -3720,7 +3717,7 @@ label {
 
 
 
-.sidebar-popup .btn-close:hover{
+.sidebar-popup .btn-close:hover {
 
   background: var(--color-red);
 
@@ -3728,7 +3725,7 @@ label {
 
 
 
-.sidebar-popup .btn-close i{
+.sidebar-popup .btn-close i {
 
   transition: var(--transition);
 
@@ -3736,7 +3733,7 @@ label {
 
 
 
-.sidebar-popup .btn-close:hover i{
+.sidebar-popup .btn-close:hover i {
 
   transform: rotate(180deg);
 
@@ -3744,7 +3741,7 @@ label {
 
 
 
-.sidebar-popup-logo img{
+.sidebar-popup-logo img {
 
   width: 180px;
 
@@ -3752,7 +3749,7 @@ label {
 
 
 
-.sidebar-popup-about{
+.sidebar-popup-about {
 
   margin-top: 10px;
 
@@ -3760,7 +3757,7 @@ label {
 
 
 
-.sidebar-popup-about h4{
+.sidebar-popup-about h4 {
 
   margin-bottom: 10px;
 
@@ -3770,7 +3767,7 @@ label {
 
 
 
-.sidebar-popup-contact{
+.sidebar-popup-contact {
 
   margin-top: 20px;
 
@@ -3778,7 +3775,7 @@ label {
 
 
 
-.sidebar-popup-contact h4{
+.sidebar-popup-contact h4 {
 
   margin-bottom: 15px;
 
@@ -3788,7 +3785,7 @@ label {
 
 
 
-.sidebar-popup-contact li{
+.sidebar-popup-contact li {
 
   display: flex;
 
@@ -3800,7 +3797,7 @@ label {
 
 
 
-.sidebar-popup-contact li .icon{
+.sidebar-popup-contact li .icon {
 
   width: 35px;
 
@@ -3820,7 +3817,7 @@ label {
 
 
 
-.sidebar-popup-contact li a:hover{
+.sidebar-popup-contact li a:hover {
 
   color: var(--theme-color);
 
@@ -3828,7 +3825,7 @@ label {
 
 
 
-.sidebar-popup-social{
+.sidebar-popup-social {
 
   margin-top: 25px;
 
@@ -3836,7 +3833,7 @@ label {
 
 
 
-.sidebar-popup-social h4{
+.sidebar-popup-social h4 {
 
   margin-bottom: 20px;
 
@@ -3846,7 +3843,7 @@ label {
 
 
 
-.sidebar-popup-social a{
+.sidebar-popup-social a {
 
   width: 40px;
 
@@ -3870,7 +3867,7 @@ label {
 
 
 
-.sidebar-popup-social a:hover{
+.sidebar-popup-social a:hover {
 
   background: var(--color-dark);
 
@@ -3988,7 +3985,7 @@ label {
 
 
 
-.hero-single .hero-content .hero-sub-title::before{
+.hero-single .hero-content .hero-sub-title::before {
 
   content: "";
 
@@ -4030,7 +4027,7 @@ label {
 
 
 
-.hero-single .hero-content .hero-title span{
+.hero-single .hero-content .hero-title span {
 
   color: transparent;
 
@@ -4126,7 +4123,7 @@ label {
 
 
 
-.hero-slider .owl-nav button i{
+.hero-slider .owl-nav button i {
 
   display: inline-block;
 
@@ -4154,7 +4151,7 @@ label {
 
 
 
-.hero-slider .owl-nav button:hover i{
+.hero-slider .owl-nav button:hover i {
 
   background: var(--theme-color);
 
@@ -4462,7 +4459,7 @@ label {
 
 
 
-.about-left{
+.about-left {
 
   position: relative;
 
@@ -4472,7 +4469,7 @@ label {
 
 
 
-.about-left::before{
+.about-left::before {
 
   content: "";
 
@@ -4496,7 +4493,7 @@ label {
 
 
 
-.about-img .img-1{
+.about-img .img-1 {
 
   width: 51%;
 
@@ -4508,7 +4505,7 @@ label {
 
 
 
-.about-img .img-2{
+.about-img .img-2 {
 
   position: absolute;
 
@@ -4536,7 +4533,7 @@ label {
 
 
 
-.about-experience{
+.about-experience {
 
   background: var(--theme-color);
 
@@ -4558,7 +4555,7 @@ label {
 
 
 
-.about-experience h5{
+.about-experience h5 {
 
   color: var(--color-white);
 
@@ -4568,7 +4565,7 @@ label {
 
 
 
-.about-experience p{
+.about-experience p {
 
   color: var(--color-white);
 
@@ -4594,7 +4591,7 @@ label {
 
 
 
-.about-item{
+.about-item {
 
   display: flex;
 
@@ -4606,7 +4603,7 @@ label {
 
 
 
-.about-item .icon{
+.about-item .icon {
 
   width: 65px;
 
@@ -4634,7 +4631,7 @@ video {
 
 }
 
-.about-item .icon img{
+.about-item .icon img {
 
   width: 40px;
 
@@ -4644,7 +4641,7 @@ video {
 
 
 
-.about-item .content{
+.about-item .content {
 
   flex: 1;
 
@@ -4652,7 +4649,7 @@ video {
 
 
 
-.about-item .content h6{
+.about-item .content h6 {
 
   color: var(--color-dark);
 
@@ -4664,7 +4661,7 @@ video {
 
 
 
-.about-text{
+.about-text {
 
   color: var(--body-text-color);
 
@@ -4688,7 +4685,7 @@ video {
 
 @media all and (max-width: 767px) {
 
-  .about-left{
+  .about-left {
 
     margin-right: 0;
 
@@ -4696,7 +4693,7 @@ video {
 
 
 
-  .about-left::before{
+  .about-left::before {
 
     top: 60px;
 
@@ -4714,7 +4711,7 @@ video {
 
 
 
-  .about-experience{
+  .about-experience {
 
     right: -7px;
 
@@ -4724,7 +4721,7 @@ video {
 
 
 
-  .about-item{
+  .about-item {
 
     border: none !important;
 
@@ -4746,7 +4743,7 @@ video {
 
 
 
-.feature-area{
+.feature-area {
 
   position: relative;
 
@@ -4756,7 +4753,7 @@ video {
 
 
 
-.fa-negative{
+.fa-negative {
 
   margin-top: -130px;
 
@@ -4770,7 +4767,7 @@ video {
 
 }
 
-.feature-item{
+.feature-item {
 
   display: flex;
 
@@ -4788,7 +4785,7 @@ video {
 
 
 
-.feature-item .count{
+.feature-item .count {
 
   position: absolute;
 
@@ -4814,7 +4811,7 @@ video {
 
 
 
-.feature-icon{
+.feature-icon {
 
   position: relative;
 
@@ -4842,7 +4839,7 @@ video {
 
 
 
-.feature-item:hover .feature-icon{
+.feature-item:hover .feature-icon {
 
   box-shadow: none;
 
@@ -4850,7 +4847,7 @@ video {
 
 
 
-.feature-icon img{
+.feature-icon img {
 
   width: 45px;
 
@@ -4860,7 +4857,7 @@ video {
 
 
 
-.feature-content{
+.feature-content {
 
   flex: 1;
 
@@ -4868,7 +4865,7 @@ video {
 
 
 
-.feature-content h4{
+.feature-content h4 {
 
   color: var(--color-white);
 
@@ -4876,7 +4873,7 @@ video {
 
 
 
-.feature-content p{
+.feature-content p {
 
   color: var(--color-white);
 
@@ -4888,7 +4885,7 @@ video {
 
 @media all and (max-width: 1199px) {
 
-  .fa-negative{
+  .fa-negative {
 
     margin-top: -70px;
 
@@ -4932,7 +4929,7 @@ video {
 
 
 
-.service-item .count{
+.service-item .count {
 
   position: absolute;
 
@@ -4956,7 +4953,7 @@ video {
 
 
 
-.service-img img{
+.service-img img {
 
   border-radius: 20px;
 
@@ -4964,7 +4961,7 @@ video {
 
 
 
-.service-icon{
+.service-icon {
 
   position: absolute;
 
@@ -4994,7 +4991,7 @@ video {
 
 
 
-.service-icon img{
+.service-icon img {
 
   width: 45px !important;
 
@@ -5004,7 +5001,7 @@ video {
 
 
 
-.service-item:hover .service-icon img{
+.service-item:hover .service-icon img {
 
   transform: rotateY(-360deg);
 
@@ -5012,7 +5009,7 @@ video {
 
 
 
-.service-content{
+.service-content {
 
   margin-top: 25px;
 
@@ -5020,7 +5017,7 @@ video {
 
 
 
-.service-content h4 a{
+.service-content h4 a {
 
   color: var(--color-dark);
 
@@ -5028,7 +5025,7 @@ video {
 
 
 
-.service-content h4 a:hover{
+.service-content h4 a:hover {
 
   color: var(--theme-color);
 
@@ -5036,7 +5033,7 @@ video {
 
 
 
-.service-content p{
+.service-content p {
 
   color: var(--body-text-color);
 
@@ -5050,7 +5047,7 @@ video {
 
 /* service area 2 */
 
-.service-area2 .service-item{
+.service-area2 .service-item {
 
   overflow: hidden;
 
@@ -5060,7 +5057,7 @@ video {
 
 
 
-.service-area2 .service-item .shape{
+.service-area2 .service-item .shape {
 
   position: absolute;
 
@@ -5076,7 +5073,7 @@ video {
 
 
 
-.service-area2 .service-icon{
+.service-area2 .service-icon {
 
   position: unset;
 
@@ -5092,7 +5089,7 @@ video {
 
 
 
-.service-area2 .service-icon::before{
+.service-area2 .service-icon::before {
 
   content: "";
 
@@ -5108,7 +5105,7 @@ video {
 
 
 
-.service-area2 .service-content{
+.service-area2 .service-content {
 
   margin-top: 20px;
 
@@ -5116,7 +5113,7 @@ video {
 
 
 
-.service-area2 .service-content p{
+.service-area2 .service-content p {
 
   margin-bottom: 20px;
 
@@ -5124,7 +5121,7 @@ video {
 
 
 
-.service-area2 .service-item .count{
+.service-area2 .service-item .count {
 
   font-size: 50px;
 
@@ -5136,7 +5133,7 @@ video {
 
 
 
-.service-area2 .service-title{
+.service-area2 .service-title {
 
   font-size: 20px;
 
@@ -5146,7 +5143,7 @@ video {
 
 /* service-slider */
 
-.service-slider .service-item{
+.service-slider .service-item {
 
   box-shadow: unset;
 
@@ -5154,7 +5151,7 @@ video {
 
 
 
-.service-slider .service-item:hover{
+.service-slider .service-item:hover {
 
   border-color: var(--theme-color);
 
@@ -5170,7 +5167,7 @@ video {
 
 
 
-.service-slider .owl-nav button{
+.service-slider .owl-nav button {
 
   position: absolute;
 
@@ -5184,7 +5181,7 @@ video {
 
 
 
-.service-slider .owl-nav button i{
+.service-slider .owl-nav button i {
 
   display: inline-block;
 
@@ -5212,13 +5209,13 @@ video {
 
 
 
-.service-slider .owl-nav button:hover i{
+.service-slider .owl-nav button:hover i {
 
   background: var(--theme-color);
 
   color: var(--color-white);
 
-} 
+}
 
 
 
@@ -5288,7 +5285,7 @@ video {
 
 
 
-.service-sidebar .widget{
+.service-sidebar .widget {
 
   background: var(--color-white);
 
@@ -5304,7 +5301,7 @@ video {
 
 
 
-.service-sidebar .widget .title{
+.service-sidebar .widget .title {
 
   position: relative;
 
@@ -5316,7 +5313,7 @@ video {
 
 
 
-.service-sidebar .widget .title::before{
+.service-sidebar .widget .title::before {
 
   content: "";
 
@@ -5338,7 +5335,7 @@ video {
 
 
 
-.service-sidebar .category a{
+.service-sidebar .category a {
 
   display: block;
 
@@ -5358,7 +5355,7 @@ video {
 
 
 
-.service-sidebar .category a:hover{
+.service-sidebar .category a:hover {
 
   color: var(--theme-color);
 
@@ -5368,7 +5365,7 @@ video {
 
 
 
-.service-sidebar .category a i{
+.service-sidebar .category a i {
 
   margin-right: 5px;
 
@@ -5376,7 +5373,7 @@ video {
 
 
 
-.service-sidebar .category a:last-child{
+.service-sidebar .category a:last-child {
 
   padding: 0;
 
@@ -5410,7 +5407,7 @@ video {
 
 
 
-.service-sidebar .service-download a:last-child{
+.service-sidebar .service-download a:last-child {
 
   margin-bottom: 0;
 
@@ -5418,7 +5415,7 @@ video {
 
 
 
-.service-sidebar .service-download a:hover{
+.service-sidebar .service-download a:hover {
 
   background: var(--theme-color);
 
@@ -5436,7 +5433,7 @@ video {
 
 
 
-.service-details img{
+.service-details img {
 
   border-radius: 30px;
 
@@ -5444,7 +5441,7 @@ video {
 
 
 
-.service-details .content h3{
+.service-details .content h3 {
 
   color: var(--color-dark);
 
@@ -5452,7 +5449,7 @@ video {
 
 
 
-.service-details .content .list li{
+.service-details .content .list li {
 
   font-weight: 500;
 
@@ -5526,11 +5523,13 @@ video {
 
 /* .process-item:last-child::after {display: none;} */
 
-.last-item::after {display: none !important;}
+.last-item::after {
+  display: none !important;
+}
 
 
 
-.process-item .count{
+.process-item .count {
 
   position: absolute;
 
@@ -5554,7 +5553,7 @@ video {
 
 
 
-.process-item .icon{
+.process-item .icon {
 
   width: 80px;
 
@@ -5576,7 +5575,7 @@ video {
 
 
 
-.process-item .icon img{
+.process-item .icon img {
 
   width: 45px;
 
@@ -5586,7 +5585,7 @@ video {
 
 
 
-.process-item .content{
+.process-item .content {
 
   margin-top: 15px;
 
@@ -5594,7 +5593,7 @@ video {
 
 
 
-.process-item .content h4{
+.process-item .content h4 {
 
   color: var(--color-dark);
 
@@ -5602,7 +5601,7 @@ video {
 
 
 
-.process-item .content p{
+.process-item .content p {
 
   color: var(--body-text-color);
 
@@ -5624,7 +5623,7 @@ video {
 
 
 
-.skill-img{
+.skill-img {
 
   position: relative;
 
@@ -5634,7 +5633,7 @@ video {
 
 
 
-.skill-img::before{
+.skill-img::before {
 
   content: "";
 
@@ -5662,7 +5661,7 @@ video {
 
 
 
-.skill-img img{
+.skill-img img {
 
   width: 90%;
 
@@ -5672,7 +5671,7 @@ video {
 
 
 
-.skill-text{
+.skill-text {
 
   margin-top: 10px;
 
@@ -5680,7 +5679,7 @@ video {
 
 
 
-.skill-progress{
+.skill-progress {
 
   margin-top: 25px;
 
@@ -5746,7 +5745,7 @@ video {
 
 @media all and (max-width: 767px) {
 
-  .skill-img::before{
+  .skill-img::before {
 
     right: 15px;
 
@@ -5768,7 +5767,7 @@ video {
 
 
 
-.portfolio-area{
+.portfolio-area {
 
   position: relative;
 
@@ -5776,7 +5775,7 @@ video {
 
 
 
-.pa-bg{
+.pa-bg {
 
   background: var(--theme-color2);
 
@@ -5784,7 +5783,7 @@ video {
 
 
 
-.pa-bg::before{
+.pa-bg::before {
 
   content: "";
 
@@ -5820,7 +5819,7 @@ video {
 
 
 
-.portfolio-img img{
+.portfolio-img img {
 
   border-radius: 30px 30px 30px 0;
 
@@ -5904,7 +5903,7 @@ video {
 
 
 
-.portfolio-link:hover{
+.portfolio-link:hover {
 
   color: var(--theme-color);
 
@@ -5922,7 +5921,7 @@ video {
 
 
 
-.portfolio-content{
+.portfolio-content {
 
   display: flex;
 
@@ -5946,7 +5945,7 @@ video {
 
 
 
-.portfolio-content small{
+.portfolio-content small {
 
   text-transform: uppercase;
 
@@ -5962,7 +5961,7 @@ video {
 
 
 
-.portfolio-content h4 a{
+.portfolio-content h4 a {
 
   font-size: 18px;
 
@@ -5972,7 +5971,7 @@ video {
 
 
 
-.portfolio-content h4 a:hover{
+.portfolio-content h4 a:hover {
 
   color: var(--theme-color);
 
@@ -5980,7 +5979,7 @@ video {
 
 
 
-.portfolio-arrow{
+.portfolio-arrow {
 
   width: 45px;
 
@@ -6000,7 +5999,7 @@ video {
 
 
 
-.portfolio-arrow i{
+.portfolio-arrow i {
 
   color: var(--color-white);
 
@@ -6012,7 +6011,7 @@ video {
 
 
 
-.portfolio-arrow:hover i{
+.portfolio-arrow:hover i {
 
   transform: rotate(0);
 
@@ -6024,7 +6023,7 @@ video {
 
 /* portfolio-slider */
 
-.portfolio-slider .portfolio-content{
+.portfolio-slider .portfolio-content {
 
   margin-bottom: 50px;
 
@@ -6040,7 +6039,7 @@ video {
 
 
 
-.portfolio-slider .owl-nav button{
+.portfolio-slider .owl-nav button {
 
   position: absolute;
 
@@ -6056,7 +6055,7 @@ video {
 
 
 
-.portfolio-slider .owl-nav button i{
+.portfolio-slider .owl-nav button i {
 
   display: inline-block;
 
@@ -6084,13 +6083,13 @@ video {
 
 
 
-.portfolio-slider .owl-nav button:hover i{
+.portfolio-slider .owl-nav button:hover i {
 
   background: var(--theme-color);
 
   color: var(--color-white);
 
-} 
+}
 
 
 
@@ -6158,7 +6157,7 @@ video {
 
 
 
-.portfolio-sidebar .widget{
+.portfolio-sidebar .widget {
 
   background: var(--color-white);
 
@@ -6174,7 +6173,7 @@ video {
 
 
 
-.portfolio-sidebar .widget .title{
+.portfolio-sidebar .widget .title {
 
   position: relative;
 
@@ -6186,7 +6185,7 @@ video {
 
 
 
-.portfolio-sidebar .widget .title::before{
+.portfolio-sidebar .widget .title::before {
 
   content: "";
 
@@ -6260,7 +6259,7 @@ video {
 
 
 
-.portfolio-sidebar .project h4{
+.portfolio-sidebar .project h4 {
 
   color: var(--color-white);
 
@@ -6278,7 +6277,7 @@ video {
 
 
 
-.portfolio-sidebar .project{
+.portfolio-sidebar .project {
 
   background: var(--theme-color);
 
@@ -6286,7 +6285,7 @@ video {
 
 
 
-.portfolio-details img{
+.portfolio-details img {
 
   border-radius: 30px;
 
@@ -6294,7 +6293,7 @@ video {
 
 
 
-.portfolio-details .content h3{
+.portfolio-details .content h3 {
 
   color: var(--color-dark);
 
@@ -6302,7 +6301,7 @@ video {
 
 
 
-.portfolio-details .content .list li{
+.portfolio-details .content .list li {
 
   font-weight: 500;
 
@@ -6338,7 +6337,7 @@ video {
 
 
 
-.pricing-area{
+.pricing-area {
 
   position: relative;
 
@@ -6364,17 +6363,17 @@ video {
 
 
 
-.pricing-item:hover{
+.pricing-item:hover {
 
   -webkit-transform: translateY(-10px);
 
   transform: translateY(-10px);
 
-} 
+}
 
 
 
-.pricing-header-wrap{
+.pricing-header-wrap {
 
   margin-bottom: 30px;
 
@@ -6382,7 +6381,7 @@ video {
 
 
 
-.pricing-header{
+.pricing-header {
 
   position: absolute;
 
@@ -6420,7 +6419,7 @@ video {
 
 
 
-.pricing-price{
+.pricing-price {
 
   display: flex;
 
@@ -6436,7 +6435,7 @@ video {
 
 
 
-.pricing-icon{
+.pricing-icon {
 
   width: 80px;
 
@@ -6456,7 +6455,7 @@ video {
 
 
 
-.pricing-icon img{
+.pricing-icon img {
 
   width: 50px;
 
@@ -6492,7 +6491,7 @@ video {
 
 
 
-.pricing-text{
+.pricing-text {
 
   color: var(--color-dark);
 
@@ -6542,17 +6541,17 @@ video {
 
 
 
-.pricing-feature li .not-include{
+.pricing-feature li .not-include {
 
   color: var(--body-text-color);
 
-} 
+}
 
 
 
 .pricing-item .theme-btn,
 
-.pricing-item .theme-btn2{
+.pricing-item .theme-btn2 {
 
   width: 100%;
 
@@ -6560,7 +6559,7 @@ video {
 
 
 
-.pricing-item.active{
+.pricing-item.active {
 
   outline: 3px solid var(--theme-color);
 
@@ -6568,7 +6567,7 @@ video {
 
 
 
-.pricing-item.active .pricing-header{
+.pricing-item.active .pricing-header {
 
   right: -3px;
 
@@ -6614,7 +6613,7 @@ video {
 
 
 
-.counter-area::before{
+.counter-area::before {
 
   content: "";
 
@@ -6664,7 +6663,7 @@ video {
 
 
 
-.counter-item::before{
+.counter-item::before {
 
   content: "";
 
@@ -6690,7 +6689,7 @@ video {
 
 
 
-.counter-item:hover::before{
+.counter-item:hover::before {
 
   width: 50%;
 
@@ -6720,7 +6719,7 @@ video {
 
 
 
-.counter-item .icon img{
+.counter-item .icon img {
 
   width: 48px;
 
@@ -6728,7 +6727,7 @@ video {
 
 
 
-.counter-item .info{
+.counter-item .info {
 
   display: flex;
 
@@ -6754,7 +6753,7 @@ video {
 
 
 
-.counter-item .unit{
+.counter-item .unit {
 
   font-size: 25px;
 
@@ -6788,7 +6787,7 @@ video {
 
 /* counter-area 2 */
 
-.counter-area2{
+.counter-area2 {
 
   position: relative;
 
@@ -6798,7 +6797,7 @@ video {
 
 
 
-.counter-area2 .counter-wrap{
+.counter-area2 .counter-wrap {
 
   margin-top: -80px;
 
@@ -6806,7 +6805,7 @@ video {
 
 
 
-.counter-area2 .counter-item{
+.counter-area2 .counter-item {
 
   background: var(--color-white);
 
@@ -6814,7 +6813,7 @@ video {
 
 
 
-.counter-area2 .counter-item .icon{
+.counter-area2 .counter-item .icon {
 
   background: var(--theme-color2);
 
@@ -6822,7 +6821,7 @@ video {
 
 
 
-.counter-area2 .counter-item .counter{
+.counter-area2 .counter-item .counter {
 
   color: var(--color-dark);
 
@@ -6830,7 +6829,7 @@ video {
 
 
 
-.counter-area2 .counter-item .title{
+.counter-area2 .counter-item .title {
 
   color: var(--color-dark);
 
@@ -6850,7 +6849,7 @@ video {
 
 
 
-.team-area{
+.team-area {
 
   position: relative;
 
@@ -6858,7 +6857,7 @@ video {
 
 
 
-.team-img{
+.team-img {
 
   position: relative;
 
@@ -6870,7 +6869,7 @@ video {
 
 
 
-.team-img img{
+.team-img img {
 
   border-radius: 40px;
 
@@ -6878,7 +6877,7 @@ video {
 
 
 
-.team-item:hover .team-img img{
+.team-item:hover .team-img img {
 
   transform: scale(1.1);
 
@@ -6886,7 +6885,7 @@ video {
 
 
 
-.team-social-btn{
+.team-social-btn {
 
   position: absolute;
 
@@ -6910,7 +6909,7 @@ video {
 
 
 
-.team-social-btn::before{
+.team-social-btn::before {
 
   content: "";
 
@@ -6934,7 +6933,7 @@ video {
 
 
 
-.team-social-btn::after{
+.team-social-btn::after {
 
   content: "";
 
@@ -6958,7 +6957,7 @@ video {
 
 
 
-.team-social-btn button{
+.team-social-btn button {
 
   width: 42px;
 
@@ -6982,7 +6981,7 @@ video {
 
 
 
-.team-social{
+.team-social {
 
   position: absolute;
 
@@ -7028,15 +7027,15 @@ video {
 
 .team-social a:hover {
 
- background: var(--theme-color);
+  background: var(--theme-color);
 
- color: var(--color-white);
+  color: var(--color-white);
 
 }
 
 
 
-.team-social-wrap:hover .team-social{
+.team-social-wrap:hover .team-social {
 
   opacity: 1;
 
@@ -7048,7 +7047,7 @@ video {
 
 
 
-.team-content{
+.team-content {
 
   margin-top: 10px;
 
@@ -7058,7 +7057,7 @@ video {
 
 
 
-.team-content h4 a{
+.team-content h4 a {
 
   color: var(--color-dark);
 
@@ -7068,7 +7067,7 @@ video {
 
 
 
-.team-content h4 a:hover{
+.team-content h4 a:hover {
 
   color: var(--theme-color);
 
@@ -7076,7 +7075,7 @@ video {
 
 
 
-.team-content span{
+.team-content span {
 
   color: var(--theme-color);
 
@@ -7098,7 +7097,7 @@ video {
 
 
 
-.video-area{
+.video-area {
 
   position: relative;
 
@@ -7220,7 +7219,7 @@ video {
 
 
 
-.quote-area{
+.quote-area {
   position: relative;
   background-image: url(/assets/img/1.jpg);
   background-size: cover;
@@ -7245,7 +7244,7 @@ video {
   z-index: 2;
 }
 
-.quote-content{
+.quote-content {
   background: #ffffff;
   border-radius: 20px;
   padding: 25px 28px;
@@ -7255,11 +7254,11 @@ video {
   margin-left: auto;
 }
 
-.quote-head{
+.quote-head {
   margin-bottom: 18px;
 }
 
-.quote-head h3{
+.quote-head h3 {
   font-size: 1.8rem;
   font-weight: 700;
   color: #2d3992;
@@ -7272,7 +7271,7 @@ video {
   color: #f15925;
 }
 
-.quote-head p{
+.quote-head p {
   font-size: 0.9rem;
   color: #666;
   line-height: 1.5;
@@ -7283,7 +7282,7 @@ video {
   width: 100%;
 }
 
-.quote-form .row > [class*="col-"] {
+.quote-form .row>[class*="col-"] {
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -7395,7 +7394,7 @@ video {
   transform: translateX(3px);
 }
 
-.quote-img img{
+.quote-img img {
   border-radius: 15px;
 }
 
@@ -7409,35 +7408,35 @@ video {
   .quote-area {
     padding: 0;
   }
-  
+
   .quote-text-content {
     padding-right: 0;
     margin-bottom: 30px;
     text-align: center;
   }
-  
+
   .quote-text-content h2 {
     font-size: 2rem !important;
   }
-  
+
   .quote-text-content p {
     font-size: 1rem !important;
   }
-  
+
   .quote-content {
     padding: 22px 24px;
     max-width: 100%;
   }
-  
+
   .quote-head {
     margin-bottom: 15px;
   }
-  
+
   .quote-head h3 {
     font-size: 1.6rem;
     margin-bottom: 8px;
   }
-  
+
   .quote-head p {
     font-size: 0.85rem;
   }
@@ -7447,63 +7446,63 @@ video {
   .quote-area {
     padding: 0;
   }
-  
+
   .quote-text-content {
     padding-right: 0;
     margin-bottom: 25px;
     text-align: center;
   }
-  
+
   .quote-text-content h2 {
     font-size: 1.75rem !important;
     margin-bottom: 15px !important;
   }
-  
+
   .quote-text-content p {
     font-size: 0.95rem !important;
   }
-  
+
   .quote-content {
     padding: 20px 18px;
     border-radius: 16px;
     max-width: 100%;
   }
-  
+
   .quote-head {
     margin-bottom: 12px;
   }
-  
+
   .quote-head h3 {
     font-size: 1.4rem;
     margin-bottom: 6px;
   }
-  
+
   .quote-head p {
     font-size: 0.8rem;
   }
-  
+
   .quote-form .form-group {
     margin-bottom: 10px;
   }
-  
+
   .quote-form .form-control {
     padding: 9px 12px 9px 38px;
     font-size: 13px;
   }
-  
+
   .quote-form .form-icon i {
     left: 12px;
     font-size: 14px;
   }
-  
+
   .quote-form .form-icon i.fa-comment-lines {
     top: 12px;
   }
-  
+
   .quote-form textarea.form-control {
     min-height: 80px;
   }
-  
+
   .quote-form .theme-btn {
     padding: 10px 20px;
     font-size: 14px;
@@ -7516,7 +7515,6 @@ Quote Banner / Delivery Banner
 .quote-banner {
   background: #ffffff;
   padding: 70px 0;
-  position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -7524,12 +7522,11 @@ Quote Banner / Delivery Banner
 
 .quote-banner::before {
   content: "";
-  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
+  background:
     radial-gradient(ellipse at 20% 50%, rgba(241, 89, 37, 0.08) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 60%);
   pointer-events: none;
@@ -7538,16 +7535,15 @@ Quote Banner / Delivery Banner
 
 .quote-banner::after {
   content: "";
-  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(241, 89, 37, 0.03) 0%, 
-    transparent 30%, 
-    transparent 70%, 
-    rgba(79, 70, 229, 0.03) 100%);
+  background: linear-gradient(135deg,
+      rgba(241, 89, 37, 0.03) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(79, 70, 229, 0.03) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -7570,9 +7566,12 @@ Quote Banner / Delivery Banner
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(-50%) translateX(0) scale(1);
   }
+
   50% {
     transform: translateY(-50%) translateX(-15px) scale(1.05);
   }
@@ -7583,7 +7582,7 @@ Quote Banner / Delivery Banner
     right: 1%;
     opacity: 0.1;
   }
-  
+
   .quote-banner-svg-decoration svg {
     width: 200px;
     height: 200px;
@@ -7597,9 +7596,7 @@ Quote Banner / Delivery Banner
 }
 
 .quote-banner-container {
-  position: relative;
   z-index: 2;
-  padding: 0 40px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -7612,121 +7609,26 @@ Quote Banner / Delivery Banner
   text-align: left;
 }
 
-.quote-banner-icon {
-  width: auto;
-  height: auto;
-  padding-right: 0;
-  min-width: 200px;
-  background: transparent;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-}
-
-/* Truck loader inside quote banner */
-.quote-banner-icon .loader {
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quote-banner-icon .truckWrapper {
-  width: 200px;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  align-items: center;
-  justify-content: flex-end;
-  overflow-x: hidden;
-}
-
-.quote-banner-icon .truckBody {
-  width: 130px;
-  height: fit-content;
-  margin-bottom: 6px;
-  animation: motion 1s linear infinite;
-}
-
 @keyframes motion {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(3px);
   }
+
   100% {
     transform: translateY(0px);
   }
 }
 
-.quote-banner-icon .truckTires {
-  width: 130px;
-  height: fit-content;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px 0 15px;
-  position: absolute;
-  bottom: 0;
-}
-
-.quote-banner-icon .truckTires svg {
-  width: 24px;
-}
-
-.quote-banner-icon .road {
-  width: 100%;
-  height: 1.5px;
-  background-color: #282828;
-  position: relative;
-  bottom: 0;
-  align-self: flex-end;
-  border-radius: 3px;
-}
-
-.quote-banner-icon .road::before {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 100%;
-  background-color: #282828;
-  right: -50%;
-  border-radius: 3px;
-  animation: roadAnimation 1.4s linear infinite;
-  border-left: 10px solid white;
-}
-
-.quote-banner-icon .road::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 100%;
-  background-color: #282828;
-  right: -65%;
-  border-radius: 3px;
-  animation: roadAnimation 1.4s linear infinite;
-  border-left: 4px solid white;
-}
-
-.quote-banner-icon .lampPost {
-  position: absolute;
-  bottom: 0;
-  right: -90%;
-  height: 90px;
-  animation: roadAnimation 1.4s linear infinite;
-}
 
 @keyframes roadAnimation {
   0% {
     transform: translateX(0px);
   }
+
   100% {
     transform: translateX(-350px);
   }
@@ -7734,39 +7636,31 @@ Quote Banner / Delivery Banner
 
 .quote-banner-text {
   flex: 1;
-  max-width: 850px;
-  position: relative;
-  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Center the container */
+  text-align: center;
+  /* Center the text */
 }
 
 .quote-banner-text p {
-  font-size: 1.4rem;
+  font-size: 22px;
   color: #2d3992;
   font-weight: 500;
-  line-height: 1.75;
+  line-height: 1.6;
   margin: 0;
   text-shadow: none;
-  letter-spacing: 0.2px;
-  position: relative;
-  padding-left: 30px;
+  letter-spacing: 0.5px;
+  font-family: 'Roboto', sans-serif;
+  font-style: italic;
 }
 
 .quote-banner-text p::before {
-  content: '"';
-  position: absolute;
-  left: 0;
-  top: -8px;
-  font-size: 4rem;
-  color: rgba(241, 89, 37, 0.3);
-  font-family: Georgia, serif;
-  line-height: 1;
-  font-weight: 300;
+  content: none;
 }
 
 .quote-banner-text p::after {
-  content: '"';
-  font-size: 2rem;
-  color: rgba(79, 70, 229, 0.3);
+  content: none;
   font-family: Georgia, serif;
   margin-left: 5px;
 }
@@ -7775,7 +7669,7 @@ Quote Banner / Delivery Banner
   color: #f15925;
   font-weight: 700;
   background: rgba(241, 89, 37, 0.1);
-  padding: 4px 12px;
+  /* padding: 4px 12px; */
   border-radius: 6px;
   display: inline-block;
   text-shadow: none;
@@ -7786,35 +7680,31 @@ Quote Banner / Delivery Banner
   .quote-banner {
     padding: 40px 0;
   }
-  
+
   .quote-banner-container {
     padding: 0 20px;
   }
-  
+
   .quote-banner-content {
     gap: 30px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
-  .quote-banner-icon {
-    min-width: 150px;
-  }
-  
+
   .quote-banner-text {
     text-align: center;
     max-width: 100%;
   }
-  
+
   .quote-banner-text p {
     font-size: 1.2rem;
     padding-left: 0;
   }
-  
+
   .quote-banner-text p::before {
     display: none;
   }
-  
+
   .quote-banner-text p::after {
     display: none;
   }
@@ -7824,36 +7714,31 @@ Quote Banner / Delivery Banner
   .quote-banner {
     padding: 40px 0;
   }
-  
+
   .quote-banner-container {
     padding: 0 20px;
   }
-  
+
   .quote-banner-content {
     flex-direction: column;
     gap: 30px;
     text-align: center;
   }
-  
-  .quote-banner-icon {
-    min-width: 140px;
-    justify-content: center;
-  }
-  
+
   .quote-banner-text {
     text-align: center;
   }
-  
+
   .quote-banner-text p {
     font-size: 1.15rem;
     line-height: 1.7;
     padding-left: 0;
   }
-  
+
   .quote-banner-text p::before {
     display: none;
   }
-  
+
   .quote-banner-text p::after {
     display: none;
   }
@@ -7984,28 +7869,28 @@ Company Stats & Features Banner
   .company-stats-banner {
     padding: 0;
   }
-  
+
   .stats-banner-content {
     flex-wrap: wrap;
     gap: 25px;
   }
-  
+
   .stat-item {
     flex: 0 0 calc(33.333% - 17px);
     min-width: 200px;
     padding: 25px 20px;
   }
-  
+
   .stat-icon-wrapper {
     width: 70px;
     height: 70px;
     margin-bottom: 20px;
   }
-  
+
   .stat-icon-wrapper i {
     font-size: 28px;
   }
-  
+
   .stat-text {
     font-size: 1.05rem;
   }
@@ -8015,28 +7900,28 @@ Company Stats & Features Banner
   .company-stats-banner {
     padding: 0;
   }
-  
+
   .stats-banner-content {
     flex-direction: column;
     gap: 25px;
   }
-  
+
   .stat-item {
     min-width: 100%;
     max-width: 100%;
     padding: 30px 20px;
   }
-  
+
   .stat-icon-wrapper {
     width: 70px;
     height: 70px;
     margin-bottom: 20px;
   }
-  
+
   .stat-icon-wrapper i {
     font-size: 28px;
   }
-  
+
   .stat-text {
     font-size: 1.05rem;
   }
@@ -8058,7 +7943,7 @@ Pre-Footer CTA Sectiongr
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, rgba(241, 89, 37, 0.15) 0%, transparent 50%),
     radial-gradient(circle at 90% 80%, rgba(241, 89, 37, 0.15) 0%, transparent 50%);
   pointer-events: none;
@@ -8147,15 +8032,15 @@ Pre-Footer CTA Sectiongr
   .pre-footer-cta {
     padding: 0;
   }
-  
+
   .pre-footer-cta-heading {
     font-size: 2rem;
   }
-  
+
   .pre-footer-cta-subheading {
     font-size: 1.1rem;
   }
-  
+
   .pre-footer-cta-description {
     background: linear-gradient(135deg, #2d3992 0%, #1a2a5c 100%);
     -webkit-background-clip: text;
@@ -8164,7 +8049,7 @@ Pre-Footer CTA Sectiongr
     font-size: 1rem;
     margin-bottom: 30px;
   }
-  
+
   .pre-footer-cta-button {
     padding: 14px 35px;
     font-size: 1rem;
@@ -8175,21 +8060,21 @@ Pre-Footer CTA Sectiongr
   .pre-footer-cta {
     padding: 0;
   }
-  
+
   .pre-footer-cta-heading {
     font-size: 1.7rem;
     margin-bottom: 12px;
   }
-  
+
   .pre-footer-cta-subheading {
     font-size: 1rem;
     margin-bottom: 15px;
   }
-  
+
   .pre-footer-cta-subheading .divider {
     margin: 0 8px;
   }
-  
+
   .pre-footer-cta-description {
     background: linear-gradient(135deg, #2d3992 0%, #1a2a5c 100%);
     -webkit-background-clip: text;
@@ -8198,7 +8083,7 @@ Pre-Footer CTA Sectiongr
     font-size: 0.95rem;
     margin-bottom: 25px;
   }
-  
+
   .pre-footer-cta-button {
     padding: 12px 30px;
     font-size: 0.95rem;
@@ -8219,7 +8104,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-area{
+.cta-area {
 
   overflow: hidden;
 
@@ -8227,7 +8112,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.ct-negative{
+.ct-negative {
 
   margin-top: -120px;
 
@@ -8235,7 +8120,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-wrap{
+.cta-wrap {
 
   position: relative;
 
@@ -8251,7 +8136,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-wrap::before{
+.cta-wrap::before {
 
   content: "";
 
@@ -8281,7 +8166,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-wrap .shape-1{
+.cta-wrap .shape-1 {
 
   position: absolute;
 
@@ -8305,7 +8190,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-wrap .shape-2{
+.cta-wrap .shape-2 {
 
   position: absolute;
 
@@ -8329,7 +8214,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-content{
+.cta-content {
 
   text-align: center;
 
@@ -8337,7 +8222,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-content h1{
+.cta-content h1 {
 
   color: var(--color-white);
 
@@ -8351,7 +8236,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-content p{
+.cta-content p {
 
   color: var(--color-white);
 
@@ -8363,7 +8248,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.cta-content .theme-btn{
+.cta-content .theme-btn {
 
   background: var(--theme-color);
 
@@ -8375,7 +8260,7 @@ Pre-Footer CTA Sectiongr
 
 @media all and (max-width: 991px) {
 
-  .cta-wrap{
+  .cta-wrap {
 
     padding: 50px 25px;
 
@@ -8387,7 +8272,7 @@ Pre-Footer CTA Sectiongr
 
 @media all and (max-width: 767px) {
 
-  .cta-wrap .shape-1{
+  .cta-wrap .shape-1 {
 
     display: none;
 
@@ -8409,7 +8294,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.partner-area{
+.partner-area {
 
   position: relative;
 
@@ -8419,7 +8304,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.pt-negative{
+.pt-negative {
 
   margin-top: -60px;
 
@@ -8427,7 +8312,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.partner-wrap{
+.partner-wrap {
 
   background: var(--color-white);
 
@@ -8455,7 +8340,7 @@ Pre-Footer CTA Sectiongr
 
 
 
-.choose-area{
+.choose-area {
   position: relative;
   background: #ffffff;
   padding-top: 0;
@@ -8515,7 +8400,7 @@ Pre-Footer CTA Sectiongr
   padding-right: 15px;
 }
 
-.choose-content{
+.choose-content {
   margin: 0;
 }
 
@@ -8525,7 +8410,7 @@ Pre-Footer CTA Sectiongr
   gap: 10px;
 }
 
-.choose-item{
+.choose-item {
   display: flex;
   align-items: flex-start;
   gap: 15px;
@@ -8540,7 +8425,7 @@ Pre-Footer CTA Sectiongr
   transform: translateX(5px);
 }
 
-.choose-item-icon{
+.choose-item-icon {
   position: relative;
   width: 50px;
   height: 50px;
@@ -8561,7 +8446,7 @@ Pre-Footer CTA Sectiongr
   border-color: #f15925;
 }
 
-.choose-item-icon img{
+.choose-item-icon img {
   width: 26px;
   height: 26px;
   filter: brightness(0) saturate(100%) invert(49%) sepia(94%) saturate(1352%) hue-rotate(349deg) brightness(104%) contrast(96%);
@@ -8572,13 +8457,13 @@ Pre-Footer CTA Sectiongr
   transform: scale(1.05);
 }
 
-.choose-item-info{
+.choose-item-info {
   flex: 1;
   padding: 0;
   margin: 0;
 }
 
-.choose-item-info h4{
+.choose-item-info h4 {
   font-size: 1.1rem;
   font-weight: 700;
   color: #2d3992;
@@ -8587,14 +8472,14 @@ Pre-Footer CTA Sectiongr
   line-height: 1.2;
 }
 
-.choose-item-info p{
+.choose-item-info p {
   font-size: 0.85rem;
   color: #666;
   line-height: 1.4;
   margin: 0;
 }
 
-.choose-img{
+.choose-img {
   position: relative;
   margin: 0;
   display: flex;
@@ -8620,16 +8505,16 @@ Pre-Footer CTA Sectiongr
   .choose-area .site-title {
     font-size: 2.2rem;
   }
-  
+
   .choose-content-wrap {
     gap: 18px;
     margin-bottom: 0;
   }
-  
+
   .choose-img {
     min-height: 400px;
   }
-  
+
   .choose-img img {
     width: 100%;
     max-width: 100%;
@@ -8643,41 +8528,41 @@ Pre-Footer CTA Sectiongr
     padding-top: 0;
     padding-bottom: 0;
   }
-  
+
   .choose-area .site-title {
     font-size: 1.8rem;
   }
-  
+
   .choose-item {
     gap: 12px;
     padding: 10px;
   }
-  
+
   .choose-item-icon {
     width: 45px;
     height: 45px;
     min-width: 45px;
   }
-  
+
   .choose-item-icon img {
     width: 24px;
     height: 24px;
   }
-  
+
   .choose-img {
     min-height: 300px;
   }
-  
+
   .choose-img img {
     max-height: 300px;
     width: 100%;
     max-width: 100%;
   }
-  
+
   .choose-item-info h4 {
     font-size: 1rem;
   }
-  
+
   .choose-item-info p {
     font-size: 0.8rem;
   }
@@ -8732,11 +8617,11 @@ Note Box / Info Banner
     height: 22px;
     min-width: 22px;
   }
-  
+
   .note-banner-icon i {
     font-size: 18px;
   }
-  
+
   .note-banner-text {
     font-size: 0.8rem;
   }
@@ -8746,17 +8631,17 @@ Note Box / Info Banner
   .note-banner-content {
     margin: 20px 0;
   }
-  
+
   .note-banner-icon {
     width: 20px;
     height: 20px;
     min-width: 20px;
   }
-  
+
   .note-banner-icon i {
     font-size: 16px;
   }
-  
+
   .note-banner-text {
     font-size: 0.75rem;
   }
@@ -8768,7 +8653,7 @@ Note Box / Info Banner
 
 @media all and (max-width: 991px) {
 
-  .choose-img img{
+  .choose-img img {
 
     width: 100%;
 
@@ -8802,7 +8687,7 @@ Note Box / Info Banner
 
 
 
-.ts-bg{
+.ts-bg {
 
   background: var(--theme-color2);
 
@@ -8810,7 +8695,7 @@ Note Box / Info Banner
 
 
 
-.ts-bg::before{
+.ts-bg::before {
 
   content: "";
 
@@ -8856,7 +8741,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-quote p{
+.testimonial-quote p {
 
   position: relative;
 
@@ -8914,7 +8799,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-area.bg .testimonial-author-img img{
+.testimonial-area.bg .testimonial-author-img img {
 
   border-color: var(--theme-bg-light);
 
@@ -8922,7 +8807,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-author-info{
+.testimonial-author-info {
 
   position: relative;
 
@@ -8934,7 +8819,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-author-info::before{
+.testimonial-author-info::before {
 
   content: "";
 
@@ -8974,7 +8859,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-quote-icon{
+.testimonial-quote-icon {
 
   position: absolute;
 
@@ -8990,7 +8875,7 @@ Note Box / Info Banner
 
 
 
-.testimonial-shadow-icon img{
+.testimonial-shadow-icon img {
 
   width: 200px !important;
 
@@ -9006,10 +8891,9 @@ Note Box / Info Banner
 
 
 
-.testimonial-area.bg .testimonial-author-info h4{
+.testimonial-area.bg .testimonial-author-info h4 {
 
   color: var(--theme-color2)
-
 }
 
 
@@ -9147,7 +9031,6 @@ Note Box / Info Banner
   opacity: 0.9;
 
   visibility: visible
-
 }
 
 
@@ -9220,7 +9103,7 @@ Note Box / Info Banner
 
 
 
-.blog-area{
+.blog-area {
 
   position: relative;
 
@@ -9228,7 +9111,7 @@ Note Box / Info Banner
 
 
 
-.blog-item{
+.blog-item {
 
   padding: 20px;
 
@@ -9244,7 +9127,7 @@ Note Box / Info Banner
 
 
 
-.blog-item-img{
+.blog-item-img {
 
   border-radius: 25px;
 
@@ -9264,15 +9147,15 @@ Note Box / Info Banner
 
 
 
-.blog-item:hover .blog-item-img img{
+.blog-item:hover .blog-item-img img {
 
   transform: scale(1.1);
 
-} 
+}
 
 
 
-.blog-date{
+.blog-date {
 
   position: absolute;
 
@@ -9296,7 +9179,7 @@ Note Box / Info Banner
 
 
 
-.blog-date strong{
+.blog-date strong {
 
   font-size: 20px;
 
@@ -9310,7 +9193,7 @@ Note Box / Info Banner
 
 
 
-.blog-date span{
+.blog-date span {
 
   font-weight: 500;
 
@@ -9368,7 +9251,7 @@ Note Box / Info Banner
 
 
 
-.blog-item-meta a{
+.blog-item-meta a {
 
   color: var(--color-dark);
 
@@ -9444,7 +9327,7 @@ Note Box / Info Banner
 
 
 
-.blog-single{
+.blog-single {
 
   position: relative;
 
@@ -9498,7 +9381,7 @@ Note Box / Info Banner
 
 
 
-.blog-single .blog-meta-left ul li{
+.blog-single .blog-meta-left ul li {
 
   color: var(--color-dark);
 
@@ -9542,7 +9425,7 @@ Note Box / Info Banner
 
   font-size: 34px;
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   font-weight: 700;
 
@@ -9574,7 +9457,7 @@ Note Box / Info Banner
 
 
 
-.blog-single .blockqoute .blockqoute-icon{
+.blog-single .blockqoute .blockqoute-icon {
 
   position: absolute;
 
@@ -9640,7 +9523,7 @@ Note Box / Info Banner
 
 .blog-single .blog-details-tag h5 {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
 }
 
@@ -9662,7 +9545,7 @@ Note Box / Info Banner
 
   background: var(--theme-bg-light);
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   padding: 5px 18px;
 
@@ -9876,7 +9759,7 @@ Note Box / Info Banner
 
 .blog-single .blog-comment-content a:hover {
 
-  color:  var(--theme-color2);
+  color: var(--theme-color2);
 
 }
 
@@ -9884,7 +9767,7 @@ Note Box / Info Banner
 
 .blog-single .blog-comment-content h5 {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   font-weight: 700;
 
@@ -9960,7 +9843,7 @@ Note Box / Info Banner
 
 
 
-  .blog-single .author-info{
+  .blog-single .author-info {
 
     margin-top: 25px;
 
@@ -9988,7 +9871,7 @@ Note Box / Info Banner
 
 
 
-  .blog-single .blog-comment-item img{
+  .blog-single .blog-comment-item img {
 
     margin: 0 auto 20px auto;
 
@@ -10042,7 +9925,7 @@ Note Box / Info Banner
 
   font-size: 22px;
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   font-weight: 700;
 
@@ -10096,7 +9979,7 @@ Note Box / Info Banner
 
 
 
-.blog-sidebar .widget .search-form .form-group{
+.blog-sidebar .widget .search-form .form-group {
 
   position: relative;
 
@@ -10302,7 +10185,7 @@ Note Box / Info Banner
 
   background: var(--color-white);
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   padding: 5px 18px;
 
@@ -10362,7 +10245,7 @@ Note Box / Info Banner
 
   border: none;
 
-  background:  var(--theme-bg-light);
+  background: var(--theme-bg-light);
 
   color: var(--color-dark);
 
@@ -10438,7 +10321,7 @@ Note Box / Info Banner
 
   font-size: 20px;
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   box-shadow: none;
 
@@ -10446,7 +10329,7 @@ Note Box / Info Banner
 
 
 
-.faq-area .accordion-button::after{
+.faq-area .accordion-button::after {
 
   content: "\f107";
 
@@ -10456,9 +10339,8 @@ Note Box / Info Banner
 
   font-size: 24px;
 
-  font-weight: 500;
-
-  font-family: 'Font Awesome 6 pro';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
 
   width: unset;
 
@@ -10484,7 +10366,7 @@ Note Box / Info Banner
 
 
 
-.faq-area .accordion-button:not(.collapsed)::after{
+.faq-area .accordion-button:not(.collapsed)::after {
 
   content: "\f107";
 
@@ -10526,7 +10408,7 @@ Note Box / Info Banner
 
 
 
-.faq-area .accordion-body{
+.faq-area .accordion-body {
 
   color: var(--color-dark);
 
@@ -10598,7 +10480,7 @@ Note Box / Info Banner
 
   border-radius: 50px;
 
-  background:var(--theme-bg-light);
+  background: var(--theme-bg-light);
 
   transition: var(--transition);
 
@@ -10606,15 +10488,14 @@ Note Box / Info Banner
 
 
 
-.contact-info:hover{
+.contact-info:hover {
 
   transform: translateY(-8px)
-
 }
 
 
 
-.contact-info .icon{
+.contact-info .icon {
 
   font-size: 35px;
 
@@ -10644,15 +10525,15 @@ Note Box / Info Banner
 
   margin-bottom: 8px;
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
 }
 
 
 
-.contact-info .content p{
+.contact-info .content p {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
   font-weight: 500;
 
@@ -10662,7 +10543,7 @@ Note Box / Info Banner
 
 
 
-.contact-img img{
+.contact-img img {
 
   width: 100%;
 
@@ -10672,7 +10553,7 @@ Note Box / Info Banner
 
 
 
-.contact-form{
+.contact-form {
 
   background: var(--theme-bg-light);
 
@@ -10706,7 +10587,7 @@ Note Box / Info Banner
 
 
 
-.contact-form-header p{
+.contact-form-header p {
 
   color: var(--body-text-color);
 
@@ -10716,7 +10597,7 @@ Note Box / Info Banner
 
 .contact-form .form-message.success,
 
-.contact-form .form-message.error{
+.contact-form .form-message.error {
 
   margin-bottom: 20px;
 
@@ -10728,27 +10609,27 @@ Note Box / Info Banner
 
 
 
-.contact-form .form-message.success{
+.contact-form .form-message.success {
 
   color: #41BE7D;
 
-  background:rgba(65, 190, 125, .1);
+  background: rgba(65, 190, 125, .1);
 
 }
 
 
 
-.contact-form .form-message.error{
+.contact-form .form-message.error {
 
   color: #FF7F7F;
 
-  background:rgba(255, 127, 127, .1);
+  background: rgba(255, 127, 127, .1);
 
 }
 
 
 
-.contact-form .form-message.error{
+.contact-form .form-message.error {
 
   color: var(--color-red);
 
@@ -10844,7 +10725,7 @@ Note Box / Info Banner
 
 /* auth-group */
 
-.auth-group{
+.auth-group {
 
   display: flex;
 
@@ -10858,7 +10739,7 @@ Note Box / Info Banner
 
 
 
-.auth-group .form-check{
+.auth-group .form-check {
 
   margin-bottom: 0;
 
@@ -10866,7 +10747,7 @@ Note Box / Info Banner
 
 
 
-.auth-group .form-check-label{
+.auth-group .form-check-label {
 
   color: var(--color-dark);
 
@@ -10876,7 +10757,7 @@ Note Box / Info Banner
 
 
 
-.auth-group .auth-group-link{
+.auth-group .auth-group-link {
 
   color: var(--theme-color);
 
@@ -10886,7 +10767,7 @@ Note Box / Info Banner
 
 
 
-.auth-group .auth-group-link:hover{
+.auth-group .auth-group-link:hover {
 
   color: var(--color-red);
 
@@ -10896,7 +10777,7 @@ Note Box / Info Banner
 
 /* password-view */
 
-.auth-form .password-view{
+.auth-form .password-view {
 
   cursor: pointer;
 
@@ -10904,7 +10785,7 @@ Note Box / Info Banner
 
 
 
-.auth-form .password-view i{
+.auth-form .password-view i {
 
   left: unset;
 
@@ -10916,7 +10797,7 @@ Note Box / Info Banner
 
 
 
-.auth-form .password-view.show i::before{
+.auth-form .password-view.show i::before {
 
   content: "\f06e";
 
@@ -10934,7 +10815,7 @@ Note Box / Info Banner
 
 
 
-.auth-form .theme-btn::before{
+.auth-form .theme-btn::before {
 
   width: 420px;
 
@@ -10978,7 +10859,7 @@ Note Box / Info Banner
 
 .auth-form .auth-bottom a:hover {
 
-  color:  var(--color-red);
+  color: var(--color-red);
 
 }
 
@@ -11044,7 +10925,7 @@ Note Box / Info Banner
 
 .auth-form .auth-social-list a:hover {
 
-  background:  var(--color-red);
+  background: var(--color-red);
 
 }
 
@@ -11116,7 +10997,7 @@ Note Box / Info Banner
 
 
 
-.coming-wrap{
+.coming-wrap {
 
   display: flex;
 
@@ -11130,7 +11011,7 @@ Note Box / Info Banner
 
 
 
-.coming-content{
+.coming-content {
 
   text-align: center;
 
@@ -11138,7 +11019,7 @@ Note Box / Info Banner
 
 
 
-.coming-info h1{
+.coming-info h1 {
 
   color: var(--color-white);
 
@@ -11150,7 +11031,7 @@ Note Box / Info Banner
 
 
 
-.coming-info p{
+.coming-info p {
 
   font-size: 18px;
 
@@ -11162,7 +11043,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown-wrap{
+.coming-countdown-wrap {
 
   margin-top: 30px;
 
@@ -11172,7 +11053,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .time-wrap{
+.coming-countdown .time-wrap {
 
   display: flex;
 
@@ -11188,7 +11069,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .time{
+.coming-countdown .time {
 
   background: var(--color-white);
 
@@ -11202,7 +11083,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .time span{
+.coming-countdown .time span {
 
   display: block;
 
@@ -11210,7 +11091,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .time span:first-child{
+.coming-countdown .time span:first-child {
 
   color: var(--theme-color);
 
@@ -11224,7 +11105,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .time .unit{
+.coming-countdown .time .unit {
 
   color: var(--color-dark);
 
@@ -11234,7 +11115,7 @@ Note Box / Info Banner
 
 
 
-.coming-countdown .divider{
+.coming-countdown .divider {
 
   display: none;
 
@@ -11242,7 +11123,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form{
+.coming-newsletter-form {
 
   margin-top: 50px;
 
@@ -11252,7 +11133,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form .form-group{
+.coming-newsletter-form .form-group {
 
   position: relative;
 
@@ -11260,7 +11141,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form .form-control{
+.coming-newsletter-form .form-control {
 
   padding: 17px 150px 17px 20px;
 
@@ -11274,7 +11155,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form .form-control::placeholder{
+.coming-newsletter-form .form-control::placeholder {
 
   color: var(--color-dark);
 
@@ -11282,7 +11163,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form .form-control:focus{
+.coming-newsletter-form .form-control:focus {
 
   border-color: var(--theme-color);
 
@@ -11290,7 +11171,7 @@ Note Box / Info Banner
 
 
 
-.coming-newsletter-form .theme-btn{
+.coming-newsletter-form .theme-btn {
 
   position: absolute;
 
@@ -11304,7 +11185,7 @@ Note Box / Info Banner
 
 
 
-.coming-social{
+.coming-social {
 
   margin-top: 40px;
 
@@ -11314,7 +11195,7 @@ Note Box / Info Banner
 
 
 
-.coming-social a{
+.coming-social a {
 
   display: inline-block;
 
@@ -11342,7 +11223,7 @@ Note Box / Info Banner
 
 
 
-.coming-social a:hover{
+.coming-social a:hover {
 
   background: var(--theme-color2);
 
@@ -11352,7 +11233,7 @@ Note Box / Info Banner
 
 @media all and (max-width: 767px) {
 
-  .coming-info h1{
+  .coming-info h1 {
 
     font-size: 40px;
 
@@ -11398,7 +11279,7 @@ Note Box / Info Banner
 
 .error-wrap h1 span {
 
-  color:  var(--color-dark);
+  color: var(--color-dark);
 
 }
 
@@ -11511,12 +11392,12 @@ Note Box / Info Banner
 .whatsapp-btn,
 .whatsapp-btn:focus,
 .whatsapp-btn:hover {
-	display: none !important;
+  display: none !important;
 }
 
 .fab.fa-whatsapp {
 
-	padding-left: 14px;
+  padding-left: 14px;
 
 }
 
@@ -11578,7 +11459,7 @@ Note Box / Info Banner
 
 
 
-#scroll-top:hover{
+#scroll-top:hover {
 
   transform: rotate(0);
 
@@ -11586,7 +11467,7 @@ Note Box / Info Banner
 
 
 
-#scroll-top.active{
+#scroll-top.active {
 
   opacity: 1;
 
@@ -11636,7 +11517,7 @@ Note Box / Info Banner
 
 
 
-.footer-shape{
+.footer-shape {
 
   position: absolute;
 
@@ -11670,7 +11551,7 @@ Note Box / Info Banner
 
 
 
-.footer-widget-box.about-us{
+.footer-widget-box.about-us {
 
   margin-right: 50px;
 
@@ -11718,7 +11599,7 @@ Note Box / Info Banner
 
 
 
-.footer-widget-title::before{
+.footer-widget-title::before {
 
   content: "";
 
@@ -11790,7 +11671,7 @@ Note Box / Info Banner
 
 
 
-.footer-list li a:hover i{
+.footer-list li a:hover i {
 
   opacity: 1;
 
@@ -11862,7 +11743,7 @@ Note Box / Info Banner
 
 
 
-.footer-contact .icon{
+.footer-contact .icon {
 
   width: 35px;
 
@@ -11880,7 +11761,7 @@ Note Box / Info Banner
 
 
 
-.footer-contact .content{
+.footer-contact .content {
 
   flex: 1;
 
@@ -11888,7 +11769,7 @@ Note Box / Info Banner
 
 
 
-.footer-contact .content h6{
+.footer-contact .content h6 {
 
   color: var(--color-white);
 
@@ -11898,7 +11779,7 @@ Note Box / Info Banner
 
 
 
-.footer-contact .content a{
+.footer-contact .content a {
 
   color: var(--color-white);
 
@@ -11906,7 +11787,7 @@ Note Box / Info Banner
 
 
 
-.footer-newsletter h6{
+.footer-newsletter h6 {
 
   color: var(--color-white);
 
@@ -11916,7 +11797,7 @@ Note Box / Info Banner
 
 
 
-.footer-newsletter .newsletter-form .form-group{
+.footer-newsletter .newsletter-form .form-group {
 
   position: relative;
 
@@ -11952,7 +11833,7 @@ Note Box / Info Banner
 
 
 
-.footer-newsletter .newsletter-form .theme-btn span{
+.footer-newsletter .newsletter-form .theme-btn span {
 
   margin-right: 0;
 
@@ -12048,7 +11929,7 @@ Note Box / Info Banner
 
 
 
-  .footer-list li a{
+  .footer-list li a {
 
     font-size: 14px;
 
@@ -12068,7 +11949,7 @@ Note Box / Info Banner
 
 
 
-  .footer-list li a{
+  .footer-list li a {
 
     font-size: 16px;
 
@@ -12128,7 +12009,7 @@ Note Box / Info Banner
 
     z-index: 9999;
 
-}
+  }
 
   .footer-social {
 
@@ -12146,7 +12027,7 @@ Note Box / Info Banner
 
 /* footer light */
 
-.footer-area.light{
+.footer-area.light {
 
   background: var(--theme-bg-light);
 
@@ -12154,7 +12035,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-widget-title{
+.footer-area.light .footer-widget-title {
 
   color: var(--color-dark);
 
@@ -12164,7 +12045,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-widget-box p{
+.footer-area.light .footer-widget-box p {
 
   color: var(--body-text-color);
 
@@ -12172,7 +12053,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-newsletter h6{
+.footer-area.light .footer-newsletter h6 {
 
   color: var(--color-dark);
 
@@ -12182,7 +12063,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .newsletter-form .form-control{
+.footer-area.light .newsletter-form .form-control {
 
   color: var(--color-dark);
 
@@ -12192,7 +12073,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .newsletter-form .form-control::placeholder{
+.footer-area.light .newsletter-form .form-control::placeholder {
 
   color: var(--body-text-color);
 
@@ -12200,7 +12081,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .newsletter-form .form-control:focus{
+.footer-area.light .newsletter-form .form-control:focus {
 
   border-bottom-color: var(--theme-color);
 
@@ -12208,7 +12089,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-list li a{
+.footer-area.light .footer-list li a {
 
   color: var(--body-text-color);
 
@@ -12216,7 +12097,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-list li a:hover{
+.footer-area.light .footer-list li a:hover {
 
   color: var(--theme-color);
 
@@ -12224,7 +12105,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-contact .content h6{
+.footer-area.light .footer-contact .content h6 {
 
   color: var(--color-dark);
 
@@ -12234,7 +12115,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-contact .content a{
+.footer-area.light .footer-contact .content a {
 
   color: var(--body-text-color);
 
@@ -12242,7 +12123,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-social li a i{
+.footer-area.light .footer-social li a i {
 
   background: var(--color-dark);
 
@@ -12252,7 +12133,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .footer-social li a i:hover{
+.footer-area.light .footer-social li a i:hover {
 
   background: var(--theme-color);
 
@@ -12260,7 +12141,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .copyright{
+.footer-area.light .copyright {
 
   border-top-color: var(--border-info-color);
 
@@ -12268,7 +12149,7 @@ Note Box / Info Banner
 
 
 
-.footer-area.light .copyright .copyright-text{
+.footer-area.light .copyright .copyright-text {
 
   color: var(--body-text-color);
 
@@ -12276,7 +12157,8 @@ Note Box / Info Banner
 
 
 
-.partner-area .owl-carousel .owl-item img{    opacity: 80%;
+.partner-area .owl-carousel .owl-item img {
+  opacity: 80%;
 
   display: block;
 
@@ -12284,10 +12166,33 @@ Note Box / Info Banner
 
   filter: grayscale(0);
 
-  filter: grayscale(100%);}
+  filter: grayscale(100%);
+}
 
-  .video-area{margin-top: 80px; margin-bottom: 80px;}
+.video-area {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
 
 .partner-wrapper-img {
   height: 95px !important;
+}
+
+/* Responsive Navbar Adjustments */
+@media (max-width: 991px) {
+  .navbar-toggler {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+    /* Ensure it is above other elements */
+    position: relative;
+    /* Ensure z-index works */
+  }
+}
+
+@media (min-width: 992px) {
+  .navbar-toggler {
+    display: none !important;
+  }
 }

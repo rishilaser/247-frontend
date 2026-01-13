@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { roleUtils } from '../utils/authUtils';
+import Header from '../components/layout/Header';
+import '../styles/responsive.css';
 
 function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Header scroll effect
+  useEffect(() => {
+    // Keep this or verify if it's needed for other things. 
+    // The previous inline header used isScrolled. If nothing else uses it, we can remove the state content.
+  }, []);
 
   // Handle CTA button clicks - redirect based on auth status and role
   const handleCTAClick = (e, targetPath = '/upload') => {
@@ -30,59 +36,20 @@ function Home() {
     }
   };
 
-  // Smooth scroll to element without adding hash to URL
-  const scrollToQuoteArea = (e) => {
-    if (e) {
-      e.preventDefault();
-    }
-    const element = document.getElementById('quote-area');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const scrollToAboutArea = (e) => {
-    if (e) {
-      e.preventDefault();
-    }
-    const element = document.getElementById('about-area');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const scrollToServiceArea = (e) => {
-    if (e) {
-      e.preventDefault();
-    }
-    const element = document.getElementById('service-area');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // Header scroll effect
+  // Handle hash scroll and state scroll
+  const location = useLocation();
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      setIsScrolled(scrollTop > 50);
-    };
+    const targetId = location.hash ? location.hash.substring(1) : (location.state?.targetId || null);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    if (targetId) {
+      setTimeout(() => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isMobileMenuOpen]);
+  }, [location]);
 
   useEffect(() => {
     // Wait for DOM and scripts to be ready
@@ -282,13 +249,13 @@ function Home() {
       // Scroll to top
       $(window).scroll(function () {
         if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-          $("#scroll-top").addClass('active');
+          $("scroll-top").addClass('active');
         } else {
-          $("#scroll-top").removeClass('active');
+          $("scroll-top").removeClass('active');
         }
       });
 
-      $("#scroll-top").on('click', function () {
+      $("scroll-top").on('click', function () {
         $("html, body").animate({ scrollTop: 0 }, 1500);
         return false;
       });
@@ -334,527 +301,10 @@ function Home() {
         </div>
       </div>
 
-      {/* Top Bar */}
-      <div className="bg-blue-900 text-white py-2" style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 1001,
-        background: 'linear-gradient(90deg, #2d3992 0%, #2d3992 50%, #2d3992 100%)',
-        boxShadow: '0 2px 10px rgba(45, 57, 146, 0.3)'
-      }}>
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-6 col-md-6">
-              <div className="d-flex align-items-center gap-4 flex-wrap">
-                <a href="mailto:sales@247cutbend.in" className="text-white text-decoration-none d-flex align-items-center gap-2" style={{ fontSize: '14px' }}>
-                  <i className="far fa-envelope" style={{ fontSize: '16px' }}></i>
-                  <span>sales@247cutbend.in</span>
-                </a>
-                <a href="tel:+919512041116" className="text-white text-decoration-none d-flex align-items-center gap-2" style={{ fontSize: '14px' }}>
-                  <i className="far fa-phone" style={{ fontSize: '16px' }}></i>
-                  <span>+91 9004073379</span>
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-6 col-md-6">
-              <div className="d-flex align-items-center justify-content-end gap-3 flex-wrap">
-                <span className="text-white" style={{ fontSize: '14px' }}>Follow Us:</span>
-                <div className="d-flex align-items-center gap-2">
-                  <a href="https://www.facebook.com/247cutbend/" target="_blank" rel="noopener noreferrer" className="text-white d-flex align-items-center justify-content-center" style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '4px',
-                    background: 'rgba(255,255,255,0.1)',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    <i className="fab fa-facebook-f" style={{ fontSize: '14px' }}></i>
-                  </a>
-                  <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '4px',
-                    background: 'rgba(255,255,255,0.1)',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    <i className="fab fa-twitter" style={{ fontSize: '14px' }}></i>
-                  </a>
-                  <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer" className="text-white d-flex align-items-center justify-content-center" style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '4px',
-                    background: 'rgba(255,255,255,0.1)',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    <i className="fab fa-instagram" style={{ fontSize: '14px' }}></i>
-                  </a>
-                  <a href="#" className="text-white d-flex align-items-center justify-content-center" style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '4px',
-                    background: 'rgba(255,255,255,0.1)',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                    <i className="fab fa-linkedin-in" style={{ fontSize: '14px' }}></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Header Area */}
-      <header className="header" style={{
-        padding: '0',
-        background: isScrolled
-          ? 'linear-gradient(180deg, rgba(243,244,246,0.99) 0%, rgba(243,244,246,0.98) 100%)'
-          : 'linear-gradient(180deg, rgba(243,244,246,0.98) 0%, rgba(243,244,246,0.95) 100%)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: isScrolled
-          ? '0 4px 30px rgba(0,0,0,0.12)'
-          : '0 2px 20px rgba(0,0,0,0.08)',
-        transition: 'all 0.3s ease',
-        position: 'sticky',
-        top: '40px',
-        zIndex: 1000
-      }}>
-        {/* Navbar */}
-        <div className="main-navigation" style={{ padding: '0' }}>
-          <nav className="navbar navbar-expand-lg" style={{
-            minHeight: isScrolled ? '75px' : '90px',
-            transition: 'all 0.3s ease'
-          }}>
-            <div className="container position-relative">
-              <div className="navbar-brand" style={{
-                padding: '0',
-                display: 'flex',
-                alignItems: 'center',
-                transition: 'transform 0.3s ease'
-              }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                {/* <img src="https://www.247cutbend.in/assets/img/logo%20(2).png" alt="logo" /> */}
-                <img src="/Logo.png" alt="247CutBend logo" style={{
-                  height: isScrolled ? '30px' : '35px',
-                  width: 'auto',
-                  objectFit: 'contain',
-                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-                  transition: 'all 0.3s ease'
-                }} />
-
-              </div>
-
-              {/* Desktop Menu - Hidden on mobile */}
-              <div className="d-none d-lg-flex align-items-center" style={{ flex: 1, justifyContent: 'flex-end' }}>
-                <ul className="navbar-nav justify-content-end flex-grow-1" style={{ alignItems: 'center', flexDirection: 'row' }}>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/" style={{
-                      padding: '8px 16px',
-                      fontSize: '15px',
-                      fontWeight: '500',
-                      color: '#1a1a1a',
-                      position: 'relative',
-                      transition: 'all 0.3s ease',
-                      borderRadius: '6px',
-                      margin: '0 4px'
-                    }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                      Home
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/" onClick={scrollToAboutArea} style={{
-                      padding: '8px 16px',
-                      fontSize: '15px',
-                      fontWeight: '500',
-                      color: '#1a1a1a',
-                      position: 'relative',
-                      transition: 'all 0.3s ease',
-                      borderRadius: '6px',
-                      margin: '0 4px'
-                    }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                      About Us
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/" onClick={scrollToAboutArea} style={{
-                      padding: '8px 16px',
-                      fontSize: '15px',
-                      fontWeight: '500',
-                      color: '#1a1a1a',
-                      position: 'relative',
-                      transition: 'all 0.3s ease',
-                      borderRadius: '6px',
-                      margin: '0 4px'
-                    }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                      Capabilities
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/" onClick={scrollToQuoteArea} style={{
-                      padding: '8px 16px',
-                      fontSize: '15px',
-                      fontWeight: '500',
-                      color: '#1a1a1a',
-                      position: 'relative',
-                      transition: 'all 0.3s ease',
-                      borderRadius: '6px',
-                      margin: '0 4px'
-                    }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f15925';
-                        e.currentTarget.style.background = 'rgba(241, 89, 37, 0.1)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#1a1a1a';
-                        e.currentTarget.style.background = 'transparent';
-                      }}>
-                      Contact Us
-                    </a>
-                  </li>
-                </ul>
-                <div className="nav-right">
-                  <div className="nav-btn">
-                    <a
-                      href="/signup"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="theme-btn"
-                      style={{
-                        padding: '10px 24px',
-                        fontSize: '15px',
-                        fontWeight: '600',
-                        background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
-                        color: '#ffffff',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 15px rgba(241, 89, 37, 0.3)',
-                        transition: 'all 0.3s ease',
-                        border: 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        textDecoration: 'none'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(241, 89, 37, 0.4)';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(241, 89, 37, 0.3)';
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #f15925 0%, #f15925 100%)';
-                      }}>
-                      Login
-                      <i className="fas fa-arrow-right" style={{ fontSize: '12px', transition: 'transform 0.3s ease' }}></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Menu Toggle Button - Visible only on mobile */}
-              <button
-                className="d-lg-none navbar-toggler"
-                type="button"
-                onClick={() => setIsMobileMenuOpen(true)}
-                style={{
-                  border: 'none',
-                  background: 'transparent',
-                  padding: '8px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  outline: 'none'
-                }}
-                aria-label="Toggle navigation"
-              >
-                <i className="fas fa-bars" style={{
-                  fontSize: '24px',
-                  color: '#1a1a1a',
-                  transition: 'color 0.3s ease'
-                }}></i>
-              </button>
-            </div>
-          </nav>
-        </div>
-      </header>
-
-      {/* Mobile Sidebar - Outside navbar for full screen coverage */}
-      <div
-        className="mobile-sidebar-overlay"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 9999,
-          opacity: isMobileMenuOpen ? 1 : 0,
-          visibility: isMobileMenuOpen ? 'visible' : 'hidden',
-          transition: 'all 0.3s ease',
-          pointerEvents: isMobileMenuOpen ? 'auto' : 'none'
-        }}
-        onClick={() => setIsMobileMenuOpen(false)}
-      ></div>
-
-      <div
-        className="mobile-sidebar"
-        style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: '280px',
-          height: '100vh',
-          background: '#fff',
-          zIndex: 10000,
-          boxShadow: '-2px 0 10px rgba(0,0,0,0.1)',
-          transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s ease',
-          overflowY: 'auto'
-        }}
-      >
-        <div style={{
-          padding: '20px',
-          borderBottom: '1px solid rgba(0,0,0,0.1)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <img src="/Logo.png" alt="247CutBend Logo" style={{
-            height: '35px',
-            width: 'auto',
-            objectFit: 'contain'
-          }} />
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{
-              border: 'none',
-              background: 'transparent',
-              fontSize: '24px',
-              color: '#1a1a1a',
-              cursor: 'pointer',
-              padding: '5px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <i className="fas fa-bars"></i>
-          </button>
-        </div>
-
-        <div style={{ padding: '15px 0' }}>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-              <a
-                href="/"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                }}
-                style={{
-                  display: 'block',
-                  padding: '12px 15px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: '#1a1a1a',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#f15925';
-                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#1a1a1a';
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                Home
-              </a>
-            </li>
-            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-              <a
-                href="/"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  scrollToAboutArea(e);
-                }}
-                style={{
-                  display: 'block',
-                  padding: '12px 15px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: '#1a1a1a',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#f15925';
-                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#1a1a1a';
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                About Us
-              </a>
-            </li>
-            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-              <a
-                href="/"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  scrollToAboutArea(e);
-                }}
-                style={{
-                  display: 'block',
-                  padding: '12px 15px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: '#1a1a1a',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#f15925';
-                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#1a1a1a';
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                Capabilities
-              </a>
-            </li>
-            <li style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-              <a
-                href="/"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  scrollToQuoteArea(e);
-                }}
-                style={{
-                  display: 'block',
-                  padding: '12px 15px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: '#1a1a1a',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#f15925';
-                  e.currentTarget.style.background = 'rgba(255, 193, 7, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#1a1a1a';
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                Contact Us
-              </a>
-            </li>
-          </ul>
-
-          <div style={{ padding: '15px', display: 'flex', justifyContent: 'flex-start' }}>
-            <a
-              href="/signup"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="theme-btn"
-              style={{
-                padding: '10px 16px',
-                fontSize: '14px',
-                fontWeight: '600',
-                background: 'linear-gradient(135deg, #f15925 0%, #f15925 100%)',
-                color: '#000',
-                borderRadius: '8px',
-                boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
-                transition: 'all 0.3s ease',
-                border: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                textDecoration: 'none',
-                width: 'auto',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Login
-              <i className="fas fa-arrow-right" style={{ fontSize: '11px' }}></i>
-            </a>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Popup Search */}
-      <div className="search-popup">
+      < div className="search-popup" >
         <button className="close-search"><span className="far fa-times"></span></button>
         <form action="#">
           <div className="form-group">
@@ -862,10 +312,10 @@ function Home() {
             <button type="submit"><i className="far fa-search"></i></button>
           </div>
         </form>
-      </div>
+      </div >
 
       {/* Sidebar Popup */}
-      <div className="sidebar-popup offcanvas offcanvas-end" tabIndex="-1" id="sidebarPopup">
+      < div className="sidebar-popup offcanvas offcanvas-end" tabIndex="-1" id="sidebarPopup" >
         <div className="offcanvas-header">
           <div className="sidebar-popup-logo">
             <img src="/Logo.png" alt="" style={{ height: '35px', width: 'auto' }} />
@@ -889,7 +339,7 @@ function Home() {
                   </div>
                   <div className="content">
                     <h6>Email</h6>
-                    <a href="#"><span className="__cf_email__">support@247cutbend.in</span></a>
+                    <a href=""><span className="__cf_email__">support@247cutbend.in</span></a>
                   </div>
                 </li>
                 <li>
@@ -915,13 +365,12 @@ function Home() {
             <div className="sidebar-popup-social">
               <h4>Follow Us</h4>
               <a href="https://www.facebook.com/247cutbend/" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook"></i></a>
-              <a href="#"><i className="fab fa-x-twitter"></i></a>
               <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
               <a href="#"><i className="fab fa-linkedin-in"></i></a>
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       <main className="main">
         {/* Hero Area */}
@@ -935,17 +384,17 @@ function Home() {
                 <div className="row align-items-center">
                   <div className="col-md-12 col-lg-8">
                     <div className="hero-content">
-                      <p className="hero-sub-title" data-animation="fadeInUp" data-delay=".25s" style={{ fontSize: '1.3rem', marginBottom: '10px' }}>
+                      <p className="hero-sub-title" data-animation="fadeInUp" data-delay=".25s" style={{ fontSize: '1.3rem', marginBottom: '20px' }}>
                         Quick Delivery & Cheapest Price at
                       </p>
-                      <h3 className="hero-title" data-animation="fadeInRight" data-delay=".50s" style={{ marginBottom: '15px', marginTop: '10px' }}>
+                      <h3 className="hero-title" data-animation="fadeInRight" data-delay=".50s" style={{ marginBottom: '35px', marginTop: '10px' }}>
                         247 Cut Bend<br />
                         Your Partner for<br />
                         Custom Metal Fabrication
                       </h3>
                       <div className="hero-btn" data-animation="fadeInUp" data-delay="1s" style={{ marginTop: '15px' }}>
                         <a
-                          href="#"
+                          href=""
                           className="theme-btn"
                           onClick={(e) => handleCTAClick(e, '/upload')}
                         >
@@ -979,7 +428,7 @@ function Home() {
         </div>}
 
         {/* Company Stats & Features Banner */}
-        <div className="company-stats-banner px-5">
+        <div className="company-stats-banner px-3 px-md-5">
           {/* SVG Background Decoration */}
           <div className="stats-banner-svg-bg">
             <svg width="100%" height="100%" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -1028,15 +477,15 @@ function Home() {
         </div>
 
         {/* Process Area */}
-        <div className="process-area px-5" style={{ background: '#ffffff'}}>
+        <div className="process-area px-3 px-md-5" style={{ background: '#ffffff' }}>
           <div className="container">
             <div className="row">
               <div className="col-lg-10 mx-auto">
-                <div className="site-heading text-center wow fadeInDown" data-wow-delay=".25s">
-                  <h2 className="site-title" style={{ fontSize: '2.5rem', fontWeight: '700', color: '#1a1a1a' }}>
+                <div className="site-heading text-center wow fadeInDown py-5" data-wow-delay=".25s">
+                  <h2 className="site-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: '700', color: '#1a1a1a' }}>
                     How It <span style={{ color: '#f15925' }}>Works</span>
                   </h2>
-                  <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: 0, maxWidth: '700px', margin: '0 auto' }}>
+                  <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', color: '#666', marginBottom: 0, maxWidth: '700px', margin: '0 auto', padding: '0 15px' }}>
                     Fast, factory-direct metal parts in just a few clicks. From file upload to delivery, we make production simple and transparent.
                   </p>
                 </div>
@@ -1090,64 +539,58 @@ function Home() {
 
             {/* Process Steps Cards */}
             <div className="process-wrap wow fadeInUp" data-wow-delay=".25s" style={{ marginTop: '10px' }}>
-              <div className="row" style={{ display: 'flex', flexWrap: 'nowrap', margin: 0, gap: '10px' }}>
+              <div className="row process-steps-row" style={{ display: 'flex', flexWrap: 'wrap', margin: 0, gap: '10px' }}>
                 {/* Step 1 */}
-                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-                  <a
-                    href="#"
-                    style={{ textDecoration: 'none', display: 'block' }}
-                    onClick={(e) => handleCTAClick(e, '/dashboard')}
-                  >
-                    <div className="process-item" style={{
-                      background: '#ffffff',
-                      borderRadius: '12px',
-                      padding: '15px 12px',
-                      border: '3px solid #e0e0e0',
-                      height: '100%',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer'
+                <div className="col-12 col-sm-6 col-lg process-step-col" style={{ flex: '1 1 0%', minWidth: 0 }}>
+                  <div className="process-item" style={{
+                    background: '#ffffff',
+                    borderRadius: '12px',
+                    padding: '15px 12px',
+                    border: '3px solid #e0e0e0',
+                    height: '100%',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-5px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
+                      e.currentTarget.style.borderColor = '#f15925';
                     }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(241, 89, 37, 0.15)';
-                        e.currentTarget.style.borderColor = '#f15925';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.borderColor = '#e0e0e0';
-                      }}>
-                      <div className="icon" style={{
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '8px',
-                        background: '#f15925',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '15px'
-                      }}>
-                        <i className="fas fa-upload" style={{ color: '#ffffff', fontSize: '20px' }}></i>
-                      </div>
-                      <h4 style={{
-                        fontSize: '1.1rem',
-                        fontWeight: '700',
-                        color: '#2d3992',
-                        marginBottom: '8px',
-                        lineHeight: '1.3'
-                      }}>Upload Your Files</h4>
-                      <p style={{
-                        fontSize: '0.9rem',
-                        color: '#666',
-                        lineHeight: '1.5',
-                        margin: 0
-                      }}>Redirect to upload section in Dashboard</p>
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#e0e0e0';
+                    }}>
+                    <div className="icon" style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      background: '#f15925',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '15px'
+                    }}>
+                      <i className="fas fa-upload" style={{ color: '#ffffff', fontSize: '20px' }}></i>
                     </div>
-                  </a>
+                    <h4 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '700',
+                      color: '#2d3992',
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>Upload Your Files</h4>
+                    <p style={{
+                      fontSize: '0.9rem',
+                      color: '#666',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>Redirect to upload section in Dashboard</p>
+                  </div>
                 </div>
 
                 {/* Step 2 */}
-                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                <div className="col-12 col-sm-6 col-lg process-step-col" style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
                     borderRadius: '12px',
@@ -1195,7 +638,7 @@ function Home() {
                 </div>
 
                 {/* Step 3 */}
-                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                <div className="col-12 col-sm-6 col-lg process-step-col" style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
                     borderRadius: '12px',
@@ -1243,7 +686,7 @@ function Home() {
                 </div>
 
                 {/* Step 4 */}
-                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                <div className="col-12 col-sm-6 col-lg process-step-col" style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
                     borderRadius: '12px',
@@ -1291,7 +734,7 @@ function Home() {
                 </div>
 
                 {/* Step 5 */}
-                <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                <div className="col-12 col-sm-6 col-lg process-step-col" style={{ flex: '1 1 0%', minWidth: 0 }}>
                   <div className="process-item" style={{
                     background: '#ffffff',
                     borderRadius: '12px',
@@ -1342,7 +785,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="row  mx-3">
+        <div className="row  mx-3 my-3">
           <div className="col-lg-12">
             <div className="note-banner-content px-5">
               <div className="note-banner-icon">
@@ -1357,7 +800,7 @@ function Home() {
 
 
         {/* Counter Area */}
-        <div className="counter-area pt-20 pb-20 px-3">
+        <div className="counter-area pt-20 pb-20 px-4">
           <div className="container">
             <div className="row g-4 justify-content-center">
               <div className="col-md-6 col-lg-4 col-xl-3">
@@ -1481,10 +924,10 @@ function Home() {
         </div>
 
         {/* About Area */}
-        <div className="about-area" id="about-area px-5" style={{ padding:'40px' }}>
+        <div className="about-area pl-5" id="about-area" style={{ paddingTop: '70px', paddingBottom: '70px' }}>
           <div className="container">
             <div className="row" style={{ display: 'flex', alignItems: 'stretch', margin: 0 }}>
-              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '10px' }}>
+              <div className="col-lg-6" style={{ display: 'flex', alignItems: 'stretch', paddingLeft: '10px', paddingRight: '0px' }}>
                 <div className="about-left wow fadeInLeft" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between', margin: 0 }}>
                   <div className="about-img" style={{ flex: 1, margin: 0 }}>
                     <img className="img-1" src="/assets/img/cutting-tool.jpg" alt="" />
@@ -1500,7 +943,7 @@ function Home() {
                 <div className="about-right wow fadeInUp" data-wow-delay=".25s" style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', margin: 0 }}>
                   <div className="site-heading">
                     <h3 className="site-title" style={{
-                      fontSize: '2.5rem',
+                      fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
                       fontWeight: '700',
                       lineHeight: '1.2'
                     }}>
@@ -1508,7 +951,7 @@ function Home() {
                       <span style={{ color: '#f15925' }}>Capabilities</span>
                     </h3>
                   </div>
-                  <p className="about-text" style={{ marginBottom: '12px', marginTop: '8px', fontSize: '1rem', color: '#666', lineHeight: '1.7' }}>
+                  <p className="about-text" style={{ marginBottom: '12px', marginTop: '8px', fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: '#666', lineHeight: '1.7' }}>
                     247CutBend is your partner in custom- cut metal plates and bend products. We are at your service day and night for the perfect semi-finished metal parts.
                   </p>
 
@@ -1875,7 +1318,7 @@ function Home() {
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
-                      <a href="#" style={{
+                      <a href="" style={{
                         color: 'inherit',
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
@@ -1894,7 +1337,7 @@ function Home() {
                     }}>
                       Our advanced press brake machines deliver precise bending operations with high accuracy. Perfect for creating complex angles and shapes in various metal materials.
                     </p>
-                    <a href="#" className="theme-btn" style={{
+                    <a href="" className="theme-btn" style={{
                       padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
@@ -2013,7 +1456,7 @@ function Home() {
                     }}>
                       Professional welding services using advanced techniques and equipment to ensure strong, durable joints for all your metal fabrication requirements.
                     </p>
-                    <a href="#" className="theme-btn" style={{
+                    <a href="" className="theme-btn" style={{
                       padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
@@ -2113,7 +1556,7 @@ function Home() {
                       marginBottom: '15px',
                       lineHeight: '1.3'
                     }}>
-                      <a href="#" style={{
+                      <a href="" style={{
                         color: 'inherit',
                         textDecoration: 'none',
                         transition: 'color 0.3s ease'
@@ -2132,7 +1575,7 @@ function Home() {
                     }}>
                       Complete design and development services from concept to production, helping you bring your ideas to life with expert engineering support.
                     </p>
-                    <a href="#" className="theme-btn" style={{
+                    <a href="" className="theme-btn" style={{
                       padding: '10px 20px',
                       fontSize: '14px',
                       fontWeight: '600',
@@ -2168,13 +1611,13 @@ function Home() {
         </div>}
 
         {/* Testimonial Area */}
-        <div className="testimonial-area ts-bg pt-50 px-3">
+        <div className="testimonial-area ts-bg pt-50 px-3 px-md-5">
           <div className="container">
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-12 col-lg-4 mb-4 mb-lg-0">
                 <div className="site-heading wow fadeInDown" data-wow-delay=".25s">
-                  <h2 className="site-title text-white">What Our Client <span>Say's</span> about us</h2>
-                  <p className="text-white">
+                  <h2 className="site-title text-white" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)' }}>What Our Client <span>Say's</span> about us</h2>
+                  <p className="text-white" style={{ fontSize: 'clamp(0.95rem, 2vw, 1rem)' }}>
                     It is a long established fact that a reader will be distracted by the readable content
                     of a page when Internet tend to repeat predefined chunks.
                   </p>
@@ -2184,7 +1627,7 @@ function Home() {
                     }>Know More <i className="fas fa-arrow-right"></i></a>
                 </div>
               </div>
-              <div className="col-lg-8">
+              <div className="col-12 col-lg-8">
                 <div className="testimonial-slider owl-carousel owl-theme wow fadeInUp" data-wow-delay=".25s">
                   <div className="testimonial-item">
                     <div className="testimonial-content">
@@ -2297,22 +1740,22 @@ function Home() {
         </div>
 
         {/* Choose Area */}
-        <div className="choose-area bg px-3">
+        <div className="choose-area bg px-3 px-md-5">
           <div className="container">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-12">
                 <div className="site-heading text-center">
-                  <h2 className="site-title mt-5">
+                  <h2 className="site-title mt-5" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)' }}>
                     Why <span className="text-orange">Choose</span> <span className="text-orange">247Cutbend</span>?
                   </h2>
-                  <p>
+                  <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.1rem)' }}>
                     <span className="text-orange">1200+</span> Ton per Month of Laser cutting capacity
                   </p>
                 </div>
               </div>
             </div>
             <div className="row align-items-center">
-              <div className="col-lg-6">
+              <div className="col-12 col-lg-6 mb-4 mb-lg-0">
                 <div className="choose-content wow fadeInUp" data-wow-delay=".25s">
                   <div className="choose-content-wrap">
                     <div className="choose-item">
@@ -2367,9 +1810,9 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-6">
+              <div className="col-12 col-lg-6">
                 <div className="choose-img">
-                  <img src="/assets/img/steel-laser-cutting-service-1000x1000.webp" alt="Laser Cutting Machine" />
+                  <img src="/assets/img/steel-laser-cutting-service-1000x1000.webp" alt="Laser Cutting Machine" style={{ width: '100%', height: 'auto' }} />
                 </div>
               </div>
             </div>
@@ -2377,16 +1820,17 @@ function Home() {
         </div>
 
         {/* Quote Area */}
-        <div className="quote-area px-5" id="quote-area">
+        <div className="quote-area px-3 px-md-5" id="quote-area">
           <div className="container">
             <div className="row align-items-center">
-              <div className="col-lg-6 col-md-6">
+              <div className="col-12 col-md-6 mb-4 mb-md-0">
                 <div className="quote-text-content" style={{
-                  paddingRight: '40px',
-                  color: '#ffffff'
+                  paddingRight: '0',
+                  color: '#ffffff',
+                  textAlign: 'left'
                 }}>
                   <h2 style={{
-                    fontSize: '2.5rem',
+                    fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
                     fontWeight: '700',
                     color: '#ffffff',
                     marginBottom: '20px',
@@ -2395,7 +1839,7 @@ function Home() {
                     Fast, Affordable Laser Cutting & CNC Bending Services.
                   </h2>
                   <p style={{
-                    fontSize: '1.15rem',
+                    fontSize: 'clamp(1rem, 2vw, 1.15rem)',
                     color: 'rgba(255, 255, 255, 0.9)',
                     lineHeight: '1.8',
                     margin: 0
@@ -2404,7 +1848,7 @@ function Home() {
                   </p>
                 </div>
               </div>
-              <div className="col-lg-6 col-md-6">
+              <div className="col-12 col-md-6">
                 <div className="quote-content">
                   <div className="quote-head">
                     <h3>
@@ -2415,12 +1859,12 @@ function Home() {
                     </p>
                   </div>
                   <div className="quote-form">
-                    <form action="#">
+                    <form action="">
                       <div className="row" style={{ marginLeft: '-8px', marginRight: '-8px' }}>
-                        <div className="col-lg-6">
+                        <div className="col-12 col-lg-6">
                           <div className="form-group">
                             <div className="form-icon">
-                              <i className="far fa-user-tie"></i>
+                              <i className="fas fa-user"></i>
                               <input
                                 type="text"
                                 className="form-control"
@@ -2429,7 +1873,7 @@ function Home() {
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6">
+                        <div className="col-12 col-lg-6">
                           <div className="form-group">
                             <div className="form-icon">
                               <i className="far fa-envelope"></i>
@@ -2441,10 +1885,10 @@ function Home() {
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6">
+                        <div className="col-12 col-lg-6">
                           <div className="form-group">
                             <div className="form-icon">
-                              <i className="far fa-phone"></i>
+                              <i className="fas fa-phone"></i>
                               <input
                                 type="text"
                                 className="form-control"
@@ -2518,8 +1962,8 @@ function Home() {
           </div>
         </div>
 
-        {/* FAQ Area - Commented out for now */}
-        {false && <div className="faq-area py-100" style={{ background: '#ffffff' }}>
+        {/* FAQ Area */}
+        {/* <div className="faq-area py-100" id="faq-area" style={{ background: '#ffffff' }}>
           <div className="container">
             <div className="row">
               <div className="col-lg-6">
@@ -2579,7 +2023,7 @@ function Home() {
                   </a>
                 </div>
               </div>
-              <div className="col-lg-6">
+              <div className="col-12 col-lg-6">
                 <div className="accordion wow fadeInRight" data-wow-delay=".25s" id="accordionExample" style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -2834,10 +2278,10 @@ function Home() {
               </div>
             </div>
           </div>
-        </div>}
+        </div> */}
 
-        {/* Blog Area - Commented out for now */}
-        {/* <div className="blog-area py-100 bg">
+        {/* Blog Area
+        <div className="blog-area py-100 bg" id="blog-area">
           <div className="container">
             <div className="row">
               <div className="col-lg-6 mx-auto">
@@ -2932,7 +2376,7 @@ function Home() {
       </main>
 
       {/* Quote Banner */}
-      <div className="quote-banner">
+      <div className="quote-banner text-center">
         {/* Light Orange SVG Decorative Element */}
         <div className="quote-banner-svg-decoration">
           <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2943,149 +2387,23 @@ function Home() {
           </svg>
         </div>
         <div className="container quote-banner-container">
-          <div className="quote-banner-content">
-            <div className="quote-banner-icon">
-              <div className="loader">
-                <div className="truckWrapper">
-                  <div className="truckBody">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 198 93"
-                      className="trucksvg"
-                    >
-                      <path
-                        strokeWidth="3"
-                        stroke="#282828"
-                        fill="#F83D3D"
-                        d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"
-                      />
-                      <path
-                        strokeWidth="3"
-                        stroke="#282828"
-                        fill="#7D7C7C"
-                        d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"
-                      />
-                      <path
-                        strokeWidth="2"
-                        stroke="#282828"
-                        fill="#282828"
-                        d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"
-                      />
-                      <rect
-                        strokeWidth="2"
-                        stroke="#282828"
-                        fill="#FFFCAB"
-                        rx="1"
-                        height="7"
-                        width="5"
-                        y="63"
-                        x="187"
-                      />
-                      <rect
-                        strokeWidth="2"
-                        stroke="#282828"
-                        fill="#282828"
-                        rx="1"
-                        height="11"
-                        width="4"
-                        y="81"
-                        x="193"
-                      />
-                      <rect
-                        strokeWidth="3"
-                        stroke="#282828"
-                        fill="#DFDFDF"
-                        rx="2.5"
-                        height="90"
-                        width="121"
-                        y="1.5"
-                        x="6.5"
-                      />
-                      <rect
-                        strokeWidth="2"
-                        stroke="#282828"
-                        fill="#DFDFDF"
-                        rx="2"
-                        height="4"
-                        width="6"
-                        y="84"
-                        x="1"
-                      />
-                    </svg>
-                  </div>
-                  <div className="truckTires">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 30 30"
-                      className="tiresvg"
-                    >
-                      <circle
-                        strokeWidth="3"
-                        stroke="#282828"
-                        fill="#282828"
-                        r="13.5"
-                        cy="15"
-                        cx="15"
-                      />
-                      <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 30 30"
-                      className="tiresvg"
-                    >
-                      <circle
-                        strokeWidth="3"
-                        stroke="#282828"
-                        fill="#282828"
-                        r="13.5"
-                        cy="15"
-                        cx="15"
-                      />
-                      <circle fill="#DFDFDF" r="7" cy="15" cx="15" />
-                    </svg>
-                  </div>
-                  <div className="road"></div>
-                  <svg
-                    viewBox="0 0 453.459 453.459"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="lampPost"
-                  >
-                    <path
-                      d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
-                        c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
-                        c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
-                        c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
-                        h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
-                        v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
-                        V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
-                        M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
-                        h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="quote-banner-text">
-              <p>
-                "Just upload your design and confirm your material. We deliver accurate, machine-calibrated, quality-inspected parts within 24-36 hours".
-              </p>
-            </div>
+          <div className="quote-banner-text">
+            <p>
+              Just upload your design and confirm your material.<br /> We deliver accurate, machine-calibrated, quality-inspected parts within 24-36 hours.
+            </p>
           </div>
         </div>
-      </div>
+      </div >
 
       {/* Footer Area */}
-      <footer className="footer-area" style={{
+      < footer className="footer-area px-5" style={{
         background: '#2d3992',
         position: 'relative',
         overflow: 'hidden'
-      }}>
+      }
+      }>
         {/* Blueprint Pattern Background */}
-        <div style={{
+        < div style={{
           position: 'absolute',
           inset: 0,
           opacity: 0.1,
@@ -3099,7 +2417,7 @@ function Home() {
             </defs>
             <rect width="100%" height="100%" fill="url(#blueprint)" />
           </svg>
-        </div>
+        </div >
 
         <div className="footer-widget" style={{ position: 'relative', zIndex: 1 }}>
           <div className="container">
@@ -3155,7 +2473,7 @@ function Home() {
                           }}>
                           <i className="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" style={{
+                        {/* <a href="#" target="_blank" rel="noopener noreferrer" style={{
                           width: '40px',
                           height: '40px',
                           borderRadius: '50%',
@@ -3179,7 +2497,7 @@ function Home() {
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}>
                           <i className="fab fa-x-twitter"></i>
-                        </a>
+                        </a> */}
                         <a href="https://www.instagram.com/247cutbend/" target="_blank" rel="noopener noreferrer" style={{
                           width: '40px',
                           height: '40px',
@@ -3205,7 +2523,7 @@ function Home() {
                           }}>
                           <i className="fab fa-instagram"></i>
                         </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" style={{
+                        {/* <a href="#" target="_blank" rel="noopener noreferrer" style={{
                           width: '40px',
                           height: '40px',
                           borderRadius: '50%',
@@ -3229,7 +2547,7 @@ function Home() {
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}>
                           <i className="fab fa-linkedin-in"></i>
-                        </a>
+                        </a> */}
                       </div>
                     </div>
                   </div>
@@ -3263,14 +2581,15 @@ function Home() {
                       flexDirection: 'column',
                       gap: '10px'
                     }}>
-                      <li><a href="#" style={{
+                      <li><a href="/" onClick={(e) => { e.preventDefault(); navigate('/', { state: { targetId: 'about-area' } }); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         transition: 'all 0.3s ease',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        cursor: 'pointer'
                       }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.color = '#f15925';
@@ -3283,14 +2602,15 @@ function Home() {
                         <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         About Us
                       </a></li>
-                      <li><a href="#" style={{
+                      {/* <li><a href="/" onClick={(e) => { e.preventDefault(); navigate('/', { state: { targetId: 'blog-area' } }); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         transition: 'all 0.3s ease',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        cursor: 'pointer'
                       }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.color = '#f15925';
@@ -3303,14 +2623,15 @@ function Home() {
                         <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Blogs
                       </a></li>
-                      <li><a href="#" style={{
+                      <li><a href="/" onClick={(e) => { e.preventDefault(); navigate('/', { state: { targetId: 'faq-area' } }); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         transition: 'all 0.3s ease',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        cursor: 'pointer'
                       }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.color = '#f15925';
@@ -3322,15 +2643,16 @@ function Home() {
                         }}>
                         <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Faqs
-                      </a></li>
-                      <li><a href="#" style={{
+                      </a></li> */}
+                      <li><a href="/terms-and-conditions" onClick={(e) => { e.preventDefault(); navigate('/terms-and-conditions'); window.scrollTo(0, 0); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         transition: 'all 0.3s ease',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        cursor: 'pointer'
                       }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.color = '#f15925';
@@ -3343,14 +2665,15 @@ function Home() {
                         <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Terms & Conditions
                       </a></li>
-                      <li><a href="#" style={{
+                      <li><a href="/privacy-policy" onClick={(e) => { e.preventDefault(); navigate('/privacy-policy'); window.scrollTo(0, 0); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         transition: 'all 0.3s ease',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        cursor: 'pointer'
                       }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.color = '#f15925';
@@ -3407,7 +2730,7 @@ function Home() {
                           justifyContent: 'center',
                           flexShrink: 0
                         }}>
-                          <i className="far fa-location-dot" style={{ color: '#000', fontSize: '18px' }}></i>
+                          <i className="fas fa-location-dot" style={{ color: '#000', fontSize: '18px' }}></i>
                         </div>
                         <div className="content">
                           <h6 style={{
@@ -3437,7 +2760,7 @@ function Home() {
                           justifyContent: 'center',
                           flexShrink: 0
                         }}>
-                          <i className="far fa-phone" style={{ color: '#000', fontSize: '18px' }}></i>
+                          <i className="fas fa-phone" style={{ color: '#000', fontSize: '18px' }}></i>
                         </div>
                         <div className="content">
                           <h6 style={{
@@ -3512,7 +2835,7 @@ function Home() {
                   fontSize: '0.9rem',
                   margin: 0
                 }}>
-                  &copy; Copyright <span id="date"></span> <a href="#" style={{
+                  &copy; Copyright <span id="date"></span> <a href="" style={{
                     color: '#f15925',
                     textDecoration: 'none',
                     fontWeight: '600'
@@ -3529,8 +2852,8 @@ function Home() {
       </a>
 
       {/* Scroll Top */}
-      <a href="#top" id="scroll-top"><i className="far fa-arrow-up"></i></a>
-    </div>
+      <a href="" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} id="scroll-top"><i className="fas fa-arrow-up"></i></a>
+    </div >
   );
 }
 

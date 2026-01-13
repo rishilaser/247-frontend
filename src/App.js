@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
@@ -39,6 +39,20 @@ const Parts = lazy(() => import('./pages/Parts'));
 const Tools = lazy(() => import('./pages/Tools'));
 const Upload = lazy(() => import('./pages/Upload'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
+// Blogs and FAQ are part of the Home page as per user request
+// const Blogs = lazy(() => import('./pages/Blogs'));
+// const FAQ = lazy(() => import('./pages/FAQ'));
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 
 // Loading component
 const LoadingSpinner = () => (
@@ -75,9 +89,9 @@ const PublicRoute = ({ children }) => {
 const Layout = ({ children, isInternal = false }) => {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
-  const isAdminPage = location.pathname.startsWith('/admin/') || 
-                      location.pathname.startsWith('/component-manager');
-  
+  const isAdminPage = location.pathname.startsWith('/admin/') ||
+    location.pathname.startsWith('/component-manager');
+
   return (
     <div className="min-h-screen bg-gray-50">
       {!isAuthPage && (isInternal ? <InternalHeader /> : <Header />)}
@@ -114,196 +128,212 @@ function App() {
         <AuthProvider>
           <QuotationProvider>
             <Router>
-            <div className="App">
-              <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={
-              <Layout>
-                <About />
-              </Layout>
-            } />
-            <Route path="/services" element={
-              <Layout>
-                <Services />
-              </Layout>
-            } />
-            <Route path="/parts" element={
-              <Layout>
-                <Parts />
-              </Layout>
-            } />
-            <Route path="/tools" element={
-              <Layout>
-                <Tools />
-              </Layout>
-            } />
-            <Route path="/upload" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <Upload />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/contact" element={
-              <Layout>
-                <ServiceContact />
-              </Layout>
-            } />
-            
-            {/* Auth Routes */}
-            <Route path="/login" element={
-              <PublicRoute>
-                <Layout>
-                  <Login />
-                </Layout>
-              </PublicRoute>
-            } />
-            <Route path="/signup" element={
-              <PublicRoute>
-                <Layout>
-                  <SignUp />
-                </Layout>
-              </PublicRoute>
-            } />
-            
-            {/* Protected Routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <Dashboard />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfileWrapper />
-              </ProtectedRoute>
-            } />
-            
-            {/* Inquiry Routes */}
-            <Route path="/inquiry/new" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <NewInquiry />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/inquiries" element={
-              <ProtectedRoute>
-                <InquiryListWrapper />
-              </ProtectedRoute>
-            } />
-            <Route path="/inquiry/:id" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <InquiryDetail />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/quotation/:id" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <QuotationResponse />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/quotation/:id/response" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <QuotationResponse />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/quotation/:id/payment" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <QuotationPayment />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            
-            {/* Order Routes */}
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <OrderList />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/order/:id" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <OrderDetail />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/order/:id/tracking" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <OrderTracking />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/order/:id/payment" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <PaymentPage />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            
-            {/* Admin Routes */}
-            <Route path="/admin/dashboard" element={
-              <ProtectedRoute>
-                <Layout isInternal>
-                  <BackOfficeDashboard />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/orders" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <OrderManagement />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/material-management" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <BackOfficeMaterialManagement />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            
-            {/* Component Manager Routes */}
-            <Route path="/component-manager" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <ComponentManagerPage />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/component-manager/:id" element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <ComponentManagerDetail />
-                </AdminLayout>
-              </ProtectedRoute>
-            } />
-            
-            {/* 404 Route */}
-            <Route path="*" element={
-              <Layout>
-                <NotFound />
-              </Layout>
-            } />
-                </Routes>
-              </Suspense>
-              <Toaster position="top-right" />
-            </div>
-          </Router>
+              <ScrollToTop />
+              <div className="App">
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} />
+                    {/* <Route path="/about" element={
+                      <Layout>
+                        <About />
+                      </Layout>
+                    } /> */}
+                    <Route path="/services" element={
+                      <Layout>
+                        <Services />
+                      </Layout>
+                    } />
+                    <Route path="/parts" element={
+                      <Layout>
+                        <Parts />
+                      </Layout>
+                    } />
+                    <Route path="/tools" element={
+                      <Layout>
+                        <Tools />
+                      </Layout>
+                    } />
+                    <Route path="/upload" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <Upload />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/contact" element={
+                      <Layout>
+                        <ServiceContact />
+                      </Layout>
+                    } />
+
+                    {/* Auth Routes */}
+                    <Route path="/login" element={
+                      <PublicRoute>
+                        <Layout>
+                          <Login />
+                        </Layout>
+                      </PublicRoute>
+                    } />
+                    <Route path="/signup" element={
+                      <PublicRoute>
+                        <Layout>
+                          <SignUp />
+                        </Layout>
+                      </PublicRoute>
+                    } />
+
+                    {/* Protected Routes */}
+                    <Route path="/dashboard" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <Dashboard />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/profile" element={
+                      <ProtectedRoute>
+                        <ProfileWrapper />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Inquiry Routes */}
+                    <Route path="/inquiry/new" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <NewInquiry />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/inquiries" element={
+                      <ProtectedRoute>
+                        <InquiryListWrapper />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/inquiry/:id" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <InquiryDetail />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/quotation/:id" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <QuotationResponse />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/quotation/:id/response" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <QuotationResponse />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/quotation/:id/payment" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <QuotationPayment />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Order Routes */}
+                    <Route path="/orders" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <OrderList />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/order/:id" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <OrderDetail />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/order/:id/tracking" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <OrderTracking />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/order/:id/payment" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <PaymentPage />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Admin Routes */}
+                    <Route path="/admin/dashboard" element={
+                      <ProtectedRoute>
+                        <Layout isInternal>
+                          <BackOfficeDashboard />
+                        </Layout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/admin/orders" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <OrderManagement />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/admin/material-management" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <BackOfficeMaterialManagement />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Component Manager Routes */}
+                    <Route path="/component-manager" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <ComponentManagerPage />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/component-manager/:id" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <ComponentManagerDetail />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
+
+                    <Route path="/privacy-policy" element={
+                      <Layout>
+                        <PrivacyPolicy />
+                      </Layout>
+                    } />
+                    <Route path="/terms-and-conditions" element={
+                      <Layout>
+                        <TermsAndConditions />
+                      </Layout>
+                    } />
+                    {/* Redirecting Blogs and FAQ to home page sections */}
+                    {/* Redirecting Blogs and FAQ to home page sections without hash in URL */}
+                    <Route path="/blogs" element={<Navigate to="/" state={{ targetId: 'blog-area' }} replace />} />
+                    <Route path="/faq" element={<Navigate to="/" state={{ targetId: 'faq-area' }} replace />} />
+
+                    {/* 404 Route */}
+                    <Route path="*" element={
+                      <Layout>
+                        <NotFound />
+                      </Layout>
+                    } />
+                  </Routes>
+                </Suspense>
+                <Toaster position="top-right" />
+              </div>
+            </Router>
           </QuotationProvider>
         </AuthProvider>
       </QueryClientProvider>
