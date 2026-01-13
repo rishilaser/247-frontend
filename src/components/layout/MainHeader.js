@@ -219,7 +219,7 @@ const MainHeader = () => {
                                         </a>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" href="/" onClick={(e) => handleNavigation(e, 'about-area')} style={{
+                                        <a className="nav-link" href="/" onClick={(e) => handleNavigation(e, 'counter-area')} style={{
                                             padding: '8px 16px',
                                             fontSize: '15px',
                                             fontWeight: '500',
@@ -241,7 +241,7 @@ const MainHeader = () => {
                                         </a>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" href="/" onClick={(e) => handleNavigation(e, 'about-area')} style={{
+                                        <a className="nav-link" href="/" onClick={(e) => handleNavigation(e, 'counter-area')} style={{
                                             padding: '8px 16px',
                                             fontSize: '15px',
                                             fontWeight: '500',
@@ -402,8 +402,8 @@ const MainHeader = () => {
                     <ul style={{ listStyle: 'none', padding: 0, marginTop: '20px' }}>
                         {[
                             { label: 'Home', action: (e) => handleNavigation(e, 'home') },
-                            { label: 'About Us', action: (e) => handleNavigation(e, 'about-area') },
-                            { label: 'Capabilities', action: (e) => handleNavigation(e, 'about-area') },
+                            { label: 'About Us', action: (e) => handleNavigation(e, 'counter-area') },
+                            { label: 'Capabilities', action: (e) => handleNavigation(e, 'counter-area') },
                             { label: 'Contact Us', action: (e) => handleNavigation(e, 'quote-area') }
                         ].map((item, index) => (
                             <li key={index} style={{ marginBottom: '15px' }}>

@@ -227,7 +227,7 @@ const Footer = () => {
                 <li style={{ marginBottom: '14px' }}>
                   <Link
                     to="/"
-                    onClick={handleNavigate('/', { state: { targetId: 'about-area' } })}
+                    onClick={handleNavigate('/', { state: { targetId: 'counter-area' } })}
                     style={{
                       color: 'rgba(255,255,255,0.85)',
                       textDecoration: 'none',

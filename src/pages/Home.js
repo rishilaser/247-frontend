@@ -800,7 +800,7 @@ function Home() {
 
 
         {/* Counter Area */}
-        <div className="counter-area pt-20 pb-20 px-4">
+        <div id="counter-area" className="counter-area pt-20 pb-20 px-4">
           <div className="container">
             <div className="row g-4 justify-content-center">
               <div className="col-md-6 col-lg-4 col-xl-3">
@@ -2581,7 +2581,7 @@ function Home() {
                       flexDirection: 'column',
                       gap: '10px'
                     }}>
-                      <li><a href="/" onClick={(e) => { e.preventDefault(); navigate('/', { state: { targetId: 'about-area' } }); }} style={{
+                      <li><a href="/" onClick={(e) => { e.preventDefault(); navigate('/', { state: { targetId: 'counter-area' } }); }} style={{
                         color: 'rgba(255,255,255,0.8)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
