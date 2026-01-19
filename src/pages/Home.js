@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { roleUtils } from '../utils/authUtils';
@@ -8,6 +8,18 @@ import '../styles/responsive.css';
 function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // Quote form state
+  const [quoteFormData, setQuoteFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    services: [],
+    message: ''
+  });
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+  const [quoteSubmitMessage, setQuoteSubmitMessage] = useState('');
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   // Header scroll effect
   useEffect(() => {
@@ -34,6 +46,98 @@ function Home() {
         navigate(targetPath);
       }
     }
+  };
+
+  // Handle quote form input changes
+  const handleQuoteFormChange = (e) => {
+    const { name, value, type, checked, id } = e.target;
+    
+    if (type === 'checkbox') {
+      // Handle checkboxes
+      const serviceValue = id === 'flexCheckDefaultCutting' ? 'Cutting' : 'Cutting & Bending';
+      setQuoteFormData(prev => ({
+        ...prev,
+        services: checked 
+          ? [...prev.services, serviceValue]
+          : prev.services.filter(s => s !== serviceValue)
+      }));
+    } else {
+      // Handle text inputs
+      setQuoteFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Handle quote form submission
+  const handleQuoteFormSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!quoteFormData.name.trim()) {
+      setQuoteSubmitMessage({ type: 'error', text: 'Please enter your name' });
+      return;
+    }
+    if (!quoteFormData.email.trim()) {
+      setQuoteSubmitMessage({ type: 'error', text: 'Please enter your email' });
+      return;
+    }
+    if (!quoteFormData.phone.trim()) {
+      setQuoteSubmitMessage({ type: 'error', text: 'Please enter your phone number' });
+      return;
+    }
+    if (!quoteFormData.message.trim()) {
+      setQuoteSubmitMessage({ type: 'error', text: 'Please enter your message' });
+      return;
+    }
+    
+    setIsSubmittingQuote(true);
+    setQuoteSubmitMessage('');
+    
+    // Send email in background without waiting
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: quoteFormData.name,
+        email: quoteFormData.email,
+        phone: quoteFormData.phone,
+        service: quoteFormData.services.length > 0 ? quoteFormData.services.join(', ') : '',
+        message: quoteFormData.message
+      })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show success popup
+          setShowSuccessPopup(true);
+          
+          // Auto-hide popup after 4 seconds
+          setTimeout(() => {
+            setShowSuccessPopup(false);
+          }, 4000);
+        }
+        
+        // Clear form after successful submission
+        setQuoteFormData({
+          name: '',
+          email: '',
+          phone: '',
+          services: [],
+          message: ''
+        });
+        // Clear checkboxes
+        document.getElementById('flexCheckDefaultCutting').checked = false;
+        document.getElementById('flexCheckDefaultCutting&Bending').checked = false;
+      })
+      .catch(error => {
+        console.error('Quote form submission error:', error);
+      })
+      .finally(() => {
+        setIsSubmittingQuote(false);
+      });
   };
 
   // Handle hash scroll and state scroll
@@ -300,6 +404,53 @@ function Home() {
           <div></div>
         </div>
       </div>
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 9999,
+          animation: 'slideInRight 0.3s ease-out, slideOutRight 0.3s ease-out 3.7s forwards',
+          fontWeight: '500',
+          fontSize: '15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          maxWidth: '350px'
+        }}>
+          <i className="fas fa-check-circle" style={{ fontSize: '18px' }}></i>
+          <span>Quote request submitted successfully! We'll contact you soon.</span>
+          <style>{`
+            @keyframes slideInRight {
+              from {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+              to {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            @keyframes slideOutRight {
+              from {
+                transform: translateX(0);
+                opacity: 1;
+              }
+              to {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+            }
+          `}</style>
+        </div>
+      )}
 
       <Header />
 
@@ -1852,14 +2003,14 @@ function Home() {
                 <div className="quote-content">
                   <div className="quote-head">
                     <h3>
-                      Request A <span className="text-orange">Quote</span>
+                      Contact <span className="text-orange">Us</span>
                     </h3>
                     <p>
                       Get an instant quote for your fabrication needs. Fill out the form below and our team will get back to you within 2 hours.
                     </p>
                   </div>
                   <div className="quote-form">
-                    <form action="">
+                    <form onSubmit={handleQuoteFormSubmit}>
                       <div className="row" style={{ marginLeft: '-8px', marginRight: '-8px' }}>
                         <div className="col-12 col-lg-6">
                           <div className="form-group">
@@ -1869,6 +2020,10 @@ function Home() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Your Name"
+                                name="name"
+                                value={quoteFormData.name}
+                                onChange={handleQuoteFormChange}
+                                required
                               />
                             </div>
                           </div>
@@ -1881,6 +2036,10 @@ function Home() {
                                 type="email"
                                 className="form-control"
                                 placeholder="Your Email"
+                                name="email"
+                                value={quoteFormData.email}
+                                onChange={handleQuoteFormChange}
+                                required
                               />
                             </div>
                           </div>
@@ -1893,6 +2052,10 @@ function Home() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Your Phone"
+                                name="phone"
+                                value={quoteFormData.phone}
+                                onChange={handleQuoteFormChange}
+                                required
                               />
                             </div>
                           </div>
@@ -1904,8 +2067,8 @@ function Home() {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  value=""
                                   id="flexCheckDefaultCutting"
+                                  onChange={handleQuoteFormChange}
                                 />
                                 <label
                                   className="form-check-label"
@@ -1918,8 +2081,8 @@ function Home() {
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  value=""
                                   id="flexCheckDefaultCutting&Bending"
+                                  onChange={handleQuoteFormChange}
                                 />
                                 <label
                                   className="form-check-label"
@@ -1940,16 +2103,35 @@ function Home() {
                                 cols="30"
                                 rows="4"
                                 placeholder="Your Message"
+                                name="message"
+                                value={quoteFormData.message}
+                                onChange={handleQuoteFormChange}
+                                required
                               ></textarea>
                             </div>
                           </div>
                         </div>
+                        {quoteSubmitMessage && quoteSubmitMessage.type === 'error' && (
+                          <div className="col-lg-12">
+                            <div style={{
+                              padding: '12px 16px',
+                              borderRadius: '4px',
+                              marginBottom: '15px',
+                              backgroundColor: '#f8d7da',
+                              color: '#721c24',
+                              border: '1px solid #f5c6cb'
+                            }}>
+                              {quoteSubmitMessage.text}
+                            </div>
+                          </div>
+                        )}
                         <div className="col-lg-12">
                           <button
                             type="submit"
                             className="theme-btn"
+                            disabled={isSubmittingQuote}
                           >
-                            Register Now
+                            Send Request
                             <i className="fas fa-arrow-right"></i>
                           </button>
                         </div>
