@@ -20,6 +20,8 @@ function Home() {
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
   const [quoteSubmitMessage, setQuoteSubmitMessage] = useState('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Header scroll effect
   useEffect(() => {
@@ -87,6 +89,12 @@ function Home() {
       setQuoteSubmitMessage({ type: 'error', text: 'Please enter your phone number' });
       return;
     }
+    // Validate phone number - must be 10 digits
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(quoteFormData.phone.trim())) {
+      setQuoteSubmitMessage({ type: 'error', text: 'Please enter a valid 10-digit phone number' });
+      return;
+    }
     if (!quoteFormData.message.trim()) {
       setQuoteSubmitMessage({ type: 'error', text: 'Please enter your message' });
       return;
@@ -118,22 +126,38 @@ function Home() {
           setTimeout(() => {
             setShowSuccessPopup(false);
           }, 4000);
+          
+          // Clear form after successful submission
+          setQuoteFormData({
+            name: '',
+            email: '',
+            phone: '',
+            services: [],
+            message: ''
+          });
+          // Clear checkboxes
+          document.getElementById('flexCheckDefaultCutting').checked = false;
+          document.getElementById('flexCheckDefaultCutting&Bending').checked = false;
+        } else {
+          // Show error popup
+          setErrorMessage(data.message || 'Failed to send message. Please try again.');
+          setShowErrorPopup(true);
+          
+          // Auto-hide error popup after 4 seconds
+          setTimeout(() => {
+            setShowErrorPopup(false);
+          }, 4000);
         }
-        
-        // Clear form after successful submission
-        setQuoteFormData({
-          name: '',
-          email: '',
-          phone: '',
-          services: [],
-          message: ''
-        });
-        // Clear checkboxes
-        document.getElementById('flexCheckDefaultCutting').checked = false;
-        document.getElementById('flexCheckDefaultCutting&Bending').checked = false;
       })
       .catch(error => {
         console.error('Quote form submission error:', error);
+        setErrorMessage('An error occurred while sending your message. Please try again.');
+        setShowErrorPopup(true);
+        
+        // Auto-hide error popup after 4 seconds
+        setTimeout(() => {
+          setShowErrorPopup(false);
+        }, 4000);
       })
       .finally(() => {
         setIsSubmittingQuote(false);
@@ -427,6 +451,53 @@ function Home() {
         }}>
           <i className="fas fa-check-circle" style={{ fontSize: '18px' }}></i>
           <span>Quote request submitted successfully! We'll contact you soon.</span>
+          <style>{`
+            @keyframes slideInRight {
+              from {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+              to {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            @keyframes slideOutRight {
+              from {
+                transform: translateX(0);
+                opacity: 1;
+              }
+              to {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+            }
+          `}</style>
+        </div>
+      )}
+
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#f44336',
+          color: 'white',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 9999,
+          animation: 'slideInRight 0.3s ease-out, slideOutRight 0.3s ease-out 3.7s forwards',
+          fontWeight: '500',
+          fontSize: '15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          maxWidth: '350px'
+        }}>
+          <i className="fas fa-exclamation-circle" style={{ fontSize: '18px' }}></i>
+          <span>{errorMessage}</span>
           <style>{`
             @keyframes slideInRight {
               from {
@@ -1971,7 +2042,7 @@ function Home() {
         </div>
 
         {/* Quote Area */}
-        <div className="quote-area px-3 px-md-5" id="quote-area">
+        <div className="quote-area px-3 px-md-5" id="quote-area" style={{ position: 'relative', zIndex: 1 }}>
           <div className="container">
             <div className="row align-items-center">
               <div className="col-12 col-md-6 mb-4 mb-md-0">
@@ -2014,8 +2085,16 @@ function Home() {
                       <div className="row" style={{ marginLeft: '-8px', marginRight: '-8px' }}>
                         <div className="col-12 col-lg-6">
                           <div className="form-group">
-                            <div className="form-icon">
-                              <i className="fas fa-user"></i>
+                            <div className="form-icon" style={{ position: 'relative' }}>
+                              <i className="fas fa-user" style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '15px',
+                                transform: 'translateY(-50%)',
+                                zIndex: 1,
+                                pointerEvents: 'none',
+                                fontSize: '16px'
+                              }}></i>
                               <input
                                 type="text"
                                 className="form-control"
@@ -2023,6 +2102,7 @@ function Home() {
                                 name="name"
                                 value={quoteFormData.name}
                                 onChange={handleQuoteFormChange}
+                                style={{ paddingLeft: '45px' }}
                                 required
                               />
                             </div>
@@ -2030,8 +2110,16 @@ function Home() {
                         </div>
                         <div className="col-12 col-lg-6">
                           <div className="form-group">
-                            <div className="form-icon">
-                              <i className="far fa-envelope"></i>
+                            <div className="form-icon" style={{ position: 'relative' }}>
+                              <i className="far fa-envelope" style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '15px',
+                                transform: 'translateY(-50%)',
+                                zIndex: 1,
+                                pointerEvents: 'none',
+                                fontSize: '16px'
+                              }}></i>
                               <input
                                 type="email"
                                 className="form-control"
@@ -2039,6 +2127,7 @@ function Home() {
                                 name="email"
                                 value={quoteFormData.email}
                                 onChange={handleQuoteFormChange}
+                                style={{ paddingLeft: '45px' }}
                                 required
                               />
                             </div>
@@ -2046,8 +2135,16 @@ function Home() {
                         </div>
                         <div className="col-12 col-lg-6">
                           <div className="form-group">
-                            <div className="form-icon">
-                              <i className="fas fa-phone"></i>
+                            <div className="form-icon" style={{ position: 'relative' }}>
+                              <i className="fas fa-phone" style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '15px',
+                                transform: 'translateY(-50%)',
+                                zIndex: 1,
+                                pointerEvents: 'none',
+                                fontSize: '16px'
+                              }}></i>
                               <input
                                 type="text"
                                 className="form-control"
@@ -2055,6 +2152,10 @@ function Home() {
                                 name="phone"
                                 value={quoteFormData.phone}
                                 onChange={handleQuoteFormChange}
+                                style={{ paddingLeft: '45px' }}
+                                maxLength="10"
+                                inputMode="numeric"
+                                pattern="[0-9]{10}"
                                 required
                               />
                             </div>
@@ -2069,24 +2170,42 @@ function Home() {
                                   type="checkbox"
                                   id="flexCheckDefaultCutting"
                                   onChange={handleQuoteFormChange}
+                                  style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    borderWidth: '2px',
+                                    borderColor: '#969595',
+                                    borderStyle: 'solid',
+                                    cursor: 'pointer'
+                                  }}
                                 />
                                 <label
                                   className="form-check-label"
                                   htmlFor="flexCheckDefaultCutting"
+                                  style={{ marginLeft: '8px', cursor: 'pointer' }}
                                 >
                                   Cutting
                                 </label>
                               </div>
-                              <div className="form-check">
+                              <div className="form-check" style={{ marginTop: '10px' }}>
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
                                   id="flexCheckDefaultCutting&Bending"
                                   onChange={handleQuoteFormChange}
+                                  style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    borderWidth: '2px',
+                                    borderColor: '#969595',
+                                    borderStyle: 'solid',
+                                    cursor: 'pointer'
+                                  }}
                                 />
                                 <label
                                   className="form-check-label"
                                   htmlFor="flexCheckDefaultCutting&Bending"
+                                  style={{ marginLeft: '8px', cursor: 'pointer' }}
                                 >
                                   Cutting & Bending
                                 </label>
@@ -2096,8 +2215,15 @@ function Home() {
                         </div>
                         <div className="col-lg-12">
                           <div className="form-group">
-                            <div className="form-icon">
-                              <i className="far fa-comment-lines"></i>
+                            <div className="form-icon" style={{ position: 'relative' }}>
+                              <i className="fas fa-comment" style={{
+                                position: 'absolute',
+                                top: '15px',
+                                left: '15px',
+                                zIndex: 1,
+                                pointerEvents: 'none',
+                                fontSize: '16px'
+                              }}></i>
                               <textarea
                                 className="form-control"
                                 cols="30"
@@ -2106,6 +2232,10 @@ function Home() {
                                 name="message"
                                 value={quoteFormData.message}
                                 onChange={handleQuoteFormChange}
+                                style={{
+                                  paddingLeft: '45px',
+                                  resize: 'vertical'
+                                }}
                                 required
                               ></textarea>
                             </div>
@@ -3034,7 +3164,7 @@ function Home() {
       </a>
 
       {/* Scroll Top */}
-      <a href="" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} id="scroll-top"><i className="fas fa-arrow-up"></i></a>
+      <a href="" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} id="scroll-top" style={{ zIndex: 9000, position: 'fixed' }}><i className="fas fa-arrow-up"></i></a>
     </div >
   );
 }
