@@ -176,7 +176,7 @@ const Dashboard = () => {
       id: 3,
       type: 'order',
       title: 'Order confirmed',
-      description: 'Production started for order #KO-2024-001',
+      description: 'Production started for order #KO-2026-001',
       time: '3 days ago',
       status: 'confirmed'
     }
@@ -186,7 +186,7 @@ const Dashboard = () => {
   const [recentOrders] = useState([
     {
       id: 1,
-      orderNumber: 'KO-2024-001',
+      orderNumber: 'KO-2064-001',
       product: 'Sheet Metal Brackets',
       status: 'In Production',
       amount: 2500.00,
@@ -194,7 +194,7 @@ const Dashboard = () => {
     },
     {
       id: 2,
-      orderNumber: 'KO-2024-002',
+      orderNumber: 'KO-2026-002',
       product: 'Laser Cut Panels',
       status: 'Shipped',
       amount: 1800.00,
