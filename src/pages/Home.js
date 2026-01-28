@@ -3,12 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { roleUtils } from '../utils/authUtils';
 import Header from '../components/layout/Header';
+import { contactAPI } from '../services/api';
 import '../styles/responsive.css';
 
 function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   // Quote form state
   const [quoteFormData, setQuoteFormData] = useState({
     name: '',
@@ -53,13 +54,13 @@ function Home() {
   // Handle quote form input changes
   const handleQuoteFormChange = (e) => {
     const { name, value, type, checked, id } = e.target;
-    
+
     if (type === 'checkbox') {
       // Handle checkboxes
       const serviceValue = id === 'flexCheckDefaultCutting' ? 'Cutting' : 'Cutting & Bending';
       setQuoteFormData(prev => ({
         ...prev,
-        services: checked 
+        services: checked
           ? [...prev.services, serviceValue]
           : prev.services.filter(s => s !== serviceValue)
       }));
@@ -75,7 +76,7 @@ function Home() {
   // Handle quote form submission
   const handleQuoteFormSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!quoteFormData.name.trim()) {
       setQuoteSubmitMessage({ type: 'error', text: 'Please enter your name' });
@@ -99,34 +100,28 @@ function Home() {
       setQuoteSubmitMessage({ type: 'error', text: 'Please enter your message' });
       return;
     }
-    
+
     setIsSubmittingQuote(true);
     setQuoteSubmitMessage('');
-    
+
     // Send email in background without waiting
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: quoteFormData.name,
-        email: quoteFormData.email,
-        phone: quoteFormData.phone,
-        service: quoteFormData.services.length > 0 ? quoteFormData.services.join(', ') : '',
-        message: quoteFormData.message
-      })
-    }).then(response => response.json())
+    contactAPI.submitContact({
+      name: quoteFormData.name,
+      email: quoteFormData.email,
+      phone: quoteFormData.phone,
+      service: quoteFormData.services.length > 0 ? quoteFormData.services.join(', ') : '',
+      message: quoteFormData.message
+    }).then(response => response.data)
       .then(data => {
         if (data.success) {
           // Show success popup
           setShowSuccessPopup(true);
-          
+
           // Auto-hide popup after 4 seconds
           setTimeout(() => {
             setShowSuccessPopup(false);
           }, 4000);
-          
+
           // Clear form after successful submission
           setQuoteFormData({
             name: '',
@@ -142,7 +137,7 @@ function Home() {
           // Show error popup
           setErrorMessage(data.message || 'Failed to send message. Please try again.');
           setShowErrorPopup(true);
-          
+
           // Auto-hide error popup after 4 seconds
           setTimeout(() => {
             setShowErrorPopup(false);
@@ -153,7 +148,7 @@ function Home() {
         console.error('Quote form submission error:', error);
         setErrorMessage('An error occurred while sending your message. Please try again.');
         setShowErrorPopup(true);
-        
+
         // Auto-hide error popup after 4 seconds
         setTimeout(() => {
           setShowErrorPopup(false);

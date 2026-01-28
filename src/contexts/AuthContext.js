@@ -38,34 +38,34 @@ export const AuthProvider = ({ children }) => {
   const fetchUserProfile = async () => {
     try {
       console.log('Fetching user profile with token:', token);
-      
+
       // Validate token before making request
       if (!tokenUtils.isValidToken(token)) {
         throw new Error('Invalid token');
       }
-      
+
       const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      
+
       console.log('User profile fetched successfully:', response.data);
-      
+
       // Normalize user data to handle both old and new formats
       const userData = {
         ...response.data,
         role: roleUtils.getUserRole(response.data),
         id: roleUtils.getUserId(response.data)
       };
-      
+
       setUser(userData);
       console.log('User state updated:', userData);
-      
+
     } catch (error) {
       console.error('Error fetching user profile:', error);
       console.error('Error details:', error.response?.data);
-      
+
       // Handle different types of errors
       if (apiErrorUtils.isAuthError(error)) {
         console.log('Authentication error, clearing token and user data');
@@ -93,24 +93,24 @@ export const AuthProvider = ({ children }) => {
         email,
         password
       });
-      
+
       console.log('Login response:', response.data);
       const { token: newToken, user: userData } = response.data;
-      
+
       // Validate token before storing
       if (!tokenUtils.isValidToken(newToken)) {
         throw new Error('Invalid token received from server');
       }
-      
+
       // Normalize user data
       const normalizedUserData = {
         ...userData,
         role: roleUtils.getUserRole(userData),
         id: roleUtils.getUserId(userData)
       };
-      
+
       console.log('Setting token and user data:', { newToken, normalizedUserData });
-      
+
       // Use storage utils for consistent token management
       if (storageUtils.setToken(newToken)) {
         setToken(newToken);
@@ -133,17 +133,17 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('AuthContext signup called with:', userData);
       console.log('Making API call to /api/auth/signup');
-      
+
       const response = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
       console.log('API response received:', response.data);
-      
+
       const { token: newToken, user: newUser } = response.data;
-      
+
       console.log('Signup successful, setting user data:', { newToken, newUser });
       localStorage.setItem('token', newToken);
       setToken(newToken);
       setUser(newUser);
-      
+
       console.log('User set after signup:', newUser);
       return { success: true };
     } catch (error) {
@@ -167,20 +167,20 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('=== AUTH CONTEXT: updateProfile called ===');
       console.log('Profile data to send:', profileData);
-      
+
       const response = await axios.put(`${API_BASE_URL}/auth/profile`, profileData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      
+
       console.log('Profile update response:', response.data);
-      
+
       // Backend returns { success: true, message: ..., user: {...} }
       // So we need to extract the user object
       const updatedUser = response.data.user || response.data;
       console.log('Setting updated user:', updatedUser);
-      
+
       setUser(updatedUser);
       return { success: true };
     } catch (error) {

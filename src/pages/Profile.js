@@ -18,7 +18,7 @@ const Profile = () => {
   useEffect(() => {
     console.log('=== PROFILE DATA DEBUG ===');
     console.log('User object:', user);
-    
+
     if (user) {
       console.log('User firstName:', user.firstName);
       console.log('User lastName:', user.lastName);
@@ -27,7 +27,7 @@ const Profile = () => {
       console.log('User phone:', user.phone);
       console.log('User companyName:', user.companyName);
       console.log('User address:', user.address);
-      
+
       // Format address properly
       let formattedAddress = '';
       if (user.address) {
@@ -53,7 +53,7 @@ const Profile = () => {
         company: user.companyName || '',
         address: formattedAddress
       };
-      
+
       console.log('Setting formData to:', newFormData);
       setFormData(newFormData);
     } else {
@@ -73,7 +73,7 @@ const Profile = () => {
     console.log('=== PROFILE UPDATE SUBMIT ===');
     console.log('Current formData:', formData);
     console.log('Current user:', user);
-    
+
     setLoading(true);
 
     try {
@@ -81,7 +81,7 @@ const Profile = () => {
       const nameParts = formData.name.trim().split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-      
+
       // Parse address string back to object if needed
       let addressObj = user.address || {};
       if (typeof formData.address === 'string' && formData.address.trim()) {
@@ -95,7 +95,7 @@ const Profile = () => {
           country: addressObj.country || ''
         };
       }
-      
+
       // Format data to match backend expectations
       const updateData = {
         firstName: firstName,
@@ -105,11 +105,11 @@ const Profile = () => {
         companyName: formData.company, // Backend expects companyName
         address: addressObj
       };
-      
+
       console.log('Calling updateProfile with formatted data:', updateData);
       const result = await updateProfile(updateData);
       console.log('Update result:', result);
-      
+
       if (result.success) {
         toast.success('Profile updated successfully!');
         // Refresh profile data after update
@@ -137,12 +137,12 @@ const Profile = () => {
   // Fetch customer orders
   const fetchOrders = async () => {
     if (!user?._id || user?.role !== 'customer') return;
-    
+
     try {
       setOrdersLoading(true);
       // Use customer API endpoint (uses authenticated user's ID from token)
       const response = await orderAPI.getCustomerOrders();
-      
+
       if (response.data.success) {
         const transformedOrders = (response.data.orders || []).map(order => ({
           id: order._id,
@@ -171,11 +171,11 @@ const Profile = () => {
   // Fetch customer inquiries
   const fetchInquiries = async () => {
     if (!user?._id || user?.role !== 'customer') return;
-    
+
     try {
       setInquiriesLoading(true);
       const response = await inquiryAPI.getCustomerInquiries();
-      
+
       if (response.data.success) {
         const transformedInquiries = response.data.inquiries.map(inquiry => ({
           id: inquiry._id,
@@ -258,11 +258,11 @@ const Profile = () => {
   // Fetch back office settings for admin
   const fetchBackOfficeSettings = async () => {
     if (user?.role !== 'admin') return;
-    
+
     try {
       setSettingsLoading(true);
       const response = await adminAPI.getSettings();
-      
+
       if (response.data.success) {
         const { backOfficeEmails: emails, backOfficeMobileNumbers: numbers } = response.data.settings;
         setBackOfficeEmails(emails && emails.length >= 4 ? emails : [...(emails || []), ...Array(4 - (emails?.length || 0)).fill('')]);
@@ -327,20 +327,20 @@ const Profile = () => {
 
   const handleBackOfficeSettingsSave = async (e) => {
     e.preventDefault();
-    
+
     const validEmails = backOfficeEmails.filter(email => email.trim() !== '');
     const validNumbers = backOfficeMobileNumbers.filter(num => num.trim() !== '');
-    
+
     if (validEmails.length < 4) {
       toast.error('Please enter at least 4 email addresses');
       return;
     }
-    
+
     if (validNumbers.length < 2) {
       toast.error('Please enter at least 2 mobile numbers');
       return;
     }
-    
+
     // Validate emails
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     for (const email of validEmails) {
@@ -349,7 +349,7 @@ const Profile = () => {
         return;
       }
     }
-    
+
     // Validate mobile numbers
     for (const num of validNumbers) {
       if (num.length < 10) {
@@ -357,27 +357,18 @@ const Profile = () => {
         return;
       }
     }
-    
+
     try {
       setSettingsSaving(true);
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/admin/settings`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          backOfficeEmails: validEmails,
-          backOfficeMobileNumbers: validNumbers
-        })
+      const response = await adminAPI.updateSettings({
+        backOfficeEmails: validEmails,
+        backOfficeMobileNumbers: validNumbers
       });
-      
-      const data = await response.json();
-      
-      if (data.success) {
+
+      if (response.data.success) {
         toast.success('Back Office settings updated successfully!');
       } else {
-        toast.error(data.message || 'Failed to update settings');
+        toast.error(response.data.message || 'Failed to update settings');
       }
     } catch (error) {
       console.error('Error updating settings:', error);
@@ -434,7 +425,7 @@ const Profile = () => {
   // Fetch nomenclature config from backend
   const fetchNomenclatureConfig = async () => {
     if (user?.role !== 'admin' && user?.role !== 'backoffice' && user?.role !== 'subadmin') return;
-    
+
     try {
       const response = await adminAPI.getNomenclatureConfig();
       if (response.data.success && response.data.config) {
@@ -490,7 +481,7 @@ const Profile = () => {
   const handleSaveNomenclature = async () => {
     try {
       setNomenclatureSaving(true);
-      
+
       // Save to backend
       const response = await adminAPI.updateNomenclatureConfig({
         inquiryPrefix: nomenclatureConfig.inquiryPrefix,
@@ -502,7 +493,7 @@ const Profile = () => {
         separator: nomenclatureConfig.separator,
         includeYearSuffix: nomenclatureConfig.includeYearSuffix
       });
-      
+
       if (response.data.success) {
         // Also save to localStorage for offline access
         if (typeof window !== 'undefined') {
@@ -525,7 +516,7 @@ const Profile = () => {
       setNomenclatureSaving(true);
       const resetConfig = { ...defaultNomenclatureSettings };
       setNomenclatureConfig(resetConfig);
-      
+
       // Reset on backend
       await adminAPI.updateNomenclatureConfig({
         inquiryPrefix: resetConfig.inquiryPrefix,
@@ -537,7 +528,7 @@ const Profile = () => {
         separator: resetConfig.separator,
         includeYearSuffix: resetConfig.includeYearSuffix
       });
-      
+
       if (typeof window !== 'undefined') {
         localStorage.setItem('nomenclatureConfig', JSON.stringify(resetConfig));
       }
@@ -599,11 +590,10 @@ const Profile = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                      activeTab === tab.id
+                    className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     {tab.name}
                   </button>
@@ -617,7 +607,7 @@ const Profile = () => {
             {activeTab === 'profile' && (
               <div className="p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Profile Information</h2>
-                
+
                 {/* Admin Role Indicator */}
                 {(user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin') && (
                   <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -629,9 +619,9 @@ const Profile = () => {
                       </div>
                       <div className="ml-3">
                         <h3 className="text-sm font-medium text-blue-900">
-                          {user?.role === 'admin' ? 'Administrator Account' : 
-                           user?.role === 'backoffice' ? 'Back Office Account' : 
-                           'Sub-Admin Account'}
+                          {user?.role === 'admin' ? 'Administrator Account' :
+                            user?.role === 'backoffice' ? 'Back Office Account' :
+                              'Sub-Admin Account'}
                         </h3>
                         <p className="text-sm text-blue-700">
                           You have administrative access to manage inquiries, quotations, and orders.
@@ -640,7 +630,7 @@ const Profile = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
@@ -729,7 +719,7 @@ const Profile = () => {
                 {user?.role === 'admin' && (
                   <div className="mt-8 pt-8 border-t border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">Back Office Contact Settings</h2>
-                    
+
                     {settingsLoading ? (
                       <div className="flex justify-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -752,7 +742,7 @@ const Profile = () => {
                               + Add Email
                             </button>
                           </div>
-                          
+
                           <div className="space-y-3">
                             {backOfficeEmails.map((email, index) => (
                               <div key={index} className="flex items-center gap-3">
@@ -798,7 +788,7 @@ const Profile = () => {
                               + Add Number
                             </button>
                           </div>
-                          
+
                           <div className="space-y-3">
                             {backOfficeMobileNumbers.map((mobile, index) => (
                               <div key={index} className="flex items-center gap-3">
@@ -874,17 +864,16 @@ const Profile = () => {
                             <p className="text-sm text-gray-500 mt-2">Ordered on {order.date}</p>
                           </div>
                           <div className="text-right">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              order.status === 'In Production' 
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${order.status === 'In Production'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : order.status === 'Dispatched'
-                                ? 'bg-green-100 text-green-800'
-                                : order.status === 'Delivered'
-                                ? 'bg-green-100 text-green-800'
-                                : order.status === 'Confirmed'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
+                                  ? 'bg-green-100 text-green-800'
+                                  : order.status === 'Delivered'
+                                    ? 'bg-green-100 text-green-800'
+                                    : order.status === 'Confirmed'
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-gray-100 text-gray-800'
+                              }`}>
                               {order.status}
                             </span>
                             <p className="text-lg font-semibold text-gray-900 mt-2">
@@ -930,24 +919,23 @@ const Profile = () => {
                             </div>
                           </div>
                           <div className="ml-4 flex flex-col items-end">
-                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full mb-2 ${
-                              inquiry.status === 'pending' 
+                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full mb-2 ${inquiry.status === 'pending'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : inquiry.status === 'quoted'
-                                ? 'bg-blue-100 text-blue-800'
-                                : inquiry.status === 'in_production'
-                                ? 'bg-purple-100 text-purple-800'
-                                : inquiry.status === 'completed'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {inquiry.status === 'in_production' ? 'In Production' : 
-                               inquiry.status === 'completed' ? 'Completed' :
-                               inquiry.status.charAt(0).toUpperCase() + inquiry.status.slice(1)}
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : inquiry.status === 'in_production'
+                                    ? 'bg-purple-100 text-purple-800'
+                                    : inquiry.status === 'completed'
+                                      ? 'bg-green-100 text-green-800'
+                                      : 'bg-gray-100 text-gray-800'
+                              }`}>
+                              {inquiry.status === 'in_production' ? 'In Production' :
+                                inquiry.status === 'completed' ? 'Completed' :
+                                  inquiry.status.charAt(0).toUpperCase() + inquiry.status.slice(1)}
                             </span>
                           </div>
                         </div>
-                        
+
                         {/* Files Section */}
                         {inquiry.files && inquiry.files.length > 0 && (
                           <div className="border-t border-gray-100 pt-4">
