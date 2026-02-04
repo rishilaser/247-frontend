@@ -91,23 +91,21 @@ const MainHeader = () => {
 
                         {/* LEFT – Email & Phone */}
                         <div className="col-6 col-md-auto d-flex flex-column flex-md-row gap-1 gap-md-4">
-                            <a
-                                href="mailto:sales@247cutbend.in"
-                                className="text-white text-decoration-none d-flex align-items-center gap-2"
+                            <span
+                                className="text-white d-flex align-items-center gap-2"
                                 style={{ fontSize: '14px' }}
                             >
                                 <i className="far fa-envelope"></i>
                                 <span>sales@247cutbend.in</span>
-                            </a>
+                            </span>
 
-                            <a
-                                href="tel:+919004073379"
-                                className="text-white text-decoration-none d-flex align-items-center gap-2"
+                            <span
+                                className="text-white d-flex align-items-center gap-2"
                                 style={{ fontSize: '14px' }}
                             >
                                 <i className="fas fa-phone"></i>
                                 <span>+91 9004073379</span>
-                            </a>
+                            </span>
                         </div>
 
                         {/* RIGHT – Follow Us */}

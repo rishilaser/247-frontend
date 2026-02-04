@@ -565,7 +565,7 @@ function Home() {
                   </div>
                   <div className="content">
                     <h6>Phone</h6>
-                    <a href="tel:+21236547898">+91 99300 04026</a>
+                    <span>+91 99300 04026</span>
                   </div>
                 </li>
                 <li>
@@ -3077,16 +3077,12 @@ function Home() {
                             marginBottom: '5px',
                             margin: 0
                           }}>Call Us</h6>
-                          <a href="tel:+919512041116" style={{
+                          <span style={{
                             color: 'rgba(255,255,255,0.8)',
-                            textDecoration: 'none',
-                            fontSize: '0.9rem',
-                            transition: 'color 0.3s ease'
-                          }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
+                            fontSize: '0.9rem'
+                          }}>
                             +91 9004073379
-                          </a>
+                          </span>
                         </div>
                       </li>
                       <li style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -3111,16 +3107,12 @@ function Home() {
                             marginBottom: '5px',
                             margin: 0
                           }}>Mail Us</h6>
-                          <a href="mailto:sales@247cutbend.in" style={{
+                          <span style={{
                             color: 'rgba(255,255,255,0.8)',
-                            textDecoration: 'none',
-                            fontSize: '0.9rem',
-                            transition: 'color 0.3s ease'
-                          }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.8)'}>
+                            fontSize: '0.9rem'
+                          }}>
                             sales@247cutbend.in
-                          </a>
+                          </span>
                         </div>
                       </li>
                     </ul>

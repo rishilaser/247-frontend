@@ -133,7 +133,7 @@ const PrivacyPolicy = () => {
                                         </div>
                                         <div>
                                             <span className="text-sm text-gray-500 block">Email</span>
-                                            <a href="mailto:sales@247cutbend.in" className="font-semibold text-[#2d3992] hover:text-[#f15925] transition-colors">sales@247cutbend.in</a>
+                                            <span className="font-semibold text-[#2d3992]">sales@247cutbend.in</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
@@ -142,7 +142,7 @@ const PrivacyPolicy = () => {
                                         </div>
                                         <div>
                                             <span className="text-sm text-gray-500 block">Phone</span>
-                                            <a href="tel:+919004073379" className="font-semibold text-[#2d3992] hover:text-[#f15925] transition-colors">+91 9004073379</a>
+                                            <span className="font-semibold text-[#2d3992]">+91 9004073379</span>
                                         </div>
                                     </div>
                                 </div>

@@ -213,7 +213,7 @@ const ServiceContact = () => {
                     <p className="text-gray-600">sales@cutbend.com</p>
                     {contactFormEmail && (
                       <p className="text-sm font-medium text-blue-700 mt-2 print:block">
-                        Contact form submissions are sent to: <a href={`mailto:${contactFormEmail}`} className="underline">{contactFormEmail}</a>
+                        Contact form submissions are sent to: <span>{contactFormEmail}</span>
                       </p>
                     )}
                   </div>
