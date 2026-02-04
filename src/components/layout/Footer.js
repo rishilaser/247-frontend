@@ -415,16 +415,12 @@ const Footer = () => {
                       fontWeight: '600',
                       marginBottom: '6px'
                     }}>Call Us:</p>
-                    <a href="tel:+919512041116" style={{
+                    <span style={{
                       color: 'rgba(255,255,255,0.85)',
-                      fontSize: '0.85rem',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s ease'
-                    }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
+                      fontSize: '0.85rem'
+                    }}>
                       +91 9004073379
-                    </a>
+                    </span>
                   </div>
                 </div>
 
@@ -451,16 +447,12 @@ const Footer = () => {
                       fontWeight: '600',
                       marginBottom: '6px'
                     }}>Mail Us:</p>
-                    <a href="mailto:sales@247cutbend.in" style={{
+                    <span style={{
                       color: 'rgba(255,255,255,0.85)',
-                      fontSize: '0.85rem',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s ease'
-                    }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#f15925'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.85)'}>
+                      fontSize: '0.85rem'
+                    }}>
                       sales@247cutbend.in
-                    </a>
+                    </span>
                   </div>
                 </div>
               </div>
