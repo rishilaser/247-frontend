@@ -483,6 +483,7 @@ export const adminAPI = {
 // Contact API
 export const contactAPI = {
   submitContact: (contactData) => api.post('/contact', contactData),
+  getContactInfo: () => api.get('/contact/info'),
 };
 
 // Notification API

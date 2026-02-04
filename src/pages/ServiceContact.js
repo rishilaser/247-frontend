@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { contactAPI } from '../services/api';
 
 const ServiceContact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,15 @@ const ServiceContact = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
+  const [contactFormEmail, setContactFormEmail] = useState('');
+
+  useEffect(() => {
+    contactAPI.getContactInfo().then((res) => {
+      if (res?.data?.success && res?.data?.data?.contactFormEmail) {
+        setContactFormEmail(res.data.data.contactFormEmail);
+      }
+    }).catch(() => {});
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,8 +34,14 @@ const ServiceContact = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await contactAPI.submitContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        service: formData.subject,
+        message: formData.message
+      });
       toast.success('Message sent successfully! We will get back to you soon.');
       setFormData({
         name: '',
@@ -36,7 +52,7 @@ const ServiceContact = () => {
         message: ''
       });
     } catch (error) {
-      toast.error('Failed to send message. Please try again.');
+      toast.error(error?.response?.data?.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -58,7 +74,11 @@ const ServiceContact = () => {
           {/* Contact Form */}
           <div className="bg-white shadow-lg rounded-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
-            
+            {contactFormEmail && (
+              <p className="text-sm text-gray-600 mb-4 print:block">
+                Form submissions are sent to: <strong>{contactFormEmail}</strong>
+              </p>
+            )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
@@ -191,6 +211,11 @@ const ServiceContact = () => {
                     <h3 className="text-lg font-medium text-gray-900">Email</h3>
                     <p className="text-gray-600">info@cutbend.com</p>
                     <p className="text-gray-600">sales@cutbend.com</p>
+                    {contactFormEmail && (
+                      <p className="text-sm font-medium text-blue-700 mt-2 print:block">
+                        Contact form submissions are sent to: <a href={`mailto:${contactFormEmail}`} className="underline">{contactFormEmail}</a>
+                      </p>
+                    )}
                   </div>
                 </div>
 
