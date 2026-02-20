@@ -134,8 +134,9 @@ function Home() {
           document.getElementById('flexCheckDefaultCutting').checked = false;
           document.getElementById('flexCheckDefaultCutting&Bending').checked = false;
         } else {
-          // Show error popup
-          setErrorMessage(data.message || 'Failed to send message. Please try again.');
+          // Show error popup with message and reason from API
+          const reason = data.reason ? ` ${data.reason}` : '';
+          setErrorMessage((data.message || 'Failed to send email.') + reason);
           setShowErrorPopup(true);
 
           // Auto-hide error popup after 4 seconds
@@ -146,7 +147,10 @@ function Home() {
       })
       .catch(error => {
         console.error('Quote form submission error:', error);
-        setErrorMessage('An error occurred while sending your message. Please try again.');
+        const res = error.response?.data;
+        const message = res?.message || 'An error occurred while sending your message.';
+        const reason = res?.reason ? ` ${res.reason}` : '';
+        setErrorMessage((message + reason).trim() || 'Please try again.');
         setShowErrorPopup(true);
 
         // Auto-hide error popup after 4 seconds
