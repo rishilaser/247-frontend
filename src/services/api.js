@@ -6,11 +6,11 @@ export { axios };
 // Helper function to normalize API URL - always end with exactly one /api (avoids double /api/api on live)
 const getBaseURL = () => {
   let url = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
-  // Strip any trailing /api segments so we never get .../api/api/contact
-  while (url.endsWith('/api')) {
-    url = url.slice(0, -4);
+  // Only add /api if not already present (supports both single /api and double /api/api for nginx)
+  if (!url.endsWith('/api')) {
+    url = url + '/api';
   }
-  return `${url}/api`;
+  return url;
 };
 
 // Create axios instance with base configuration
