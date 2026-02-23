@@ -19,7 +19,7 @@ function Home() {
     message: ''
   });
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
-  const [quoteSubmitMessage, setQuoteSubmitMessage] = useState('');
+  const [quoteSubmitMessage, setQuoteSubmitMessage] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -102,7 +102,19 @@ function Home() {
     }
 
     setIsSubmittingQuote(true);
-    setQuoteSubmitMessage('');
+    setQuoteSubmitMessage(null);
+
+    // Helper to build error message from API response (including validation errors array)
+    const getErrorMessage = (res) => {
+      if (!res) return 'An error occurred while sending your message.';
+      const parts = [res.message || 'Failed to send your request.'];
+      if (res.reason) parts.push(res.reason);
+      if (Array.isArray(res.errors) && res.errors.length > 0) {
+        const validationErrors = res.errors.map((e) => e.msg || e.message).filter(Boolean).join(' ');
+        if (validationErrors) parts.push(validationErrors);
+      }
+      return parts.join(' ').trim() || 'Please try again.';
+    };
 
     // Send email in background without waiting
     contactAPI.submitContact({
@@ -113,6 +125,12 @@ function Home() {
       message: quoteFormData.message
     }).then(response => response.data)
       .then(data => {
+        if (!data) {
+          setErrorMessage('Invalid response from server. Please try again.');
+          setShowErrorPopup(true);
+          setTimeout(() => setShowErrorPopup(false), 4000);
+          return;
+        }
         if (data.success) {
           // Show success popup
           setShowSuccessPopup(true);
@@ -130,33 +148,23 @@ function Home() {
             services: [],
             message: ''
           });
-          // Clear checkboxes
-          document.getElementById('flexCheckDefaultCutting').checked = false;
-          document.getElementById('flexCheckDefaultCutting&Bending').checked = false;
+          // Clear checkboxes (with null checks to avoid runtime errors)
+          const cuttingEl = document.getElementById('flexCheckDefaultCutting');
+          if (cuttingEl) cuttingEl.checked = false;
+          const bendingEl = document.getElementById('flexCheckDefaultCutting&Bending');
+          if (bendingEl) bendingEl.checked = false;
         } else {
-          // Show error popup with message and reason from API
-          const reason = data.reason ? ` ${data.reason}` : '';
-          setErrorMessage((data.message || 'Failed to send email.') + reason);
+          setErrorMessage(getErrorMessage(data));
           setShowErrorPopup(true);
-
-          // Auto-hide error popup after 4 seconds
-          setTimeout(() => {
-            setShowErrorPopup(false);
-          }, 4000);
+          setTimeout(() => setShowErrorPopup(false), 4000);
         }
       })
       .catch(error => {
         console.error('Quote form submission error:', error);
         const res = error.response?.data;
-        const message = res?.message || 'An error occurred while sending your message.';
-        const reason = res?.reason ? ` ${res.reason}` : '';
-        setErrorMessage((message + reason).trim() || 'Please try again.');
+        setErrorMessage(getErrorMessage(res) || 'Please try again.');
         setShowErrorPopup(true);
-
-        // Auto-hide error popup after 4 seconds
-        setTimeout(() => {
-          setShowErrorPopup(false);
-        }, 4000);
+        setTimeout(() => setShowErrorPopup(false), 4000);
       })
       .finally(() => {
         setIsSubmittingQuote(false);
