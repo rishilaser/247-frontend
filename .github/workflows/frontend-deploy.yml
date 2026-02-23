@@ -25,7 +25,7 @@ jobs:
         env:
           CI: false
           DISABLE_ESLINT_PLUGIN: true
-          REACT_APP_API_URL: https://www.247cutbend.in/api
+          REACT_APP_API_URL: https://www.247cutbend.in/api/api
 
       - name: SSH - Add Key
         uses: webfactory/ssh-agent@v0.7.0
