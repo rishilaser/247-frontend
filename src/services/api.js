@@ -3,16 +3,10 @@ import axios from 'axios';
 // Export axios for isCancel check
 export { axios };
 
-// Helper function to normalize API URL - always end with exactly one /api (avoids double /api/api on live)
+// Same as AuthContext: use REACT_APP_API_URL directly, no transformation
 const getBaseURL = () => {
-  let url = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
-  // Only add /api if not already present (supports both single /api and double /api/api for nginx)
-  if (!url.endsWith('/api')) {
-    url = url + '/api';
-  }
-  return url;
+  return (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
 };
-
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: getBaseURL(),
