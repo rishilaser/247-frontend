@@ -41,6 +41,8 @@ const Upload = lazy(() => import('./pages/Upload'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
+const CancellationRefundPolicy = lazy(() => import('./pages/CancellationRefundPolicy'));
+const ShippingDeliveryPolicy = lazy(() => import('./pages/ShippingDeliveryPolicy'));
 // Blogs and FAQ are part of the Home page as per user request
 // const Blogs = lazy(() => import('./pages/Blogs'));
 // const FAQ = lazy(() => import('./pages/FAQ'));
@@ -85,17 +87,31 @@ const PublicRoute = ({ children }) => {
   return token ? <Navigate to="/dashboard" /> : children;
 };
 
+const LEGAL_POLICY_PATHS = new Set([
+  '/privacy-policy',
+  '/terms-and-conditions',
+  '/cancellation-refund-policy',
+  '/shipping-delivery-policy',
+]);
+
 // Layout Component
 const Layout = ({ children, isInternal = false }) => {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
   const isAdminPage = location.pathname.startsWith('/admin/') ||
     location.pathname.startsWith('/component-manager');
+  const isLegalPolicyPage = LEGAL_POLICY_PATHS.has(location.pathname);
+
+  const mainClassName = isAuthPage
+    ? ''
+    : isAdminPage || isLegalPolicyPage
+      ? 'pt-2 pb-0'
+      : 'pt-2 pb-80';
 
   return (
     <div className="min-h-screen bg-gray-50">
       {!isAuthPage && (isInternal ? <InternalHeader /> : <Header />)}
-      <main className={isAuthPage ? '' : isAdminPage ? 'pt-2 pb-0' : 'pt-2 pb-80'}>
+      <main className={mainClassName}>
         {children}
       </main>
       {!isAuthPage && !isAdminPage && <Footer />}
@@ -316,6 +332,16 @@ function App() {
                     <Route path="/terms-and-conditions" element={
                       <Layout>
                         <TermsAndConditions />
+                      </Layout>
+                    } />
+                    <Route path="/cancellation-refund-policy" element={
+                      <Layout>
+                        <CancellationRefundPolicy />
+                      </Layout>
+                    } />
+                    <Route path="/shipping-delivery-policy" element={
+                      <Layout>
+                        <ShippingDeliveryPolicy />
                       </Layout>
                     } />
                     {/* Redirecting Blogs and FAQ to home page sections */}

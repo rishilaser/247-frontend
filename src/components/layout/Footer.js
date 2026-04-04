@@ -334,6 +334,50 @@ const Footer = () => {
                     Privacy Policy
                   </Link>
                 </li>
+                <li style={{ marginBottom: '14px' }}>
+                  <Link
+                    to="/cancellation-refund-policy"
+                    onClick={handleNavigate('/cancellation-refund-policy')}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
+                    Cancellation & Refund Policy
+                  </Link>
+                </li>
+                <li style={{ marginBottom: '14px' }}>
+                  <Link
+                    to="/shipping-delivery-policy"
+                    onClick={handleNavigate('/shipping-delivery-policy')}
+                    style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease',
+                      display: 'inline-block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.paddingLeft = '4px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
+                      e.currentTarget.style.paddingLeft = '0';
+                    }}>
+                    Shipping & Delivery Policy
+                  </Link>
+                </li>
               </ul>
             </div>
 

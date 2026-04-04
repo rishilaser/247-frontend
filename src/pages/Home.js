@@ -2997,6 +2997,48 @@ function Home() {
                         <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
                         Privacy Policy
                       </a></li>
+                      <li><a href="/cancellation-refund-policy" onClick={(e) => { e.preventDefault(); navigate('/cancellation-refund-policy'); window.scrollTo(0, 0); }} style={{
+                        color: 'rgba(255,255,255,0.8)',
+                        textDecoration: 'none',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        cursor: 'pointer'
+                      }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
+                        Cancellation & Refund Policy
+                      </a></li>
+                      <li><a href="/shipping-delivery-policy" onClick={(e) => { e.preventDefault(); navigate('/shipping-delivery-policy'); window.scrollTo(0, 0); }} style={{
+                        color: 'rgba(255,255,255,0.8)',
+                        textDecoration: 'none',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        cursor: 'pointer'
+                      }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = '#f15925';
+                          e.currentTarget.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}>
+                        <i className="far fa-angle-double-right" style={{ fontSize: '12px' }}></i>
+                        Shipping & Delivery Policy
+                      </a></li>
                     </ul>
                   </div>
                 </div>
