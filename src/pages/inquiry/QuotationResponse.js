@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { quotationAPI, inquiryAPI } from '../../services/api';
+import { quotationAPI, inquiryAPI, paymentAPI } from '../../services/api';
 import { axios } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -222,10 +222,10 @@ const QuotationResponse = () => {
       
       if (response.data.success) {
         toast.success('Quotation accepted successfully! Redirecting to payment...');
-        // Navigate to payment page
+
         setTimeout(() => {
           navigate(`/quotation/${currentId}/payment`);
-        }, 1500);
+        }, 1000);
       } else {
         toast.error(response.data.message || 'Failed to accept quotation');
         setAcceptLoading(false);

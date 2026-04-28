@@ -388,7 +388,13 @@ export const paymentAPI = {
   // Razorpay Payment Methods
   createOrder: (data) => api.post('/payment/create-order', data),
   verifyPayment: (data) => api.post('/payment/verify', data),
-  refundPayment: (data) => api.post('/payment/refund', data)
+  refundPayment: (data) => api.post('/payment/refund', data),
+
+  // Zoho Checkout
+  initZohoCheckoutPayment: (quotationId) => api.post('/zoho/init', { quotationId }),
+
+  // Zoho Hosted Payment Link
+  createZohoPaymentLink: (quotationId) => api.post('/zoho/payment-link', { quotationId })
 };
 
 // Admin API
