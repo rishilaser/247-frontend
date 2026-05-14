@@ -1,0 +1,24 @@
+/*------------------------------------------------------------------
+    File Name: custom.css
+-------------------------------------------------------------------*/
+
+/** ADD YOUR AWESOME CODES HERE **/
+
+.theme-btn:hover, .theme-btn2:hover, .theme-btn, .theme-btn2 {
+    font-size: 16px;
+    color: #fff;
+    padding: 10px 20px;
+    transition: all 0.5s;
+    text-transform: capitalize;
+    position: relative;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    border: none;
+    background: #ffbc13;
+    box-shadow: var(--box-shadow);
+    z-index: 1;
+}

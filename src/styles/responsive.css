@@ -1,0 +1,476 @@
+/* Responsive Styles for 247CutBend Website */
+
+/* Mobile First Approach */
+/* Base styles are for mobile, then we add larger breakpoints */
+
+/* Extra Small Devices (phones, 576px and down) */
+@media (max-width: 575.98px) {
+
+  /* Hero Section */
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-sub-title {
+    font-size: 1rem !important;
+    margin-bottom: 15px !important;
+  }
+
+  .hero-title {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* About Area */
+  .about-area {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .about-area .col-lg-6 {
+    margin-bottom: 30px;
+  }
+
+  .about-area .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  .about-text {
+    font-size: 0.9rem !important;
+  }
+
+  /* Process Area */
+  .process-area .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  .process-wrap .row {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .process-item {
+    padding: 20px 15px !important;
+  }
+
+  /* Counter Area */
+  .counter-item {
+    margin-bottom: 30px;
+  }
+
+  /* Quote Area */
+  .quote-area {
+    padding: 40px 15px !important;
+  }
+
+  .quote-text-content {
+    padding-right: 0 !important;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .quote-text-content h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .quote-text-content p {
+    font-size: 1rem !important;
+  }
+
+  /* Choose Area */
+  .choose-area .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  .choose-item {
+    margin-bottom: 25px;
+  }
+
+  /* Testimonial Area */
+  .testimonial-area .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  /* FAQ Area */
+  .faq-area .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  .accordion-item {
+    margin-bottom: 15px;
+  }
+
+  /* Footer */
+  .footer-widget-wrap {
+    padding: 30px 0 15px !important;
+  }
+
+  .footer-widget-box {
+    margin-bottom: 30px;
+  }
+
+  .max-w-7xl .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .max-w-7xl .lg\\:col-span-2 {
+    grid-column: span 1 !important;
+  }
+
+  /* Process Steps Responsive */
+  .process-steps-row {
+    flex-direction: column !important;
+  }
+
+  .process-step-col {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    margin-bottom: 15px;
+  }
+
+  /* Quote Form Responsive */
+  .quote-form .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .quote-form .col-lg-6 {
+    width: 100% !important;
+    margin-bottom: 15px;
+  }
+
+  .quote-form .col-lg-12 {
+    width: 100% !important;
+  }
+
+  /* Choose Item Responsive */
+  .choose-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .choose-item-icon {
+    margin-bottom: 15px;
+    margin-right: 0 !important;
+  }
+
+  /* Accordion Responsive */
+  .accordion-button {
+    font-size: 1rem !important;
+    padding: 12px 15px !important;
+  }
+
+  .accordion-body {
+    padding: 15px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Testimonial Cards */
+  .testimonial-item {
+    margin-bottom: 20px;
+  }
+
+  /* Blog Cards */
+  .blog-item {
+    margin-bottom: 30px;
+  }
+
+  /* Counter Items */
+  .counter-item .icon {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .counter-item .icon img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* About Images */
+  .about-img {
+    margin-bottom: 20px;
+  }
+
+  .about-experience {
+    text-align: center;
+  }
+
+  /* Top Bar */
+  .bg-blue-900 {
+    padding: 8px 0 !important;
+  }
+
+  .bg-blue-900 .container {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  /* Header */
+  .navbar {
+    min-height: 60px !important;
+  }
+
+  .navbar-brand img {
+    height: 25px !important;
+  }
+
+  /* Stats Banner */
+  .company-stats-banner {
+    padding: 20px 15px !important;
+  }
+
+  .stats-banner-content {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  .stat-divider {
+    display: none !important;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-text {
+    font-size: 0.9rem !important;
+  }
+
+  /* Terms and Privacy Pages */
+  .max-w-4xl h1 {
+    font-size: 2rem !important;
+  }
+
+  .max-w-4xl h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .pl-14 {
+    padding-left: 0 !important;
+  }
+
+  /* Quote Banner */
+  .quote-banner-text p {
+    font-size: 1rem !important;
+    padding-left: 0 !important;
+  }
+
+  /* Newsletter Form */
+  .newsletter-form {
+    flex-direction: column !important;
+  }
+
+  .newsletter-submit-btn {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+
+  /* Hero Video */
+  .hero-section video {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Mobile Menu */
+  .mobile-sidebar {
+    width: 280px !important;
+  }
+
+  /* Quote Form Checkboxes */
+  .checkbox-group {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* Stats Banner Icons */
+  .stat-icon-wrapper {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .stat-icon-wrapper i {
+    font-size: 18px !important;
+  }
+}
+
+/* Small Devices - Newsletter Form */
+@media (min-width: 576px) {
+  .newsletter-form {
+    flex-direction: row !important;
+  }
+
+  .newsletter-submit-btn {
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* Small Devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .hero-title {
+    font-size: 2.2rem !important;
+  }
+
+  .about-area .site-title {
+    font-size: 2rem !important;
+  }
+
+  .process-wrap .row {
+    flex-wrap: wrap !important;
+  }
+
+  .process-item {
+    flex: 1 1 calc(50% - 10px) !important;
+    min-width: calc(50% - 10px) !important;
+  }
+
+  .quote-text-content h2 {
+    font-size: 2rem !important;
+  }
+
+  .stats-banner-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat-item {
+    flex: 1 1 calc(50% - 15px);
+    min-width: calc(50% - 15px);
+  }
+
+  .process-step-col {
+    flex: 1 1 calc(50% - 10px) !important;
+    min-width: calc(50% - 10px) !important;
+  }
+
+  .max-w-7xl .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .max-w-7xl .lg\\:col-span-2 {
+    grid-column: span 2 !important;
+  }
+}
+
+/* Medium Devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+
+  .about-area .site-title {
+    font-size: 2.2rem !important;
+  }
+
+  .process-wrap .row {
+    flex-wrap: wrap !important;
+  }
+
+  .process-item {
+    flex: 1 1 calc(33.333% - 10px) !important;
+    min-width: calc(33.333% - 10px) !important;
+  }
+
+  .quote-text-content {
+    padding-right: 20px !important;
+  }
+
+  .quote-text-content h2 {
+    font-size: 2.2rem !important;
+  }
+
+  .stats-banner-content {
+    flex-wrap: nowrap;
+  }
+
+  .stat-divider {
+    display: block !important;
+  }
+
+  .process-step-col {
+    flex: 1 1 calc(33.333% - 10px) !important;
+    min-width: calc(33.333% - 10px) !important;
+  }
+
+  .max-w-7xl .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .max-w-7xl .lg\\:col-span-2 {
+    grid-column: span 2 !important;
+  }
+
+  .choose-item {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .choose-item-icon {
+    margin-right: 15px !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .hero-title {
+    font-size: 2.8rem !important;
+  }
+
+  .about-area .site-title {
+    font-size: 2.3rem !important;
+  }
+
+  .quote-text-content h2 {
+    font-size: 2.3rem !important;
+  }
+}
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  /* All styles are already optimized for desktop */
+}
+
+/* Print Styles */
+@media print {
+
+  .navbar,
+  .footer-area,
+  .whatsapp-btn,
+  #scroll-top {
+    display: none !important;
+  }
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-section {
+    min-height: auto !important;
+  }
+
+  .hero-content {
+    padding: 20px 0 !important;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+  .hero-section video,
+  .about-img img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Custom mobile navbar padding */
+@media (max-width: 991px) {
+  .mobile-nav-padding {
+    padding-left: 80px !important;
+    padding-right: 80px !important;
+  }
+}
