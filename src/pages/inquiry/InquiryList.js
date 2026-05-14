@@ -433,13 +433,6 @@ const InquiryList = () => {
                           return (
                             <div className="flex flex-col gap-2">
                               <Link
-                                to={`/quotation/${quotationId}/payment`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500 lg:inline-flex lg:w-auto lg:py-1.5"
-                              >
-                                💳 Make Payment
-                              </Link>
-                              <Link
                                 to={`/quotation/${quotationId}`}
                                 onClick={(e) => e.stopPropagation()}
                                 className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 lg:inline-flex lg:w-auto lg:py-1.5"

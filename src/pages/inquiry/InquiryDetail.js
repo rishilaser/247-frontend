@@ -662,6 +662,14 @@ const InquiryDetail = () => {
       const q = response.data.quotation;
       const quotationId = q._id;
       const totalAmount = Number(q.totalAmount) || 0;
+      const quotationStatus = String(q.status || '').trim().toLowerCase();
+      const workflowStatus = String(q.orderPaymentWorkflowStatus || '').trim().toLowerCase();
+
+      // If order is already created and payment is pending, go straight to payment.
+      if (quotationStatus === 'order_created' || workflowStatus === 'payment pending') {
+        navigate(`/quotation/${quotationId}/payment`);
+        return;
+      }
 
       await quotationAPI.respondToQuotation(quotationId, { response: 'accepted' });
 
@@ -891,6 +899,16 @@ const InquiryDetail = () => {
       phoneNumber: inquiry.customer?.phone || 'N/A'
     }
   };
+  const normalizedQuotationStatus = String(inquiry?.quotationStatus || '').trim().toLowerCase();
+  const normalizedWorkflowStatus = String(inquiry?.quotationPayment?.orderPaymentWorkflowStatus || '').trim().toLowerCase();
+  const isPaymentPending =
+    normalizedQuotationStatus === 'order_created' ||
+    normalizedWorkflowStatus === 'payment pending';
+  const canShowAcceptQuoteButton =
+    user?.role === 'customer' &&
+    !inquiry?.quotationPayment?.gatewayPaid &&
+    !isEditing &&
+    (normalizedQuotationStatus === 'sent' || isPaymentPending);
 
   let createdLabel = '';
   let createdTitle = '';
@@ -1037,10 +1055,7 @@ const InquiryDetail = () => {
                 )}
 
                 {/* Accept Quote button - only when admin has sent quotation */}
-                {user?.role === 'customer' &&
-                 !inquiry?.quotationPayment?.gatewayPaid &&
-                 String(inquiry?.quotationStatus || '').trim().toLowerCase() === 'sent' &&
-                 !isEditing && (
+                {canShowAcceptQuoteButton && (
                   <button 
                     onClick={handleAcceptQuote}
                     disabled={acceptingQuote}
