@@ -107,7 +107,12 @@ export const roleUtils = {
 export const apiErrorUtils = {
   // Check if error is authentication related
   isAuthError: (error) => {
-    return error?.response?.status === 401 || error?.response?.status === 403;
+    if (error?.response?.data?.zohoError) return false;
+    const url = error?.config?.url || '';
+    if (typeof url === 'string' && url.includes('/zoho/sync-payment-status')) {
+      return false;
+    }
+    return error?.response?.status === 401;
   },
 
   // Check if error is network related

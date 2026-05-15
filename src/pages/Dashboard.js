@@ -69,6 +69,7 @@ const Dashboard = () => {
 
   // Use ref to track if data has been fetched to prevent duplicate calls
   const hasFetchedRef = useRef(false);
+  const pendingZohoSyncRef = useRef(false);
 
   // Fetch quotations for customer - memoized with useCallback
   const fetchQuotations = useCallback(async () => {
@@ -126,30 +127,139 @@ const Dashboard = () => {
 
   const paySyncQuotationId = searchParams.get('orderId');
 
+  const getZohoReturnFromSearchParams = useCallback(() => {
+    const status = searchParams.get('status');
+    const paymentLinkId = searchParams.get('payment_link_id');
+    if (!status && !paymentLinkId) return null;
+    return {
+      payment_link_id: paymentLinkId,
+      payment_id: searchParams.get('payment_id'),
+      amount: searchParams.get('amount'),
+      status,
+      payment_link_reference:
+        searchParams.get('payment_link_reference') || searchParams.get('orderId'),
+      signature: searchParams.get('signature'),
+    };
+  }, [searchParams]);
+
+  const runZohoPaymentSync = useCallback(async (quotationId, zohoReturn = null) => {
+    if (!quotationId) return { updated: false };
+    try {
+      const res = await paymentAPI.syncZohoPaymentStatus(quotationId, zohoReturn);
+      return res?.data || { updated: false };
+    } catch (err) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Zoho payment sync failed:', err?.response?.data || err?.message);
+      }
+      return { updated: false, error: true };
+    }
+  }, []);
+
   useEffect(() => {
-    if (!paySyncQuotationId || user?.role !== 'customer') return undefined;
+    if (user?.role !== 'customer') return undefined;
+
+    let storedId = null;
+    try {
+      storedId = sessionStorage.getItem('zohoPendingQuotationId');
+    } catch {
+      storedId = null;
+    }
+    const quotationIdToSync = paySyncQuotationId || storedId;
+    if (!quotationIdToSync) return undefined;
+
+    const zohoReturn = getZohoReturnFromSearchParams();
+
     let cancelled = false;
     (async () => {
-      try {
-        await paymentAPI.syncZohoPaymentStatus(paySyncQuotationId);
-        if (cancelled) return;
-        await Promise.all([fetchQuotations(), fetchInquiries()]);
+      const result = await runZohoPaymentSync(quotationIdToSync, zohoReturn);
+      if (cancelled) return;
+      if (result?.updated || result?.gatewayPaid) {
+        try {
+          sessionStorage.removeItem('zohoPendingQuotationId');
+        } catch {
+          /* ignore */
+        }
+      }
+      await Promise.all([fetchQuotations(), fetchInquiries()]);
+      if (paySyncQuotationId || zohoReturn) {
         setSearchParams(
           (prev) => {
             const next = new URLSearchParams(prev);
-            next.delete('orderId');
+            [
+              'orderId',
+              'payment_link_id',
+              'payment_id',
+              'amount',
+              'status',
+              'signature',
+              'payment_link_reference',
+            ].forEach((k) => next.delete(k));
             return next;
           },
           { replace: true }
         );
-      } catch {
-        /* non-blocking: webhook may have already updated */
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [paySyncQuotationId, user?.role, fetchQuotations, fetchInquiries, setSearchParams]);
+  }, [
+    paySyncQuotationId,
+    user?.role,
+    fetchQuotations,
+    fetchInquiries,
+    setSearchParams,
+    runZohoPaymentSync,
+    getZohoReturnFromSearchParams,
+  ]);
+
+  const isInquiryGatewayPaid = useCallback((inquiry) => {
+    if (inquiry?.status === 'payment_received') return true;
+    const q = inquiry?.quotation;
+    return q?.orderPaymentWorkflowStatus === 'Paid' && q?.payment_status === 'Success';
+  }, []);
+
+  const getInquiryStatusLabel = useCallback(
+    (inquiry) => {
+      if (isInquiryGatewayPaid(inquiry)) return 'Paid';
+      if (inquiry?.status === 'payment_received') return 'Paid';
+      return inquiry.status?.charAt(0).toUpperCase() + inquiry.status?.slice(1) || 'Pending';
+    },
+    [isInquiryGatewayPaid]
+  );
+
+  // Background heal only when Zoho return params are in the URL (avoids 401 GET spam without READ scope).
+  useEffect(() => {
+    if (user?.role !== 'customer' || pendingZohoSyncRef.current || inquiriesLoading) return undefined;
+    const zohoReturn = getZohoReturnFromSearchParams();
+    if (!zohoReturn) return undefined;
+
+    const pending = (inquiries || [])
+      .filter((inq) => {
+        const q = inq.quotation;
+        return (
+          q?._id &&
+          q?.zohoPaymentLinkId &&
+          q.orderPaymentWorkflowStatus === 'Payment Pending' &&
+          inq.status !== 'payment_received'
+        );
+      })
+      .slice(0, 1);
+    if (!pending.length) return undefined;
+
+    pendingZohoSyncRef.current = true;
+    let cancelled = false;
+    (async () => {
+      const inq = pending[0];
+      if (cancelled) return;
+      await runZohoPaymentSync(inq.quotation._id, zohoReturn);
+      if (!cancelled) await fetchInquiries();
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [inquiries, inquiriesLoading, user?.role, runZohoPaymentSync, fetchInquiries, getZohoReturnFromSearchParams]);
 
   // Fetch data when tabs are active - always fetch fresh data
   useEffect(() => {
@@ -802,7 +912,9 @@ const Dashboard = () => {
                             </div>
                             <div className="flex items-center space-x-3">
                               <span className={`px-3 py-1 text-sm font-medium rounded-full ${
-                                inquiry.status === 'pending' 
+                                isInquiryGatewayPaid(inquiry)
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : inquiry.status === 'pending' 
                                   ? 'bg-yellow-100 text-yellow-800'
                                   : inquiry.status === 'in_progress'
                                   ? 'bg-blue-100 text-blue-800'
@@ -816,9 +928,7 @@ const Dashboard = () => {
                                   ? 'bg-red-100 text-red-800'
                                   : 'bg-gray-100 text-gray-800'
                               }`}>
-                                {inquiry.status === 'payment_received'
-                                  ? 'Paid'
-                                  : inquiry.status?.charAt(0).toUpperCase() + inquiry.status?.slice(1) || 'Pending'}
+                                {getInquiryStatusLabel(inquiry)}
                               </span>
                             </div>
                           </div>

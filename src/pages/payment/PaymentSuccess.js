@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { quotationAPI, paymentAPI } from '../../services/api';
 
-const POLL_MS = 5000;
-const MAX_POLLS = 24;
+const POLL_MS = 12000;
+const MAX_POLLS = 10;
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -14,6 +14,21 @@ const PaymentSuccess = () => {
   const [pollCount, setPollCount] = useState(0);
   const pollRef = useRef(0);
 
+  const getZohoReturnFromSearchParams = useCallback(() => {
+    const status = searchParams.get('status');
+    const paymentLinkId = searchParams.get('payment_link_id');
+    if (!status && !paymentLinkId) return null;
+    return {
+      payment_link_id: paymentLinkId,
+      payment_id: searchParams.get('payment_id'),
+      amount: searchParams.get('amount'),
+      status,
+      payment_link_reference:
+        searchParams.get('payment_link_reference') || searchParams.get('orderId'),
+      signature: searchParams.get('signature'),
+    };
+  }, [searchParams]);
+
   const fetchStatus = useCallback(async () => {
     if (!orderId) {
       setError('Missing order reference.');
@@ -21,7 +36,7 @@ const PaymentSuccess = () => {
     }
     try {
       try {
-        await paymentAPI.syncZohoPaymentStatus(orderId);
+        await paymentAPI.syncZohoPaymentStatus(orderId, getZohoReturnFromSearchParams());
       } catch {
         /* Zoho verify optional if webhook already ran */
       }
@@ -41,7 +56,7 @@ const PaymentSuccess = () => {
         setError('Unable to refresh payment status. You can open your dashboard and check again shortly.');
       }
     }
-  }, [orderId]);
+  }, [orderId, getZohoReturnFromSearchParams]);
 
   useEffect(() => {
     fetchStatus();

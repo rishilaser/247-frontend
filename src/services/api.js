@@ -117,25 +117,29 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Handle authentication errors (401 = unauthorized, 403 = forbidden)
-    // Only logout on 401 (token invalid/expired), not on 403 (access denied)
-    if (error.response?.status === 401) {
+    const requestUrl = error.config?.url || '';
+    const isZohoUpstreamError =
+      typeof requestUrl === 'string' &&
+      requestUrl.includes('/zoho/') &&
+      (error.response?.data?.zohoError === true ||
+        requestUrl.includes('/zoho/sync-payment-status'));
+
+    // Handle authentication errors (401 = unauthorized)
+    // Do not logout when Zoho sync fails — that returns 502 or legacy 401 from upstream Zoho.
+    if (error.response?.status === 401 && !isZohoUpstreamError) {
       const errorMessage = error.response?.data?.message || error.message;
 
-      // Only log in development
       if (process.env.NODE_ENV === 'development') {
         console.error('API Auth Error (401):', {
-          url: error.config?.url,
+          url: requestUrl,
           status: error.response?.status,
           message: errorMessage
         });
       }
 
-      // Clear token and redirect to login for auth errors (401 only)
       localStorage.removeItem('token');
       localStorage.removeItem('user');
 
-      // Only redirect if not already on login page
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
@@ -161,7 +165,6 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const requestUrl = error.config?.url || '';
     const isKnownZohoSync404 =
       error.response?.status === 404 &&
       typeof requestUrl === 'string' &&
@@ -411,10 +414,10 @@ export const paymentAPI = {
   // Zoho Hosted Payment Link
   createZohoPaymentLink: (quotationId) => api.post('/zoho/payment-link', { quotationId }),
 
-  /** After Zoho redirect: verify link status via Zoho API and update DB if paid */
-  syncZohoPaymentStatus: async (quotationId) => {
+  /** After Zoho redirect: return_url params and/or Zoho API verify */
+  syncZohoPaymentStatus: async (quotationId, zohoReturn = null) => {
     try {
-      return await api.post('/zoho/sync-payment-status', { quotationId });
+      return await api.post('/zoho/sync-payment-status', { quotationId, zohoReturn });
     } catch (error) {
       if (error?.response?.status === 404) {
         return { data: { success: false, skipped: true, reason: 'zoho_sync_endpoint_unavailable' } };

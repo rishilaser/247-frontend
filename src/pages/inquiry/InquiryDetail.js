@@ -333,15 +333,21 @@ const InquiryDetail = () => {
     const isPaid =
       inquiry?.status === 'payment_received' || inquiry?.quotationPayment?.gatewayPaid;
     if (isPaid) return undefined;
-    const quotationStatus = String(
-      inquiry?.quotation?.status || inquiry?.quotationStatus || ''
-    ).trim().toLowerCase();
-    const shouldAttemptZohoSync = ['sent', 'accepted', 'order_created'].includes(quotationStatus);
-    if (!shouldAttemptZohoSync) return undefined;
+
+    const workflow = String(inquiry?.quotationPayment?.orderPaymentWorkflowStatus || '').toLowerCase();
+    const paymentPending =
+      workflow === 'payment pending' ||
+      String(inquiry?.quotationStatus || inquiry?.quotation?.status || '').toLowerCase() === 'order_created';
+    if (!paymentPending) return undefined;
+
+    let ticks = 0;
+    const maxTicks = 10;
+    const pollMs = 12000;
 
     const syncAndRefresh = async () => {
       try {
-        await paymentAPI.syncZohoPaymentStatus(inquiry.quotationId);
+        const syncRes = await paymentAPI.syncZohoPaymentStatus(inquiry.quotationId);
+        if (syncRes?.data?.rateLimited) return;
       } catch {
         // webhook may already handle updates; ignore sync errors
       }
@@ -352,13 +358,19 @@ const InquiryDetail = () => {
       }
     };
 
-    // Run once immediately so user doesn't need to wait for the first interval.
     syncAndRefresh();
-    const poll = window.setInterval(syncAndRefresh, 5000);
+    const poll = window.setInterval(() => {
+      ticks += 1;
+      if (ticks >= maxTicks) {
+        window.clearInterval(poll);
+        return;
+      }
+      syncAndRefresh();
+    }, pollMs);
 
     return () => window.clearInterval(poll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, inquiry?.quotationId, inquiry?.status, inquiry?.quotationPayment?.gatewayPaid, inquiry?.quotationStatus, inquiry?.quotation?.status]);
+  }, [user, inquiry?.quotationId, inquiry?.status, inquiry?.quotationPayment?.gatewayPaid, inquiry?.quotationPayment?.orderPaymentWorkflowStatus, inquiry?.quotationStatus, inquiry?.quotation?.status]);
 
   const handleCreateQuotation = async (inquiryId, files) => {
     try {
@@ -901,14 +913,23 @@ const InquiryDetail = () => {
   };
   const normalizedQuotationStatus = String(inquiry?.quotationStatus || '').trim().toLowerCase();
   const normalizedWorkflowStatus = String(inquiry?.quotationPayment?.orderPaymentWorkflowStatus || '').trim().toLowerCase();
+  const isGatewayPaid =
+    inquiry?.status === 'payment_received' || inquiry?.quotationPayment?.gatewayPaid;
   const isPaymentPending =
-    normalizedQuotationStatus === 'order_created' ||
-    normalizedWorkflowStatus === 'payment pending';
+    !isGatewayPaid &&
+    (normalizedQuotationStatus === 'order_created' ||
+      normalizedWorkflowStatus === 'payment pending');
   const canShowAcceptQuoteButton =
     user?.role === 'customer' &&
-    !inquiry?.quotationPayment?.gatewayPaid &&
+    !isGatewayPaid &&
     !isEditing &&
-    (normalizedQuotationStatus === 'sent' || isPaymentPending);
+    normalizedQuotationStatus === 'sent';
+  const canShowPayNowButton =
+    user?.role === 'customer' &&
+    !isGatewayPaid &&
+    !isEditing &&
+    isPaymentPending &&
+    normalizedQuotationStatus !== 'sent';
 
   let createdLabel = '';
   let createdTitle = '';
@@ -1054,7 +1075,7 @@ const InquiryDetail = () => {
                   </>
                 )}
 
-                {/* Accept Quote button - only when admin has sent quotation */}
+                {/* Accept Quote — only before customer accepts (quotation status: sent) */}
                 {canShowAcceptQuoteButton && (
                   <button 
                     onClick={handleAcceptQuote}
@@ -1066,7 +1087,7 @@ const InquiryDetail = () => {
                       <>
                         <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"></path>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"></path>
                         </svg>
                         Loading...
                       </>
@@ -1080,9 +1101,21 @@ const InquiryDetail = () => {
                     )}
                   </button>
                 )}
+
+                {/* Pay Now — accepted quote, payment not yet confirmed in Zoho */}
+                {canShowPayNowButton && (
+                  <button
+                    onClick={handleAcceptQuote}
+                    disabled={acceptingQuote}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                    title="Complete payment for this quotation"
+                  >
+                    {acceptingQuote ? 'Loading...' : 'Pay Now'}
+                  </button>
+                )}
                 
                 {/* Quoted Status Button - Only show if quotation has been sent */}
-                {(inquiry?.status === 'quoted' || inquiry?.status === 'pending') && !inquiry?.quotationPayment?.gatewayPaid && !isEditing && (
+                {(inquiry?.status === 'quoted' || inquiry?.status === 'pending') && !isGatewayPaid && !isEditing && (
                   <button type="button" className="inline-flex w-full cursor-default items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 lg:w-auto">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -1091,7 +1124,7 @@ const InquiryDetail = () => {
                   </button>
                 )}
 
-                {(inquiry?.status === 'payment_received' || inquiry?.quotationPayment?.gatewayPaid) && !isEditing && (
+                {isGatewayPaid && !isEditing && (
                   <span className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white lg:w-auto">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />

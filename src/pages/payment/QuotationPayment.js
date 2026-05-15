@@ -112,6 +112,12 @@ const QuotationPayment = () => {
           return;
         }
 
+        try {
+          sessionStorage.setItem('zohoPendingQuotationId', String(quotationId));
+        } catch {
+          /* ignore storage errors */
+        }
+
         window.location.assign(url);
 
         return;

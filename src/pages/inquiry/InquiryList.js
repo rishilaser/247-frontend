@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { inquiryAPI, paymentAPI } from '../../services/api';
+import { inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const InquiryList = () => {
@@ -33,7 +33,7 @@ const InquiryList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter, sortBy]);
 
-  const fetchInquiries = async (skipZohoSync = false) => {
+  const fetchInquiries = async () => {
     try {
       setLoading(true);
       
@@ -53,31 +53,6 @@ const InquiryList = () => {
       }
       
       if (response.data.success) {
-        // Force-sync Zoho status for pending payment rows before rendering (customer view only)
-        if (!skipZohoSync && user?.role === 'customer') {
-          const pendingQuotationIds = (response.data.inquiries || [])
-            .map((inq) => inq.quotation)
-            .filter(
-              (q) =>
-                q?._id &&
-                q?.zohoPaymentLinkId &&
-                (
-                  q.orderPaymentWorkflowStatus === 'Payment Pending' ||
-                  (q.orderPaymentWorkflowStatus === 'Paid' && q.payment_status === 'Success')
-                )
-            )
-            .map((q) => q._id);
-
-          if (pendingQuotationIds.length > 0) {
-            await Promise.allSettled(
-              pendingQuotationIds.map((qid) => paymentAPI.syncZohoPaymentStatus(qid))
-            );
-            // Re-fetch once after sync attempts to render latest status.
-            await fetchInquiries(true);
-            return;
-          }
-        }
-
         // Transform the data to match the component's expected format
         const transformedInquiries = response.data.inquiries.map(inquiry => {
           const date = new Date(inquiry.createdAt);
