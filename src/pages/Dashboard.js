@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { quotationAPI, inquiryAPI, orderAPI, paymentAPI } from '../services/api';
+import {
+  getZohoReturnPayload,
+  clearZohoReturnPayload,
+  hasZohoReturnPayload,
+} from '../utils/zohoReturnParams';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -127,20 +132,10 @@ const Dashboard = () => {
 
   const paySyncQuotationId = searchParams.get('orderId');
 
-  const getZohoReturnFromSearchParams = useCallback(() => {
-    const status = searchParams.get('status');
-    const paymentLinkId = searchParams.get('payment_link_id');
-    if (!status && !paymentLinkId) return null;
-    return {
-      payment_link_id: paymentLinkId,
-      payment_id: searchParams.get('payment_id'),
-      amount: searchParams.get('amount'),
-      status,
-      payment_link_reference:
-        searchParams.get('payment_link_reference') || searchParams.get('orderId'),
-      signature: searchParams.get('signature'),
-    };
-  }, [searchParams]);
+  const getZohoReturnFromSearchParams = useCallback(
+    () => getZohoReturnPayload(searchParams),
+    [searchParams]
+  );
 
   const runZohoPaymentSync = useCallback(async (quotationId, zohoReturn = null) => {
     if (!quotationId) return { updated: false };
@@ -164,18 +159,28 @@ const Dashboard = () => {
     } catch {
       storedId = null;
     }
-    const quotationIdToSync = paySyncQuotationId || storedId;
+    const zohoReturn = getZohoReturnFromSearchParams();
+    const quotationIdToSync =
+      paySyncQuotationId ||
+      storedId ||
+      zohoReturn?.payment_link_reference ||
+      null;
     if (!quotationIdToSync) return undefined;
 
-    const zohoReturn = getZohoReturnFromSearchParams();
+    // Without Zoho return params, sync only calls Zoho GET → 401 (no READ scope). Skip until redirect lands.
+    if (!hasZohoReturnPayload(searchParams)) {
+      return undefined;
+    }
 
     let cancelled = false;
     (async () => {
-      const result = await runZohoPaymentSync(quotationIdToSync, zohoReturn);
+      const returnPayload = getZohoReturnPayload(searchParams);
+      const result = await runZohoPaymentSync(quotationIdToSync, returnPayload);
       if (cancelled) return;
       if (result?.updated || result?.gatewayPaid) {
         try {
           sessionStorage.removeItem('zohoPendingQuotationId');
+          clearZohoReturnPayload();
         } catch {
           /* ignore */
         }

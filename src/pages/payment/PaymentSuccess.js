@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { quotationAPI, paymentAPI } from '../../services/api';
+import {
+  captureZohoReturnFromUrl,
+  getZohoReturnPayload,
+  clearZohoReturnPayload,
+} from '../../utils/zohoReturnParams';
 
 const POLL_MS = 12000;
 const MAX_POLLS = 10;
@@ -14,20 +19,10 @@ const PaymentSuccess = () => {
   const [pollCount, setPollCount] = useState(0);
   const pollRef = useRef(0);
 
-  const getZohoReturnFromSearchParams = useCallback(() => {
-    const status = searchParams.get('status');
-    const paymentLinkId = searchParams.get('payment_link_id');
-    if (!status && !paymentLinkId) return null;
-    return {
-      payment_link_id: paymentLinkId,
-      payment_id: searchParams.get('payment_id'),
-      amount: searchParams.get('amount'),
-      status,
-      payment_link_reference:
-        searchParams.get('payment_link_reference') || searchParams.get('orderId'),
-      signature: searchParams.get('signature'),
-    };
-  }, [searchParams]);
+  const getZohoReturnFromSearchParams = useCallback(
+    () => getZohoReturnPayload(searchParams),
+    [searchParams]
+  );
 
   const fetchStatus = useCallback(async () => {
     if (!orderId) {
@@ -35,10 +30,26 @@ const PaymentSuccess = () => {
       return;
     }
     try {
+      const zohoReturn = getZohoReturnFromSearchParams();
       try {
-        await paymentAPI.syncZohoPaymentStatus(orderId, getZohoReturnFromSearchParams());
-      } catch {
-        /* Zoho verify optional if webhook already ran */
+        const syncRes = await paymentAPI.syncZohoPaymentStatus(orderId, zohoReturn);
+        const syncData = syncRes?.data;
+        if (syncData?.updated || syncData?.gatewayPaid) {
+          setWorkflowStatus('Paid');
+          setPaymentStatus('Success');
+          setError(null);
+          clearZohoReturnPayload();
+          return;
+        }
+      } catch (syncErr) {
+        const zohoReturnPaid =
+          zohoReturn &&
+          ['succeeded', 'paid', 'success', 'completed'].includes(
+            String(zohoReturn.status || '').toLowerCase()
+          );
+        if (!zohoReturnPaid) {
+          console.warn('Zoho sync failed:', syncErr?.response?.data || syncErr?.message);
+        }
       }
       const response = await quotationAPI.getQuotation(orderId);
       const q = response?.data?.quotation;
@@ -49,6 +60,9 @@ const PaymentSuccess = () => {
       setWorkflowStatus(q.orderPaymentWorkflowStatus || null);
       setPaymentStatus(q.payment_status || null);
       setError(null);
+      if (q.orderPaymentWorkflowStatus === 'Paid' && q.payment_status === 'Success') {
+        clearZohoReturnPayload();
+      }
     } catch (e) {
       if (e?.response?.status === 403 || e?.response?.status === 404) {
         setError('We could not find this order or you do not have access.');
@@ -59,6 +73,7 @@ const PaymentSuccess = () => {
   }, [orderId, getZohoReturnFromSearchParams]);
 
   useEffect(() => {
+    captureZohoReturnFromUrl();
     fetchStatus();
   }, [fetchStatus]);
 
@@ -123,7 +138,12 @@ const PaymentSuccess = () => {
     );
   }
 
-  if (isPaid) {
+  const urlShowsPaid =
+    ['succeeded', 'paid', 'success', 'completed'].includes(
+      String(searchParams.get('status') || '').toLowerCase()
+    ) && Boolean(searchParams.get('payment_link_id'));
+
+  if (isPaid || (pollRef.current >= MAX_POLLS && urlShowsPaid)) {
     return (
       <div className="max-w-lg mx-auto py-10 px-4 text-center">
         <h1 className="text-2xl font-bold text-green-700">Payment successful</h1>

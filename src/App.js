@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { QuotationProvider } from './contexts/QuotationContext';
 import ErrorBoundary from './components/ErrorBoundary';
+import { captureZohoReturnFromUrl } from './utils/zohoReturnParams';
 
 // Components - Keep frequently used ones as regular imports
 import Header from './components/layout/Header';
@@ -55,6 +56,7 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
+    captureZohoReturnFromUrl();
   }, [pathname]);
   return null;
 };

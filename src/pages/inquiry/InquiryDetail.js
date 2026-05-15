@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { inquiryAPI, quotationAPI, orderAPI, paymentAPI } from '../../services/api';
+import { getZohoReturnPayload, hasZohoReturnPayload } from '../../utils/zohoReturnParams';
 import QuotationForm from '../../components/QuotationForm';
 import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
@@ -339,14 +340,17 @@ const InquiryDetail = () => {
       workflow === 'payment pending' ||
       String(inquiry?.quotationStatus || inquiry?.quotation?.status || '').toLowerCase() === 'order_created';
     if (!paymentPending) return undefined;
+    if (!hasZohoReturnPayload()) return undefined;
 
     let ticks = 0;
-    const maxTicks = 10;
+    const maxTicks = 3;
     const pollMs = 12000;
 
     const syncAndRefresh = async () => {
       try {
-        const syncRes = await paymentAPI.syncZohoPaymentStatus(inquiry.quotationId);
+        const zohoReturn = getZohoReturnPayload();
+        if (!zohoReturn) return;
+        const syncRes = await paymentAPI.syncZohoPaymentStatus(inquiry.quotationId, zohoReturn);
         if (syncRes?.data?.rateLimited) return;
       } catch {
         // webhook may already handle updates; ignore sync errors
