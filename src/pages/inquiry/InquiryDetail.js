@@ -4,6 +4,10 @@ import { useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import { inquiryAPI, quotationAPI, orderAPI, paymentAPI } from '../../services/api';
 import { getZohoReturnPayload, hasZohoReturnPayload } from '../../utils/zohoReturnParams';
+import {
+  parseContentDisposition,
+  normalizeZipDownloadFilename,
+} from '../../utils/downloadFilename';
 import QuotationForm from '../../components/QuotationForm';
 import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
@@ -829,21 +833,20 @@ const InquiryDetail = () => {
         throw new Error(`Download failed: ${response.status}`);
       }
 
-      // Get the filename from Content-Disposition header or use default
       const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = `${inquiry.inquiryNumber || inquiry.id}_files.zip`;
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
-      }
+      const defaultZipName = `${inquiry.inquiryNumber || inquiry.id}_files.zip`;
+      const filename = normalizeZipDownloadFilename(
+        parseContentDisposition(contentDisposition) || defaultZipName,
+        defaultZipName
+      );
 
-      // Create blob and download
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      
-      // Create download link
+      const zipBlob =
+        blob.type === 'application/zip' || blob.type === 'application/x-zip-compressed'
+          ? blob
+          : new Blob([await blob.arrayBuffer()], { type: 'application/zip' });
+      const url = window.URL.createObjectURL(zipBlob);
+
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
