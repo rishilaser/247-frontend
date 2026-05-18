@@ -87,7 +87,7 @@ const CloudinaryPDFViewer = ({ cloudinaryUrl, filename = 'quotation.pdf', onClos
       ) : (
         <iframe
           src={cloudinaryUrl}
-          className="h-full w-full border-0"
+          className="absolute inset-0 h-full w-full border-0"
           title={filename}
           onLoad={() => setLoading(false)}
           onError={() => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import { inquiryAPI, quotationAPI, orderAPI, paymentAPI } from '../../services/api';
@@ -9,6 +9,7 @@ import {
   normalizeZipDownloadFilename,
 } from '../../utils/downloadFilename';
 import QuotationForm from '../../components/QuotationForm';
+import QuotationPdfModal from '../../components/QuotationPdfModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
 import axios from 'axios';
@@ -16,6 +17,7 @@ import axios from 'axios';
 const InquiryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { saveFromUploadResponse } = useQuotation();
@@ -27,6 +29,7 @@ const InquiryDetail = () => {
   const [saving, setSaving] = useState(false);
   const [materialData, setMaterialData] = useState([]);
   const [acceptingQuote, setAcceptingQuote] = useState(false);
+  const [showQuotationPdf, setShowQuotationPdf] = useState(false);
 
   // Get base URL for material data
   const getBaseURL = () => {
@@ -168,14 +171,16 @@ const InquiryDetail = () => {
     return timeline;
   };
 
-  const fetchInquiry = async () => {
+  const fetchInquiry = async ({ silent = false } = {}) => {
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
       
       // Check if user is loaded
       if (!user) {
         console.log('User not loaded yet, waiting...');
-        setLoading(false);
+        if (!silent) setLoading(false);
         return;
       }
       
@@ -183,7 +188,7 @@ const InquiryDetail = () => {
       if (!id || id === 'undefined' || id === 'null') {
         console.error('Invalid inquiry ID:', id);
         toast.error('Invalid inquiry ID');
-        setLoading(false);
+        if (!silent) setLoading(false);
         return;
       }
       
@@ -193,7 +198,7 @@ const InquiryDetail = () => {
         console.error('No authentication token found');
         toast.error('Please login to view inquiry details');
         window.location.href = '/login';
-        setLoading(false);
+        if (!silent) setLoading(false);
         return;
       }
       
@@ -295,7 +300,9 @@ const InquiryDetail = () => {
       console.error('Error stack:', error.stack);
       toast.error('Failed to fetch inquiry details');
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   };
 
@@ -307,8 +314,21 @@ const InquiryDetail = () => {
   }, [id, user]);
 
   useEffect(() => {
+    if (searchParams.get('quotationPdf') !== '1' || !inquiry?.quotationId) return;
+    setShowQuotationPdf(true);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('quotationPdf');
+        return next;
+      },
+      { replace: true }
+    );
+  }, [inquiry?.quotationId, searchParams, setSearchParams]);
+
+  useEffect(() => {
     if (!user || user.role !== 'customer' || !id) return undefined;
-    const reload = () => fetchInquiry();
+    const reload = () => fetchInquiry({ silent: true });
     const onVis = () => {
       if (!document.hidden) reload();
     };
@@ -328,7 +348,7 @@ const InquiryDetail = () => {
     const max = 36;
     const timer = window.setInterval(() => {
       ticks += 1;
-      fetchInquiry();
+      fetchInquiry({ silent: true });
       if (ticks >= max) window.clearInterval(timer);
     }, 5000);
     return () => window.clearInterval(timer);
@@ -369,7 +389,7 @@ const InquiryDetail = () => {
         // webhook may already handle updates; ignore sync errors
       }
       try {
-        await fetchInquiry();
+        await fetchInquiry({ silent: true });
       } catch {
         // best effort background refresh
       }
@@ -1147,9 +1167,20 @@ const InquiryDetail = () => {
                   </button>
                 )}
                 
-                {/* Quoted — replaces Quote after quotation is submitted */}
+                {/* Quoted — opens quotation PDF popup */}
                 {canShowQuotedBadge && (
-                  <button type="button" className="inline-flex w-full cursor-default items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white lg:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (inquiry?.quotationId) {
+                        setShowQuotationPdf(true);
+                      } else {
+                        toast.error('Quotation is not linked to this inquiry yet.');
+                      }
+                    }}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 lg:w-auto"
+                    title="View quotation PDF"
+                  >
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -1609,6 +1640,12 @@ const InquiryDetail = () => {
           }}
         />
       )}
+
+      <QuotationPdfModal
+        quotationId={inquiry?.quotationId}
+        isOpen={showQuotationPdf}
+        onClose={() => setShowQuotationPdf(false)}
+      />
     </div>
   );
 };

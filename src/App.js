@@ -29,7 +29,7 @@ const BackOfficeDashboard = lazy(() => import('./pages/BackOfficeDashboard'));
 const BackOfficeMaterialManagement = lazy(() => import('./pages/BackOfficeMaterialManagement'));
 const ComponentManagerPage = lazy(() => import('./pages/ComponentManagerPage'));
 const ComponentManagerDetail = lazy(() => import('./pages/ComponentManagerDetail'));
-const QuotationResponse = lazy(() => import('./pages/inquiry/QuotationResponse'));
+const QuotationPdfRedirect = lazy(() => import('./pages/inquiry/QuotationPdfRedirect'));
 const QuotationList = lazy(() => import('./pages/inquiry/QuotationList'));
 const QuotationPayment = lazy(() => import('./pages/payment/QuotationPayment'));
 const PaymentThankYouRedirect = lazy(() => import('./pages/payment/PaymentThankYouRedirect'));
@@ -258,14 +258,14 @@ function App() {
                     <Route path="/quotation/:id" element={
                       <ProtectedRoute>
                         <AdminLayout>
-                          <QuotationResponse />
+                          <QuotationPdfRedirect />
                         </AdminLayout>
                       </ProtectedRoute>
                     } />
                     <Route path="/quotation/:id/response" element={
                       <ProtectedRoute>
                         <AdminLayout>
-                          <QuotationResponse />
+                          <QuotationPdfRedirect />
                         </AdminLayout>
                       </ProtectedRoute>
                     } />

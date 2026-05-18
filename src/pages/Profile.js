@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { orderAPI, inquiryAPI, adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { inquiryQuotationPdfPath } from '../utils/quotationRoutes';
 
 const Profile = () => {
   const { user, updateProfile } = useAuth();
@@ -976,15 +977,9 @@ const Profile = () => {
                                 </div>
                               </div>
                               <div className="flex shrink-0 flex-wrap gap-2">
-                                <Link
-                                  to={`/inquiry/${inquiry.id}`}
-                                  className="text-sm font-medium text-blue-600 hover:text-blue-800"
-                                >
-                                  View details
-                                </Link>
                                 {inquiry.status === 'quoted' && (
                                   <Link
-                                    to={`/inquiry/${inquiry.id}`}
+                                    to={inquiryQuotationPdfPath(inquiry.id) || `/inquiry/${inquiry.id}`}
                                     className="text-sm font-medium text-green-600 hover:text-green-800"
                                   >
                                     View quote
@@ -992,16 +987,6 @@ const Profile = () => {
                                 )}
                               </div>
                             </div>
-                          </div>
-                        )}
-                        {(!inquiry.files || inquiry.files.length === 0) && (
-                          <div className="border-t border-gray-100 pt-4">
-                            <Link
-                              to={`/inquiry/${inquiry.id}`}
-                              className="text-sm font-medium text-blue-600 hover:text-blue-800"
-                            >
-                              View details
-                            </Link>
                           </div>
                         )}
                       </div>

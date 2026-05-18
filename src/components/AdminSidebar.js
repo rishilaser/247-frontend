@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getWordpressUrl } from '../utils/wordpressUrl';
+import { SHOW_MY_QUOTATIONS_PAGE } from '../config/featureFlags';
 import {
   Cog6ToothIcon,
   ClipboardDocumentListIcon,
@@ -51,7 +52,9 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
         { name: 'Dashboard', href: '/dashboard', icon: Squares2X2Icon },
         { name: 'New Inquiry', href: '/inquiry/new', icon: ClipboardDocumentListIcon },
         { name: 'My Inquiries', href: '/inquiries', icon: ClipboardDocumentListIcon },
-        { name: 'My Quotations', href: '/quotations', icon: TagIcon },
+        ...(SHOW_MY_QUOTATIONS_PAGE
+          ? [{ name: 'My Quotations', href: '/quotations', icon: TagIcon }]
+          : []),
         { name: 'My Orders', href: '/orders', icon: ShoppingCartIcon },
         ...baseNavigation
       ];

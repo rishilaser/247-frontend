@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { quotationAPI } from '../../services/api';
 import toast from 'react-hot-toast';
+import { quotationViewPath } from '../../utils/quotationRoutes';
 
 const getQuotationId = (quotation) => {
   const id = quotation?._id || quotation?.id;
@@ -274,7 +275,7 @@ const QuotationList = () => {
                         <div className="mt-4 flex flex-col gap-2">
                           {qid && (
                             <Link
-                              to={`/quotation/${qid}`}
+                              to={quotationViewPath(quotation) || '#'}
                               className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                             >
                               View
@@ -380,7 +381,7 @@ const QuotationList = () => {
                                   <div className="flex flex-wrap justify-end gap-2">
                                     {qid && (
                                       <Link
-                                        to={`/quotation/${qid}`}
+                                        to={quotationViewPath(quotation) || '#'}
                                         className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50"
                                       >
                                         View

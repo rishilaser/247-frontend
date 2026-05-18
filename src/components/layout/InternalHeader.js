@@ -17,6 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useSidebarLayout } from '../../contexts/SidebarLayoutContext';
 import { getWordpressUrl } from '../../utils/wordpressUrl';
+import { SHOW_MY_QUOTATIONS_PAGE } from '../../config/featureFlags';
 
 const InternalHeader = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -57,7 +58,9 @@ const InternalHeader = () => {
         { name: 'Dashboard', href: '/dashboard', icon: Cog6ToothIcon },
         { name: 'New Inquiry', href: '/inquiry/new', icon: ClipboardDocumentListIcon },
         { name: 'My Inquiries', href: '/inquiries', icon: ClipboardDocumentListIcon },
-        { name: 'My Quotations', href: '/quotations', icon: TagIcon },
+        ...(SHOW_MY_QUOTATIONS_PAGE
+          ? [{ name: 'My Quotations', href: '/quotations', icon: TagIcon }]
+          : []),
         { name: 'My Orders', href: '/orders', icon: ShoppingCartIcon },
         ...baseNavigation
       ];
@@ -86,7 +89,7 @@ const InternalHeader = () => {
     : userNavigation;
 
   return (
-    <header className="bg-gray-100 shadow-sm border-b fixed top-0 left-0 right-0 z-50" style={{ height: '90px' }}>
+    <header className="overflow-visible bg-gray-100 shadow-sm border-b fixed top-0 left-0 right-0 z-50" style={{ height: '90px' }}>
       <div className="w-full h-full">
         {/* Top Bar - Contact Info & Social - Hidden if empty */}
         {/* <div className="hidden lg:flex items-center justify-between py-3 bg-blue-900 text-white text-sm px-4 sm:px-6 lg:px-8">
@@ -94,7 +97,7 @@ const InternalHeader = () => {
         </div> */}
 
         {/* Main Navigation Bar — mobile menu left; logo shrinks (min-w-0) so bell stays visible */}
-        <div className="flex h-full w-full min-w-0 items-center gap-2 px-3 sm:px-6 lg:px-8">
+        <div className="flex h-full w-full min-w-0 items-center gap-2 overflow-visible px-3 sm:px-6 lg:px-8">
           {sidebarLayout && (
             <button
               type="button"

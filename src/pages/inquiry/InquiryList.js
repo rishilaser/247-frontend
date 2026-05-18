@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
-
 const InquiryList = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -12,15 +11,6 @@ const InquiryList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
-
-  // Helper function to get valid quotation ID
-  const getQuotationId = (quotation) => {
-    const id = quotation?._id || quotation?.id;
-    if (!id || id === 'undefined' || id === 'null') {
-      return null;
-    }
-    return id;
-  };
 
   useEffect(() => {
     fetchInquiries();
@@ -402,44 +392,17 @@ const InquiryList = () => {
                           </span>
                         </div>
 
-                        {inquiry.quotation.status === 'accepted' && (() => {
-                          const quotationId = getQuotationId(inquiry.quotation);
-                          if (!quotationId) return null;
-                          return (
-                            <div className="flex flex-col gap-2">
-                              <Link
-                                to={`/quotation/${quotationId}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 lg:inline-flex lg:w-auto lg:py-1.5"
-                              >
-                                View Details
-                              </Link>
-                            </div>
-                          );
-                        })()}
-
-                        {inquiry.quotation.status === 'order_created' && (() => {
-                          const quotationId = getQuotationId(inquiry.quotation);
-                          if (!quotationId) return null;
-                          return (
-                            <div className="flex flex-col gap-2">
-                              <Link
-                                to="/orders"
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-emerald-600 px-3 py-2 text-xs font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 lg:inline-flex lg:w-auto lg:py-1.5"
-                              >
-                                View orders
-                              </Link>
-                              <Link
-                                to={`/quotation/${quotationId}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 lg:inline-flex lg:w-auto lg:py-1.5"
-                              >
-                                View Details
-                              </Link>
-                            </div>
-                          );
-                        })()}
+                        {inquiry.quotation.status === 'order_created' && (
+                          <div className="flex flex-col gap-2">
+                            <Link
+                              to="/orders"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-emerald-600 px-3 py-2 text-xs font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 lg:inline-flex lg:w-auto lg:py-1.5"
+                            >
+                              View orders
+                            </Link>
+                          </div>
+                        )}
 
                         {inquiry.quotation.status === 'rejected' && (
                           <div className="text-sm font-medium text-gray-500 lg:text-right">

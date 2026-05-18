@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import BackOfficeMaterialManagement from './BackOfficeMaterialManagement';
 import QuotationForm from '../components/QuotationForm';
 import SubAdminManagement from '../components/SubAdminManagement';
+import ConfirmModal from '../components/ConfirmModal';
 import { inquiryAPI, quotationAPI, adminAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -32,6 +33,7 @@ const BackOfficeDashboard = () => {
   });
   const [showQuotationForm, setShowQuotationForm] = useState(false);
   const [sendingQuotationId, setSendingQuotationId] = useState(null);
+  const [sendConfirmQuotation, setSendConfirmQuotation] = useState(null);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
 
@@ -264,13 +266,14 @@ const BackOfficeDashboard = () => {
     setSelectedInquiry(null);
   };
 
-  const handleSendQuotation = async (quotationId) => {
-    if (!quotationId || sendingQuotationId) return;
+  const handleSendQuotationClick = (quotation) => {
+    if (!quotation?._id || sendingQuotationId) return;
+    setSendConfirmQuotation(quotation);
+  };
 
-    const confirmed = window.confirm(
-      'Send this quotation to the customer by email? They will receive the quotation PDF and details.'
-    );
-    if (!confirmed) return;
+  const handleConfirmSendQuotation = async () => {
+    const quotationId = sendConfirmQuotation?._id;
+    if (!quotationId || sendingQuotationId) return;
 
     try {
       setSendingQuotationId(quotationId);
@@ -278,6 +281,7 @@ const BackOfficeDashboard = () => {
 
       if (response.data.success) {
         toast.success('Quotation emailed to customer successfully!');
+        setSendConfirmQuotation(null);
         fetchData(true);
       } else {
         toast.error(response.data.message || 'Failed to send quotation');
@@ -699,7 +703,7 @@ const BackOfficeDashboard = () => {
                             {canSendQuotation(quotation.status) && (
                               <button
                                 type="button"
-                                onClick={() => handleSendQuotation(quotation._id)}
+                                onClick={() => handleSendQuotationClick(quotation)}
                                 disabled={sendingQuotationId === quotation._id}
                                 className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
                               >
@@ -819,6 +823,38 @@ const BackOfficeDashboard = () => {
           onSuccess={handleQuotationSuccess}
         />
       )}
+
+      <ConfirmModal
+        isOpen={Boolean(sendConfirmQuotation)}
+        onClose={() => {
+          if (!sendingQuotationId) setSendConfirmQuotation(null);
+        }}
+        onConfirm={handleConfirmSendQuotation}
+        title="Send quotation to customer?"
+        message="The customer will receive an email with the quotation PDF and details."
+        confirmLabel="Send email"
+        cancelLabel="Cancel"
+        loading={Boolean(sendingQuotationId)}
+      >
+        {sendConfirmQuotation && (
+          <div className="mt-4 rounded-lg bg-gray-50 p-3 text-sm text-gray-700 space-y-1">
+            <p>
+              <span className="font-medium text-gray-900">Quotation:</span>{' '}
+              {sendConfirmQuotation.quotationNumber || sendConfirmQuotation._id}
+            </p>
+            <p>
+              <span className="font-medium text-gray-900">Customer:</span>{' '}
+              {sendConfirmQuotation.customer || sendConfirmQuotation.company || '—'}
+            </p>
+            {sendConfirmQuotation.amount != null && (
+              <p>
+                <span className="font-medium text-gray-900">Amount:</span> ₹
+                {Number(sendConfirmQuotation.amount).toFixed(2)}
+              </p>
+            )}
+          </div>
+        )}
+      </ConfirmModal>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import {
   clearZohoReturnPayload,
   hasZohoReturnPayload,
 } from '../utils/zohoReturnParams';
+import { SHOW_MY_QUOTATIONS_PAGE } from '../config/featureFlags';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -389,7 +390,7 @@ const Dashboard = () => {
   const tabs = [
     { id: 'overview', name: 'Overview', icon: '📊' },
     { id: 'inquiries', name: 'Inquiries', icon: '📄' },
-    { id: 'quotations', name: 'Quotations', icon: '🏷️' },
+    ...(SHOW_MY_QUOTATIONS_PAGE ? [{ id: 'quotations', name: 'Quotations', icon: '🏷️' }] : []),
     { id: 'orders', name: 'Orders', icon: '📦' },
     { id: 'analytics', name: 'Analytics', icon: '📈' }
   ];
@@ -603,7 +604,7 @@ const Dashboard = () => {
                             </div>
                           </div>
                         ))}
-                        {quotations.length > 0 && (
+                        {SHOW_MY_QUOTATIONS_PAGE && quotations.length > 0 && (
                           <div className="text-center pt-1">
                             <Link
                               to="/quotations"
@@ -737,12 +738,6 @@ const Dashboard = () => {
                                   <span className="mr-2">💳</span>
                                   Pay Now
                                 </button>
-                                <Link
-                                  to={`/quotation/${quotationId}`}
-                                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                  View Details
-                                </Link>
                               </div>
                             );
                           })()}
@@ -751,12 +746,6 @@ const Dashboard = () => {
                             if (!quotationId) return null;
                             return (
                               <div className="mt-4 flex space-x-3">
-                                <Link
-                                  to={`/quotation/${quotationId}`}
-                                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                  View Details
-                                </Link>
                                 <Link
                                   to="/orders"
                                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -873,14 +862,6 @@ const Dashboard = () => {
                             </div>
                           </div>
                           
-                          <div className="mt-4 flex space-x-3">
-                            <Link
-                              to={`/inquiry/${inquiry._id || inquiry.id}`}
-                              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                              View Details
-                            </Link>
-                          </div>
                         </div>
                       ))}
                     </div>
