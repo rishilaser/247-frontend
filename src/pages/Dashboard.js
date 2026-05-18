@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { quotationAPI, inquiryAPI, orderAPI, paymentAPI } from '../services/api';
 import {
@@ -11,6 +12,7 @@ import {
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('overview');
   
@@ -167,20 +169,18 @@ const Dashboard = () => {
       null;
     if (!quotationIdToSync) return undefined;
 
-    // Without Zoho return params, sync only calls Zoho GET → 401 (no READ scope). Skip until redirect lands.
-    if (!hasZohoReturnPayload(searchParams)) {
-      return undefined;
-    }
+    const hasReturn = hasZohoReturnPayload(searchParams);
 
     let cancelled = false;
     (async () => {
-      const returnPayload = getZohoReturnPayload(searchParams);
+      const returnPayload = hasReturn ? getZohoReturnPayload(searchParams) : null;
       const result = await runZohoPaymentSync(quotationIdToSync, returnPayload);
       if (cancelled) return;
-      if (result?.updated || result?.gatewayPaid) {
+      if (result?.updated || result?.gatewayPaid || result?.notificationsEnsured) {
+        queryClient.invalidateQueries('notifications');
         try {
           sessionStorage.removeItem('zohoPendingQuotationId');
-          clearZohoReturnPayload();
+          if (hasReturn) clearZohoReturnPayload();
         } catch {
           /* ignore */
         }
@@ -216,6 +216,7 @@ const Dashboard = () => {
     setSearchParams,
     runZohoPaymentSync,
     getZohoReturnFromSearchParams,
+    queryClient,
   ]);
 
   const isInquiryGatewayPaid = useCallback((inquiry) => {

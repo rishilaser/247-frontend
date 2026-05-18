@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 import { quotationAPI, paymentAPI } from '../../services/api';
 import {
   captureZohoReturnFromUrl,
@@ -11,6 +12,7 @@ const POLL_MS = 12000;
 const MAX_POLLS = 10;
 
 const PaymentSuccess = () => {
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId');
   const [workflowStatus, setWorkflowStatus] = useState(null);
@@ -39,6 +41,7 @@ const PaymentSuccess = () => {
           setPaymentStatus('Success');
           setError(null);
           clearZohoReturnPayload();
+          queryClient.invalidateQueries('notifications');
           return;
         }
       } catch (syncErr) {
@@ -62,6 +65,7 @@ const PaymentSuccess = () => {
       setError(null);
       if (q.orderPaymentWorkflowStatus === 'Paid' && q.payment_status === 'Success') {
         clearZohoReturnPayload();
+        queryClient.invalidateQueries('notifications');
       }
     } catch (e) {
       if (e?.response?.status === 403 || e?.response?.status === 404) {
@@ -70,7 +74,7 @@ const PaymentSuccess = () => {
         setError('Unable to refresh payment status. You can open your dashboard and check again shortly.');
       }
     }
-  }, [orderId, getZohoReturnFromSearchParams]);
+  }, [orderId, getZohoReturnFromSearchParams, queryClient]);
 
   useEffect(() => {
     captureZohoReturnFromUrl();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import { inquiryAPI, quotationAPI, orderAPI, paymentAPI } from '../../services/api';
 import { getZohoReturnPayload, hasZohoReturnPayload } from '../../utils/zohoReturnParams';
@@ -11,6 +12,7 @@ import axios from 'axios';
 const InquiryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { saveFromUploadResponse } = useQuotation();
   const [inquiry, setInquiry] = useState(null);
@@ -352,6 +354,13 @@ const InquiryDetail = () => {
         if (!zohoReturn) return;
         const syncRes = await paymentAPI.syncZohoPaymentStatus(inquiry.quotationId, zohoReturn);
         if (syncRes?.data?.rateLimited) return;
+        if (
+          syncRes?.data?.updated ||
+          syncRes?.data?.gatewayPaid ||
+          syncRes?.data?.notificationsEnsured
+        ) {
+          queryClient.invalidateQueries('notifications');
+        }
       } catch {
         // webhook may already handle updates; ignore sync errors
       }

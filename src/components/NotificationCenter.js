@@ -31,6 +31,8 @@ const getNotificationTargetPath = (notification) => {
       return `/quotation/${id}`;
     case 'order':
       return `/order/${id}`;
+    case 'payment':
+      return '/orders';
     default:
       return null;
   }
@@ -59,7 +61,8 @@ const NotificationCenter = () => {
     {
       refetchInterval: 60000, // Refetch every 60 seconds (reduced frequency)
       refetchOnWindowFocus: false, // Disable refetch on window focus to prevent multiple calls
-      staleTime: 30000, // Consider data fresh for 30 seconds
+      staleTime: 5000,
+      refetchOnMount: 'always',
       cacheTime: 300000, // Keep in cache for 5 minutes
     }
   );
