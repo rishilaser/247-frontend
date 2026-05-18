@@ -14,7 +14,6 @@ import Footer from './components/layout/Footer';
 import AdminLayout from './components/layout/AdminLayout';
 
 // Pages - Lazy load for faster initial page load
-const Home = lazy(() => import('./pages/Home'));
 const SignUp = lazy(() => import('./pages/auth/SignUp'));
 const Login = lazy(() => import('./pages/auth/Login'));
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
@@ -48,10 +47,6 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
 const CancellationRefundPolicy = lazy(() => import('./pages/CancellationRefundPolicy'));
 const ShippingDeliveryPolicy = lazy(() => import('./pages/ShippingDeliveryPolicy'));
-// Blogs and FAQ are part of the Home page as per user request
-// const Blogs = lazy(() => import('./pages/Blogs'));
-// const FAQ = lazy(() => import('./pages/FAQ'));
-
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -158,7 +153,11 @@ function App() {
                 <Suspense fallback={<LoadingSpinner />}>
                   <Routes>
                     {/* Public Routes */}
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={
+                      <PublicRoute>
+                        <Navigate to="/login" replace />
+                      </PublicRoute>
+                    } />
                     {/* <Route path="/about" element={
                       <Layout>
                         <About />
@@ -381,10 +380,8 @@ function App() {
                         <ShippingDeliveryPolicy />
                       </Layout>
                     } />
-                    {/* Redirecting Blogs and FAQ to home page sections */}
-                    {/* Redirecting Blogs and FAQ to home page sections without hash in URL */}
-                    <Route path="/blogs" element={<Navigate to="/" state={{ targetId: 'blog-area' }} replace />} />
-                    <Route path="/faq" element={<Navigate to="/" state={{ targetId: 'faq-area' }} replace />} />
+                    <Route path="/blogs" element={<Navigate to="/login" replace />} />
+                    <Route path="/faq" element={<Navigate to="/login" replace />} />
 
                     {/* 404 Route */}
                     <Route path="*" element={

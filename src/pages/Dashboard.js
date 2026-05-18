@@ -468,94 +468,28 @@ const Dashboard = () => {
           {user && user.role === 'customer' && activeTab === 'overview' && (
             <>
               {/* Stats Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-2 gap-3 mb-8">
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="p-5">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                          <span className="text-white text-sm">📄</span>
-                        </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                {[
+                  { label: 'Total Inquiries', value: stats.totalInquiries, icon: '📄', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
+                  { label: 'Quotations', value: stats.quotations, icon: '🏷️', iconBg: 'bg-yellow-100', iconColor: 'text-yellow-600' },
+                  { label: 'Active Orders', value: stats.activeOrders, icon: '📦', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
+                  { label: 'Completed', value: stats.completed, icon: '✅', iconBg: 'bg-purple-100', iconColor: 'text-purple-600' },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 px-3 py-2.5"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-9 h-9 shrink-0 ${stat.iconBg} rounded-lg flex items-center justify-center`}>
+                        <span className={`${stat.iconColor} text-sm`}>{stat.icon}</span>
                       </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">
-                            Total Inquiries
-                          </dt>
-                          <dd className="text-lg font-medium text-gray-900">
-                            {stats.totalInquiries}
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="p-5">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                          <span className="text-white text-sm">🏷️</span>
-                        </div>
-                      </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">
-                            Quotations
-                          </dt>
-                          <dd className="text-lg font-medium text-gray-900">
-                            {stats.quotations}
-                          </dd>
-                        </dl>
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-gray-500 truncate">{stat.label}</p>
+                        <p className="text-lg font-bold text-gray-900 leading-tight">{stat.value}</p>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="p-5">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                          <span className="text-white text-sm">📦</span>
-                        </div>
-                      </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">
-                            Active Orders
-                          </dt>
-                          <dd className="text-lg font-medium text-gray-900">
-                            {stats.activeOrders}
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="p-5">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                          <span className="text-white text-sm">✅</span>
-                        </div>
-                      </div>
-                      <div className="ml-5 w-0 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">
-                            Completed
-                          </dt>
-                          <dd className="text-lg font-medium text-gray-900">
-                            {stats.completed}
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Quick Actions */}

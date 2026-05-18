@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { orderAPI, adminAPI, quotationAPI, inquiryAPI } from '../../services/api';
+import { orderAPI, quotationAPI, inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -11,15 +11,6 @@ const OrderDetail = () => {
   const [loading, setLoading] = useState(true);
   const fetchingRef = useRef(false); // Prevent duplicate fetches
   
-  const [showDeliveryModal, setShowDeliveryModal] = useState(false);
-  const [showDispatchModal, setShowDispatchModal] = useState(false);
-  const [deliveryTime, setDeliveryTime] = useState('');
-  const [dispatchData, setDispatchData] = useState({
-    courier: '',
-    trackingNumber: '',
-    estimatedDelivery: ''
-  });
-
   useEffect(() => {
     if (user?._id && !fetchingRef.current) {
       fetchingRef.current = true;
@@ -187,107 +178,6 @@ const OrderDetail = () => {
     } finally {
       setLoading(false);
       fetchingRef.current = false;
-    }
-  };
-
-  // Handler for setting delivery time (Point 5)
-  const handleSetDeliveryTime = () => {
-    setDeliveryTime('');
-    setShowDeliveryModal(true);
-  };
-
-  const handleSubmitDeliveryTime = async () => {
-    if (!deliveryTime) {
-      toast.error('Please select delivery time');
-      return;
-    }
-
-    try {
-      const response = await adminAPI.updateDeliveryDetails(order._id, {
-        estimatedDelivery: deliveryTime,
-        notes: 'Production started with estimated delivery time'
-      });
-
-      if (response.data.success) {
-        toast.success('Delivery time set and customer notified');
-        setShowDeliveryModal(false);
-        fetchOrder(); // Refresh order
-      } else {
-        toast.error(response.data.message || 'Failed to set delivery time');
-      }
-    } catch (error) {
-      console.error('Error setting delivery time:', error);
-      toast.error('Failed to set delivery time');
-    }
-  };
-
-  // Handler for marking order ready for dispatch
-  const handleMarkReadyForDispatch = async () => {
-    try {
-      const response = await adminAPI.updateOrderStatus(order._id, 'ready_for_dispatch', {
-        notes: 'Order completed and ready for dispatch'
-      });
-
-      if (response.data.success) {
-        toast.success('Order marked as ready for dispatch');
-        fetchOrder(); // Refresh order
-      } else {
-        toast.error(response.data.message || 'Failed to update order status');
-      }
-    } catch (error) {
-      console.error('Error updating order status:', error);
-      toast.error('Failed to update order status');
-    }
-  };
-
-  // Handler for dispatching order (Point 6)
-  const handleDispatchOrder = () => {
-    setDispatchData({
-      courier: '',
-      trackingNumber: '',
-      estimatedDelivery: ''
-    });
-    setShowDispatchModal(true);
-  };
-
-  const handleSubmitDispatch = async () => {
-    if (!dispatchData.courier || !dispatchData.trackingNumber) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    try {
-      const response = await adminAPI.updateDispatchDetails(order._id, dispatchData);
-
-      if (response.data.success) {
-        toast.success('Order dispatched and customer notified');
-        setShowDispatchModal(false);
-        fetchOrder(); // Refresh order
-      } else {
-        toast.error(response.data.message || 'Failed to dispatch order');
-      }
-    } catch (error) {
-      console.error('Error dispatching order:', error);
-      toast.error('Failed to dispatch order');
-    }
-  };
-
-  // Handler for marking order as delivered
-  const handleMarkDelivered = async () => {
-    try {
-      const response = await adminAPI.updateOrderStatus(order._id, 'delivered', {
-        notes: 'Order delivered successfully'
-      });
-
-      if (response.data.success) {
-        toast.success('Order marked as delivered');
-        fetchOrder(); // Refresh order
-      } else {
-        toast.error(response.data.message || 'Failed to update order status');
-      }
-    } catch (error) {
-      console.error('Error updating order status:', error);
-      toast.error('Failed to update order status');
     }
   };
 
@@ -612,52 +502,6 @@ const OrderDetail = () => {
 
           
 
-            {/* Admin Action Buttons */}
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-medium text-gray-900 mb-3">Admin Actions</h3>
-              <div className="flex flex-wrap gap-3">
-                {order.status === 'confirmed' && (
-                  <button
-                    onClick={handleSetDeliveryTime}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    Set Delivery Time
-                  </button>
-                )}
-                {order.status === 'in_production' && (
-                  <button
-                    onClick={handleMarkReadyForDispatch}
-                    className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  >
-                    Mark Ready for Dispatch
-                  </button>
-                )}
-                {order.status === 'ready_for_dispatch' && (
-                  <button
-                    onClick={handleDispatchOrder}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    Dispatch Order
-                  </button>
-                )}
-                {order.status === 'dispatched' && (
-                  <button
-                    onClick={handleMarkDelivered}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Mark as Delivered
-                  </button>
-                )}
-                {order.status === 'delivered' && (
-                  <span className="px-4 py-2 bg-green-100 text-green-800 rounded-md">
-                    Order Completed
-                  </span>
-                )}
-              </div>
-            </div>
-
-           
-
             <div className="grid ">
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Order Details</h3>
@@ -843,110 +687,7 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* Delivery Time Modal */}
-        {showDeliveryModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-              <div className="mt-3">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Set Delivery Time - {order?.orderNumber}
-                </h3>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Estimated Delivery Date
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={deliveryTime}
-                    onChange={(e) => setDeliveryTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="flex justify-end space-x-3">
-                  <button
-                    onClick={() => setShowDeliveryModal(false)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSubmitDeliveryTime}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                  >
-                    Set Delivery Time
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Dispatch Modal */}
-        {showDispatchModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-              <div className="mt-3">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Dispatch Order - {order?.orderNumber}
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Courier Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={dispatchData.courier}
-                      onChange={(e) => setDispatchData({...dispatchData, courier: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., FedEx, UPS, DHL"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tracking Number *
-                    </label>
-                    <input
-                      type="text"
-                      value={dispatchData.trackingNumber}
-                      onChange={(e) => setDispatchData({...dispatchData, trackingNumber: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., 1Z999AA1234567890"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Estimated Delivery Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={dispatchData.estimatedDelivery}
-                      onChange={(e) => setDispatchData({...dispatchData, estimatedDelivery: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-3 mt-6">
-                  <button
-                    onClick={() => setShowDispatchModal(false)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSubmitDispatch}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-                  >
-                    Dispatch Order
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

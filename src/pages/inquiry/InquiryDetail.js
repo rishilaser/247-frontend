@@ -413,7 +413,7 @@ const InquiryDetail = () => {
       console.log('Quotation creation response:', response.data);
       
       if (response.data.success) {
-        toast.success('Quotation created and sent successfully!');
+        toast.success('Quotation saved. Send it from the Quotations tab to email the customer.');
         // Refresh inquiry data to show updated status
         await fetchInquiry();
       } else {
@@ -499,7 +499,7 @@ const InquiryDetail = () => {
         // Save Cloudinary URL to context to prevent loss
         saveFromUploadResponse(response);
         
-        toast.success('Quotation uploaded and sent successfully!');
+        toast.success('Quotation uploaded. Send it from the Quotations tab to email the customer.');
         // Refresh inquiry data
         await fetchInquiry();
       } else {
@@ -725,7 +725,8 @@ const InquiryDetail = () => {
 
       // Use the correct API base URL
       const apiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-      const downloadUrl = `${apiBaseUrl}/inquiry/${id}/files/${file.fileName || file.name}/download`;
+      const fileKey = encodeURIComponent(file.originalName || file.fileName || file.name);
+      const downloadUrl = `${apiBaseUrl}/inquiry/${id}/files/${fileKey}/download`;
       
       console.log('Download URL:', downloadUrl);
       console.log('File data:', file);
@@ -935,6 +936,23 @@ const InquiryDetail = () => {
     isPaymentPending &&
     normalizedQuotationStatus !== 'sent';
 
+  const hasQuotationSubmitted = Boolean(
+    inquiry?.quotationId ||
+    inquiry?.status === 'quoted' ||
+    (normalizedQuotationStatus && normalizedQuotationStatus !== '')
+  );
+
+  const isAdminUser =
+    user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin';
+
+  const canShowQuoteButton =
+    isAdminUser &&
+    !hasQuotationSubmitted &&
+    ['pending', 'reviewed'].includes(inquiry?.status);
+
+  const canShowQuotedBadge =
+    hasQuotationSubmitted && !isGatewayPaid && !isEditing;
+
   let createdLabel = '';
   let createdTitle = '';
   if (inquiry.createdAt != null) {
@@ -1005,9 +1023,8 @@ const InquiryDetail = () => {
                   </button>
                 )}
 
-                {/* Quote Button - Hide once quotation is submitted */}
-                {(user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin') &&
-                 ['pending', 'reviewed'].includes(inquiry?.status) && (
+                {/* Quote — only before a quotation exists for this inquiry */}
+                {canShowQuoteButton && (
                   <button
                     type="button"
                     onClick={() => {
@@ -1118,9 +1135,9 @@ const InquiryDetail = () => {
                   </button>
                 )}
                 
-                {/* Quoted Status Button - Only show if quotation has been sent */}
-                {(inquiry?.status === 'quoted' || inquiry?.status === 'pending') && !isGatewayPaid && !isEditing && (
-                  <button type="button" className="inline-flex w-full cursor-default items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 lg:w-auto">
+                {/* Quoted — replaces Quote after quotation is submitted */}
+                {canShowQuotedBadge && (
+                  <button type="button" className="inline-flex w-full cursor-default items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white lg:w-auto">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -1564,7 +1581,20 @@ const InquiryDetail = () => {
         <QuotationForm
           inquiry={quotationFormInquiry}
           onClose={() => setShowQuotationModal(false)}
-          onSuccess={() => fetchInquiry()}
+          onSuccess={(quotation) => {
+            setShowQuotationModal(false);
+            setInquiry((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    status: 'quoted',
+                    quotationId: quotation?._id || prev.quotationId,
+                    quotationStatus: quotation?.status || prev.quotationStatus || 'draft',
+                  }
+                : prev
+            );
+            fetchInquiry();
+          }}
         />
       )}
     </div>

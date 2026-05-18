@@ -680,7 +680,7 @@ const OrderManagement = () => {
                     <thead className="bg-gray-100 sticky top-0 z-10">
                       <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                          Order
+                          Order Number
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                           Customer
@@ -714,13 +714,8 @@ const OrderManagement = () => {
                           return;
                         }
                       }}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-semibold text-gray-900">
-                            {order.title}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-0.5">
-                            {order.orderNumber}
-                          </div>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                          {order.orderNumber}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                           {order.customerName}

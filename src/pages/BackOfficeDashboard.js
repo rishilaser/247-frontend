@@ -31,6 +31,7 @@ const BackOfficeDashboard = () => {
     completed: 0
   });
   const [showQuotationForm, setShowQuotationForm] = useState(false);
+  const [sendingQuotationId, setSendingQuotationId] = useState(null);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
 
@@ -254,7 +255,7 @@ const BackOfficeDashboard = () => {
   };
 
   const handleQuotationSuccess = (quotation) => {
-    toast.success(`Quotation ${quotation.quotationNumber} created successfully!`);
+    toast.success(`Quotation ${quotation.quotationNumber} saved. Use Send in the Quotations tab to email the customer.`);
     fetchData(true);
   };
 
@@ -264,11 +265,19 @@ const BackOfficeDashboard = () => {
   };
 
   const handleSendQuotation = async (quotationId) => {
+    if (!quotationId || sendingQuotationId) return;
+
+    const confirmed = window.confirm(
+      'Send this quotation to the customer by email? They will receive the quotation PDF and details.'
+    );
+    if (!confirmed) return;
+
     try {
+      setSendingQuotationId(quotationId);
       const response = await quotationAPI.sendQuotation(quotationId);
-      
+
       if (response.data.success) {
-        toast.success('Quotation sent to customer successfully!');
+        toast.success('Quotation emailed to customer successfully!');
         fetchData(true);
       } else {
         toast.error(response.data.message || 'Failed to send quotation');
@@ -277,8 +286,15 @@ const BackOfficeDashboard = () => {
       if (process.env.NODE_ENV === 'development') {
         console.error('Error sending quotation:', error);
       }
-      toast.error('Failed to send quotation');
+      toast.error(error.response?.data?.message || 'Failed to send quotation');
+    } finally {
+      setSendingQuotationId(null);
     }
+  };
+
+  const canSendQuotation = (status) => {
+    const s = String(status || '').toLowerCase();
+    return s === 'draft' || s === 'uploaded' || s === 'created';
   };
 
   const handleDownloadPDF = async (quotation) => {
@@ -680,12 +696,14 @@ const BackOfficeDashboard = () => {
                             >
                               View
                             </Link>
-                            {quotation.status === 'draft' && (
-                              <button 
+                            {canSendQuotation(quotation.status) && (
+                              <button
+                                type="button"
                                 onClick={() => handleSendQuotation(quotation._id)}
-                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium"
+                                disabled={sendingQuotationId === quotation._id}
+                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
                               >
-                                Send
+                                {sendingQuotationId === quotation._id ? 'Sending...' : 'Send'}
                               </button>
                             )}
                             <button
