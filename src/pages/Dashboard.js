@@ -442,21 +442,22 @@ const Dashboard = () => {
 
           {/* Tabs Navigation - Only show for customer users */}
           {user && user.role === 'customer' && (
-            <div className="mb-6 bg-white rounded-lg shadow-lg border-2 border-gray-200">
-              <div className="px-6 py-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Dashboard Navigation</h3>
-                <nav className="flex flex-wrap gap-2 sm:gap-4">
+            <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="px-4 py-4 sm:px-6">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">Dashboard Navigation</h3>
+                <nav className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
+                      type="button"
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-4 py-3 rounded-lg font-medium text-sm flex items-center space-x-2 transition-all duration-200 ${
+                      className={`flex w-full min-h-[44px] items-center justify-start gap-2 px-3 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${
                         activeTab === tab.id
-                          ? 'bg-blue-500 text-white shadow-md transform scale-105'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
                       }`}
                     >
-                      <span className="text-lg">{tab.icon}</span>
+                      <span className="text-base shrink-0" aria-hidden="true">{tab.icon}</span>
                       <span>{tab.name}</span>
                     </button>
                   ))}
@@ -478,15 +479,19 @@ const Dashboard = () => {
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className="bg-white rounded-lg shadow-sm border border-gray-200 px-3 py-2.5"
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 min-w-0"
                   >
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex flex-col items-center text-center gap-1.5 min-w-0 md:flex-row md:items-center md:text-left md:gap-2.5">
                       <div className={`w-9 h-9 shrink-0 ${stat.iconBg} rounded-lg flex items-center justify-center`}>
                         <span className={`${stat.iconColor} text-sm`}>{stat.icon}</span>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-gray-500 truncate">{stat.label}</p>
-                        <p className="text-lg font-bold text-gray-900 leading-tight">{stat.value}</p>
+                      <div className="min-w-0 w-full md:flex-1">
+                        <p className="text-[11px] sm:text-xs font-medium text-gray-500 leading-snug break-words">
+                          {stat.label}
+                        </p>
+                        <p className="text-base sm:text-lg font-bold text-gray-900 leading-tight mt-0.5">
+                          {stat.value}
+                        </p>
                       </div>
                     </div>
                   </div>
