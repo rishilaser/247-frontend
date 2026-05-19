@@ -371,27 +371,32 @@ const OrderTracking = () => {
     );
   }
 
+  const completedStepCount = order.tracking.filter((step) => step.completed || step.isCurrent).length;
+  const progressPercent = (completedStepCount / order.tracking.length) * 100;
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <div className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+        <div className="py-4 sm:py-6">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <Link
               to={`/order/${order._id || order.id}`}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 inline-block"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-3 sm:mb-4 inline-block"
             >
               ← Back to Order Details
             </Link>
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Order Tracking</h1>
-                <p className="text-lg text-gray-600">Track your order #{order.orderNumber}</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Order Tracking</h1>
+                <p className="text-base sm:text-lg text-gray-600 break-words">
+                  Track your order #{order.orderNumber}
+                </p>
               </div>
               {lastUpdate && (
-                <div className="text-sm text-gray-500">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div className="text-sm text-gray-500 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     <span>Last updated: {lastUpdate.toLocaleTimeString()}</span>
                   </div>
                 </div>
@@ -399,24 +404,88 @@ const OrderTracking = () => {
             </div>
           </div>
 
-          {/* Horizontal Timeline Section */}
-          <div className="bg-white shadow rounded-lg mb-6">
+          {/* Mobile: vertical progress */}
+          <div className="lg:hidden bg-white shadow rounded-lg mb-6">
+            <div className="px-4 py-5 sm:px-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Progress</h3>
+              <div className="mb-4">
+                <div className="flex justify-between text-xs text-gray-600 mb-1">
+                  <span>{completedStepCount} of {order.tracking.length} steps</span>
+                  <span>{Math.round(progressPercent)}%</span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-full transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              </div>
+              <ol className="relative">
+                {order.tracking.map((update, index) => {
+                  const isLast = index === order.tracking.length - 1;
+                  return (
+                    <li key={index} className="relative flex gap-3 pb-6 last:pb-0">
+                      {!isLast && (
+                        <span
+                          className={`absolute left-[15px] top-8 bottom-0 w-0.5 ${
+                            update.completed ? 'bg-blue-400' : 'bg-gray-200'
+                          }`}
+                          aria-hidden="true"
+                        />
+                      )}
+                      <div
+                        className={`relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow ${
+                          update.completed
+                            ? getStepColor(update.icon)
+                            : update.isCurrent
+                            ? getStepColor(update.icon) + ' ring-2 ring-blue-300'
+                            : 'bg-gray-300'
+                        }`}
+                      >
+                        {getStepIcon(update.icon, update.completed, false, update.isCurrent)}
+                      </div>
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <p
+                          className={`text-sm font-semibold leading-snug ${
+                            update.completed
+                              ? 'text-gray-900'
+                              : update.isCurrent
+                              ? 'text-blue-600'
+                              : 'text-gray-500'
+                          }`}
+                        >
+                          {update.status}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {new Date(update.date).toLocaleDateString()} · {update.time}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </div>
+
+          {/* Desktop: horizontal timeline */}
+          <div className="hidden lg:block bg-white shadow rounded-lg mb-6">
             <div className="px-6 py-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Order Progress</h3>
-              <div className="relative">
+              <div className="relative overflow-x-auto pb-2">
+                <div className="relative min-w-[720px]">
                 {/* Progress Line */}
                 <div className="absolute top-10 left-0 right-0 h-1 bg-gray-200 rounded-full">
                   <div className="h-full bg-gradient-to-r from-blue-500 via-purple-500 via-indigo-500 via-yellow-500 via-green-500 via-orange-500 to-emerald-500 rounded-full" 
-                       style={{ width: `${(order.tracking.filter(step => step.completed || step.isCurrent).length / order.tracking.length) * 100}%` }}>
+                       style={{ width: `${progressPercent}%` }}>
                   </div>
                 </div>
                 
                 {/* Timeline Steps */}
                 <div className="relative flex justify-between items-start">
                   {order.tracking.map((update, index) => (
-                    <div key={index} className="flex flex-col items-center flex-1">
+                    <div key={index} className="flex flex-col items-center flex-1 px-1">
                       {/* Icon */}
-                      <div className={`relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-4 border-white shadow-xl ${
+                      <div className={`relative z-10 w-16 h-16 xl:w-20 xl:h-20 rounded-full flex items-center justify-center border-4 border-white shadow-xl ${
                         update.completed ? getStepColor(update.icon) : 
                         update.isCurrent ? getStepColor(update.icon) + ' ring-4 ring-opacity-50 ring-blue-300' : 
                         'bg-gray-300'
@@ -425,8 +494,8 @@ const OrderTracking = () => {
                       </div>
                       
                       {/* Status Text */}
-                      <div className="mt-4 text-center max-w-36">
-                        <p className={`text-sm font-semibold leading-tight ${
+                      <div className="mt-3 text-center max-w-[7rem] xl:max-w-36">
+                        <p className={`text-xs xl:text-sm font-semibold leading-tight ${
                           update.completed ? 'text-gray-900' : 
                           update.isCurrent ? 'text-blue-600' : 
                           'text-gray-500'
@@ -437,18 +506,19 @@ const OrderTracking = () => {
                     </div>
                   ))}
                 </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Main Content */}
           <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-6">
+            <div className="px-4 py-5 sm:px-6 sm:py-6">
               {/* Order Details Grid */}
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Order Details</h3>
-                <div className="bg-gray-50 rounded-lg p-6">
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
                   <dl className="space-y-3">
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Order Number</dt>
@@ -456,7 +526,7 @@ const OrderTracking = () => {
                     </div>
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Tracking Number</dt>
-                      <dd className="text-sm text-gray-900 font-mono">
+                      <dd className="text-sm text-gray-900 font-mono break-all">
                         {order.dispatch?.trackingNumber || 'Not available yet'}
                       </dd>
                     </div>

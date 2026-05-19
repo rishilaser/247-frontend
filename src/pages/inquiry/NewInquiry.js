@@ -398,7 +398,7 @@ const NewInquiry = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header is provided by Layout component (InternalHeader) */}
       
-      <div className="py-4">
+      <div className="py-2 sm:py-4">
         <div className="flex gap-4">
           {/* Left Sidebar - Hidden */}
           {/* <div className="w-72 bg-white rounded-xl shadow-lg border border-gray-100 p-4 sticky top-4">
@@ -407,11 +407,11 @@ const NewInquiry = () => {
           </div> */}
 
           {/* Main Content */}
-          <div className="flex-1 p-4 sm:p-6 lg:p-8 pr-6 sm:pr-8 lg:pr-10 xl:pr-16 max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-3 mr-6 sm:mr-8 lg:mr-10 xl:mr-16">
+          <div className="flex-1 w-full min-w-0 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 gap-3">
               {/* File Upload Section - Full Width */}
-              <div className="bg-white rounded-lg shadow p-2">
-                <div className="bg-green-50 border-2 border-dashed border-green-300 rounded-lg p-8 text-center min-h-[300px] flex flex-col justify-center">
+              <div className="bg-white rounded-lg shadow p-2 sm:p-3">
+                <div className="bg-green-50 border-2 border-dashed border-green-300 rounded-lg p-4 sm:p-8 text-center min-h-[220px] sm:min-h-[300px] flex flex-col justify-center">
                   <div
                     className={`flex flex-col items-center justify-center h-full ${dragActive ? 'bg-green-100' : ''}`}
                     onDragEnter={handleDrag}
@@ -420,7 +420,7 @@ const NewInquiry = () => {
                     onDrop={handleDrop}
                   >
                     <div className="text-6xl mb-1 text-green-400"></div>
-                    <p className="text-xl font-medium text-gray-700 mb-1">
+                    <p className="text-base sm:text-xl font-medium text-gray-700 mb-1">
                       Drag files to upload or
                     </p>
                     <p className="text-sm font-semibold text-gray-700 mb-2">
@@ -429,7 +429,7 @@ const NewInquiry = () => {
                     <p className="text-sm font-semibold text-gray-700 mb-3">
                       Maximum files: <span className="text-green-600">100</span> files per inquiry (optional)
                     </p>
-                    <label className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-green-700 transition-colors duration-200 shadow-lg cursor-pointer">
+                    <label className="bg-green-600 text-white px-6 sm:px-8 py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-green-700 transition-colors duration-200 shadow-lg cursor-pointer">
                     Upload Drawing
                       <input
                         type="file"
@@ -453,8 +453,8 @@ const NewInquiry = () => {
               </div>
             </div>
 
-            {/* PDF Files Table - Full Width - Always reserve space */}
-            <div className="mt-4 mr-6 sm:mr-8 lg:mr-10 xl:mr-16">
+            {/* PDF Files Table - Full Width */}
+            <div className="mt-4">
               {pdfFiles.length > 0 ? (
                 <PDFFileTable 
                   files={pdfFiles}
@@ -467,12 +467,12 @@ const NewInquiry = () => {
             </div>
 
             {/* User Information Display - After PDF Files Table */}
-            <div className="mt-4 mr-6 sm:mr-8 lg:mr-10 xl:mr-16">
+            <div className="mt-4">
               <UserInfoDisplay />
             </div>
 
             {/* Material and Thickness Input */}
-            <div className="mt-8 bg-white rounded-lg shadow p-3 mr-6 sm:mr-8 lg:mr-10 xl:mr-16">
+            <div className="mt-6 sm:mt-8 bg-white rounded-lg shadow p-3 sm:p-4">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -489,9 +489,9 @@ const NewInquiry = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-col items-stretch sm:items-end gap-2">
                   {loading && uploadProgress > 0 && (
-                    <div className="w-64 bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full sm:w-64 bg-gray-200 rounded-full h-2.5">
                       <div 
                         className="bg-green-600 h-2.5 rounded-full transition-all duration-300" 
                         style={{ width: `${uploadProgress}%` }}
@@ -501,7 +501,7 @@ const NewInquiry = () => {
                   <button
                     type="submit"
                     disabled={loading || pdfFiles.length === 0 || pdfFiles.length > 100}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     {loading ? (uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Submitting...') : 'Submit Inquiry'}
                   </button>
@@ -515,7 +515,7 @@ const NewInquiry = () => {
             </div>
 
             {/* Information Panels - Moved to bottom after Submit Button */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mr-6 sm:mr-8 lg:mr-10 xl:mr-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               {/* Available Manufacturing Processes */}
               <div className="bg-white rounded-lg shadow p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">

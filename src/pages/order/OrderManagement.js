@@ -549,11 +549,11 @@ const OrderManagement = () => {
         </div>
 
         {/* Filter Buttons */}
-        <div className="mt-6" style={{ minWidth: 0, width: '100%' }}>
-          <div className="flex flex-wrap gap-3" style={{ minWidth: 0 }}>
+        <div className="mt-6 bg-white rounded-lg border border-gray-200 shadow-sm p-4 min-w-0 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 min-w-0">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'all'
                   ? getFilterButtonColor('all').active
                   : getFilterButtonColor('all').inactive
@@ -569,7 +569,7 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('pending')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'pending'
                   ? getFilterButtonColor('pending').active
                   : getFilterButtonColor('pending').inactive
@@ -585,7 +585,7 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('confirmed')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'confirmed'
                   ? getFilterButtonColor('confirmed').active
                   : getFilterButtonColor('confirmed').inactive
@@ -601,7 +601,7 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('in_production')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'in_production'
                   ? getFilterButtonColor('in_production').active
                   : getFilterButtonColor('in_production').inactive
@@ -617,14 +617,14 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('ready_for_dispatch')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'ready_for_dispatch'
                   ? getFilterButtonColor('ready_for_dispatch').active
                   : getFilterButtonColor('ready_for_dispatch').inactive
               }`}
               aria-label="Show orders ready for dispatch"
             >
-              <span>Ready for Dispatch</span>
+              <span className="text-left leading-tight">Ready for Dispatch</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                 filter === 'ready_for_dispatch' ? 'bg-white/30 text-white' : 'bg-orange-100 text-orange-600'
               }`}>
@@ -633,7 +633,7 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('dispatched')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'dispatched'
                   ? getFilterButtonColor('dispatched').active
                   : getFilterButtonColor('dispatched').inactive
@@ -649,7 +649,7 @@ const OrderManagement = () => {
             </button>
             <button
               onClick={() => setFilter('delivered')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2 ${
+              className={`w-full min-h-[44px] px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 flex items-center justify-between gap-2 ${
                 filter === 'delivered'
                   ? getFilterButtonColor('delivered').active
                   : getFilterButtonColor('delivered').inactive

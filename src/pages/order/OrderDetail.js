@@ -462,8 +462,8 @@ const OrderDetail = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div className="px-4 py-6 sm:px-0">
+    <div className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8 min-w-0 overflow-x-hidden">
+      <div className="py-4 sm:py-6 min-w-0">
         {/* <div className="mb-4 p-4 bg-green-100 border border-green-300 rounded-lg">
           <h3 className="text-lg font-medium text-green-800">OrderDetail Component Successfully Loaded!</h3>
           <p className="text-sm text-green-700">Order ID: {id}</p>
@@ -478,19 +478,21 @@ const OrderDetail = () => {
           </Link>
         </div>
 
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Order #{order.orderNumber}</h1>
-                <p className="text-sm text-gray-500">
+        <div className="bg-white shadow rounded-lg min-w-0 overflow-hidden">
+          <div className="px-4 py-5 sm:p-6 min-w-0">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-all leading-tight">
+                  Order #{order.orderNumber}
+                </h1>
+                <p className="text-sm text-gray-500 mt-2">
                   Customer: {order.customer?.firstName} {order.customer?.lastName}
                 </p>
                 <p className="text-sm text-gray-500">
                   Total Amount: ₹{order.totalAmount?.toFixed(2) || '0.00'}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="shrink-0 sm:text-right">
                 <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusColor(order.status)}`}>
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </span>
@@ -502,10 +504,60 @@ const OrderDetail = () => {
 
           
 
-            <div className="grid ">
-              <div>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 min-w-0">
+              <div className="min-w-0">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Order Details</h3>
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+
+                {/* Mobile: part cards */}
+                <div className="md:hidden space-y-3 min-w-0">
+                  {order.parts && order.parts.length > 0 ? (
+                    <>
+                      {order.parts.map((part, index) => (
+                        <div
+                          key={index}
+                          className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm min-w-0"
+                        >
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Part Name</p>
+                          <p className="text-sm font-medium text-gray-900 break-all mb-3">
+                            {part.partName || part.partRef}
+                          </p>
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                              <p className="text-xs text-gray-500">Material</p>
+                              <p className="text-gray-900 break-words">{part.material || '—'}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500">Quantity</p>
+                              <p className="text-gray-900">{part.quantity ?? '—'}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500">Unit Price</p>
+                              <p className="text-gray-900">₹{part.unitPrice?.toFixed(2) || '0.00'}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500">Total</p>
+                              <p className="text-gray-900 font-medium">₹{part.totalPrice?.toFixed(2) || '0.00'}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex justify-between items-center px-1 pt-2 border-t border-gray-200">
+                        <span className="text-sm font-medium text-gray-900">Order Total</span>
+                        <span className="text-sm font-bold text-gray-900">
+                          ₹{order.totalAmount?.toFixed(2) || '0.00'}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-8 text-sm text-gray-500 border border-gray-200 rounded-lg">
+                      <p>Loading parts information...</p>
+                      <p className="text-xs text-gray-400 mt-1">If parts don&apos;t load, please refresh the page.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Desktop: table */}
+                <div className="hidden md:block min-w-0 max-w-full overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
                   <div className="max-h-64 overflow-y-auto overflow-x-auto" style={{
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#d1d5db #f3f4f6'
@@ -534,7 +586,7 @@ const OrderDetail = () => {
                       {order.parts && order.parts.length > 0 ? (
                         order.parts.map((part, index) => (
                           <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-4 lg:px-6 py-4 text-sm text-gray-900 max-w-[220px] break-all">
                               {part.partName || part.partRef}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -580,9 +632,9 @@ const OrderDetail = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-50 p-4 rounded-lg min-w-0 break-words">
                   {(() => {
                     console.log('=== SHIPPING ADDRESS DEBUG ===');
                     console.log('order.deliveryAddress:', order.deliveryAddress);
@@ -613,11 +665,11 @@ const OrderDetail = () => {
                     
                     return address && (address.street || address.city) ? (
                       <>
-                        <p className="text-sm text-gray-900 font-medium">
+                        <p className="text-sm text-gray-900 font-medium break-words">
                           {order.customer?.firstName} {order.customer?.lastName}
                         </p>
                         {address.street && address.street !== 'N/A' && (
-                          <p className="text-sm text-gray-700">{address.street}</p>
+                          <p className="text-sm text-gray-700 break-words">{address.street}</p>
                         )}
                         {(address.city || address.state || address.zipCode) && (
                           <p className="text-sm text-gray-700">
@@ -661,21 +713,21 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-between items-center">
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
               <div className="text-sm text-gray-500">
                 <p>Order Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
                 <p>Expected Delivery: {order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString() : 'TBD'}</p>
               </div>
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Link
                   to={`/order/${order._id || order.id}/tracking`}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto"
                 >
                   Track Order
                 </Link>
                 <button 
                   onClick={handleDownloadInvoice}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 w-full sm:w-auto"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

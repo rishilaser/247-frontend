@@ -368,34 +368,35 @@ const BackOfficeDashboard = () => {
     const isActive = activeTab === tab;
     return (
       <button
+        type="button"
         onClick={onClick}
-        className={`flex items-center space-x-2 px-3 py-2 rounded-md font-medium text-sm transition-all duration-200 ${
+        className={`flex w-full min-h-[44px] items-center justify-start gap-2 px-3 py-2.5 rounded-lg font-medium text-xs sm:text-sm transition-all duration-200 ${
           isActive
             ? 'bg-green-600 text-white shadow-sm'
             : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm'
         }`}
       >
-        <Icon className="h-4 w-4" />
-        <span>{label}</span>
+        <Icon className="h-4 w-4 shrink-0" />
+        <span className="text-left leading-tight">{label}</span>
       </button>
     );
   };
 
   // Reusable stats card component
   const StatsCard = ({ icon, label, value, loading: cardLoading, iconBgColor = 'bg-blue-100', iconTextColor = 'text-blue-600' }) => (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-3 sm:p-4 min-w-0">
       <div className="flex items-center">
         <div className="flex-shrink-0">
           <div className={`w-8 h-8 ${iconBgColor} rounded-lg flex items-center justify-center`}>
             <span className={`${iconTextColor} text-sm`}>{icon}</span>
           </div>
         </div>
-        <div className="ml-3">
-          <p className="text-xs font-medium text-gray-600">{label}</p>
+        <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+          <p className="text-xs font-medium text-gray-600 truncate">{label}</p>
           {cardLoading ? (
             <div className="animate-pulse bg-gray-200 h-5 w-10 rounded mt-1"></div>
           ) : (
-            <p className="text-xl font-bold text-gray-900 mt-0.5">{value}</p>
+            <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5 leading-tight">{value}</p>
           )}
         </div>
       </div>
@@ -469,16 +470,16 @@ const BackOfficeDashboard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatsCard icon="📄" label="Total Inquiries" value={dashboardStats.inquiries} loading={statsLoading} iconBgColor="bg-blue-100" iconTextColor="text-blue-600" />
         <StatsCard icon="🏷️" label="Quotations" value={dashboardStats.quotations} loading={statsLoading} iconBgColor="bg-yellow-100" iconTextColor="text-yellow-600" />
         <StatsCard icon="📦" label="Active Orders" value={dashboardStats.orders} loading={statsLoading} iconBgColor="bg-green-100" iconTextColor="text-green-600" />
         <StatsCard icon="✅" label="Completed" value={dashboardStats.completed} loading={statsLoading} iconBgColor="bg-purple-100" iconTextColor="text-purple-600" />
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <h2 className="text-base font-semibold text-gray-900 mb-3">Admin Dashboard Navigation</h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
           <TabButton
             tab="inquiries"
             icon={DocumentTextIcon}
@@ -498,22 +499,20 @@ const BackOfficeDashboard = () => {
             onClick={() => handleTabChange('orders')}
           />
           {(user?.role === 'admin' || user?.role === 'backoffice') && (
-            <>
-              <TabButton
-                tab="material"
-                icon={WrenchScrewdriverIcon}
-                label="Material & Thickness Data"
-                onClick={() => handleTabChange('material')}
-              />
-              {user?.role === 'admin' && (
-                <TabButton
-                  tab="subadmins"
-                  icon={UsersIcon}
-                  label="Sub-Admins"
-                  onClick={() => handleTabChange('subadmins')}
-                />
-              )}
-            </>
+            <TabButton
+              tab="material"
+              icon={WrenchScrewdriverIcon}
+              label="Material & Thickness"
+              onClick={() => handleTabChange('material')}
+            />
+          )}
+          {user?.role === 'admin' && (
+            <TabButton
+              tab="subadmins"
+              icon={UsersIcon}
+              label="Sub-Admins"
+              onClick={() => handleTabChange('subadmins')}
+            />
           )}
         </div>
       </div>

@@ -8,7 +8,6 @@ import {
   clearZohoReturnPayload,
   hasZohoReturnPayload,
 } from '../utils/zohoReturnParams';
-import { SHOW_MY_QUOTATIONS_PAGE } from '../config/featureFlags';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -390,7 +389,7 @@ const Dashboard = () => {
   const tabs = [
     { id: 'overview', name: 'Overview', icon: '📊' },
     { id: 'inquiries', name: 'Inquiries', icon: '📄' },
-    ...(SHOW_MY_QUOTATIONS_PAGE ? [{ id: 'quotations', name: 'Quotations', icon: '🏷️' }] : []),
+    { id: 'quotations', name: 'Quotations', icon: '🏷️' },
     { id: 'orders', name: 'Orders', icon: '📦' },
     { id: 'analytics', name: 'Analytics', icon: '📈' }
   ];
@@ -446,7 +445,7 @@ const Dashboard = () => {
             <div className="mb-6 bg-white rounded-lg shadow-lg border-2 border-gray-200">
               <div className="px-6 py-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Dashboard Navigation</h3>
-                <nav className="flex flex-wrap gap-7">
+                <nav className="flex flex-wrap gap-2 sm:gap-4">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
@@ -604,14 +603,15 @@ const Dashboard = () => {
                             </div>
                           </div>
                         ))}
-                        {SHOW_MY_QUOTATIONS_PAGE && quotations.length > 0 && (
+                        {quotations.length > 0 && (
                           <div className="text-center pt-1">
-                            <Link
-                              to="/quotations"
+                            <button
+                              type="button"
+                              onClick={() => setActiveTab('quotations')}
                               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                             >
                               View All Quotations
-                            </Link>
+                            </button>
                           </div>
                         )}
                       </div>
@@ -680,8 +680,8 @@ const Dashboard = () => {
                     <div className="space-y-4">
                       {quotations.map((quotation, index) => (
                         <div key={quotation._id || quotation.id || `quotation-${quotation.quotationNumber || index}`} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex-1 min-w-0">
                               <h4 className="text-lg font-medium text-gray-900">
                                 Quotation #{quotation.quotationNumber || quotation._id || quotation.id}
                               </h4>
@@ -807,7 +807,7 @@ const Dashboard = () => {
                       `}</style>
                       {inquiries.map((inquiry) => (
                         <div key={inquiry._id || inquiry.id || `inquiry-${inquiry.inquiryNumber || Math.random()}`} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div className="min-w-0 flex-1">
                               {inquiry.inquiryNumber ? (
                                 <p
