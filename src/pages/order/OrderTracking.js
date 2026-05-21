@@ -609,14 +609,12 @@ const OrderTracking = () => {
 
                 <div className="mt-6">
                   <h4 className="text-lg font-medium text-gray-900 mb-4">Need Help?</h4>
-                  <div className="space-y-3">
-                    <button className="w-full text-left px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-                      Contact Support
-                    </button>
-                    <button className="w-full text-left px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-                      Download Invoice
-                    </button>
-                  </div>
+                  <a
+                    href="tel:919004073379"
+                    className="block w-full text-left px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Contact Support
+                  </a>
                 </div>
               </div>
               </div>

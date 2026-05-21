@@ -3,6 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
+// Indian GSTIN: 2-digit state + PAN (5 letters, 4 digits, 1 letter) + entity + Z + checksum (15 chars)
+const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+const isValidGstin = (gst) => GSTIN_REGEX.test((gst || '').trim().toUpperCase());
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -12,6 +17,7 @@ const SignUp = () => {
     confirmPassword: '',
     phone: '',
     company: '',
+    gst: '',
     department: '',
     country: ''
   });
@@ -22,9 +28,10 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: name === 'gst' ? value.toUpperCase() : value
     });
   };
 
@@ -34,12 +41,17 @@ const SignUp = () => {
     console.log('Form data:', formData);
     
     // Check if all required fields are filled
-    const requiredFields = ['firstName', 'lastName', 'email', 'password', 'phone', 'company', 'department', 'country'];
+    const requiredFields = ['firstName', 'lastName', 'email', 'password', 'phone', 'company', 'gst', 'department', 'country'];
     const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
     
     if (missingFields.length > 0) {
       console.log('Missing required fields:', missingFields);
       toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    if (!isValidGstin(formData.gst)) {
+      toast.error('Please enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)');
       return;
     }
     
@@ -81,6 +93,7 @@ const SignUp = () => {
         password: formData.password,
         phoneNumber: formData.phone,
         companyName: formData.company,
+        gstNumber: formData.gst.trim().toUpperCase(),
         department: formData.department,
         country: formData.country,
         address: {
@@ -244,6 +257,34 @@ const SignUp = () => {
                   value={formData.company}
                   onChange={handleChange}
                 />
+              </div>
+
+              {/* GST Number */}
+              <div>
+                <label htmlFor="gst" className="block text-sm font-medium text-gray-700">
+                  GST Number (GSTIN)
+                </label>
+                <input
+                  id="gst"
+                  name="gst"
+                  type="text"
+                  required
+                  maxLength={15}
+                  pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}"
+                  className={`mt-2 block w-full px-2.5 py-2.5 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base uppercase ${
+                    formData.gst && !isValidGstin(formData.gst)
+                      ? 'border-red-500'
+                      : 'border-gray-300'
+                  }`}
+                  placeholder="e.g. 22AAAAA0000A1Z5"
+                  value={formData.gst}
+                  onChange={handleChange}
+                />
+                <p className={`mt-2 text-xs ${formData.gst && !isValidGstin(formData.gst) ? 'text-red-600' : 'text-gray-500'}`}>
+                  {formData.gst && !isValidGstin(formData.gst)
+                    ? 'Invalid GSTIN. Use 15 characters: state code + PAN + entity + Z + checksum.'
+                    : '15-character GSTIN (e.g. 22AAAAA0000A1Z5). Letters are auto-capitalized.'}
+                </p>
               </div>
 
               {/* Department and Country */}
