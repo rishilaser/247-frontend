@@ -14,6 +14,35 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
 import axios from 'axios';
 
+const isEmptyAddress = (addr) => {
+  if (!addr) return true;
+  const street = (addr.street || '').trim();
+  return !street || street === 'N/A' || street === 'Not provided';
+};
+
+const resolveDeliveryAddress = (inquiryDelivery, customer) => {
+  if (!isEmptyAddress(inquiryDelivery)) {
+    return inquiryDelivery;
+  }
+  const userAddr = customer?.address;
+  if (userAddr && typeof userAddr === 'object' && !isEmptyAddress(userAddr)) {
+    return {
+      street: userAddr.street || '',
+      city: userAddr.city || '',
+      state: userAddr.state || '',
+      zipCode: userAddr.zipCode || '',
+      country: userAddr.country || customer?.country || ''
+    };
+  }
+  return {
+    street: 'N/A',
+    city: 'N/A',
+    state: 'N/A',
+    zipCode: 'N/A',
+    country: customer?.country || 'N/A'
+  };
+};
+
 const InquiryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -282,11 +311,7 @@ const InquiryDetail = () => {
             email: inquiryData.customer.email || 'N/A',
             phone: inquiryData.customer.phoneNumber || inquiryData.customer.phone || 'N/A'
           },
-          deliveryAddress: inquiryData.deliveryAddress || {
-            street: 'N/A',
-            city: 'N/A',
-            country: 'N/A'
-          },
+          deliveryAddress: resolveDeliveryAddress(inquiryData.deliveryAddress, inquiryData.customer),
           specifications: inquiryData.parts || [],
           files: inquiryData.files || [],
           specialInstructions: inquiryData.specialInstructions || 'No special instructions',
@@ -1627,15 +1652,23 @@ const InquiryDetail = () => {
               <div className="bg-white shadow rounded-lg p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Delivery Address</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-gray-400 mr-3 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span className="text-sm text-gray-900">{inquiry.deliveryAddress.street}</span>
+                    <div className="text-sm text-gray-900 space-y-1">
+                      <p>{inquiry.deliveryAddress.street}</p>
+                      <p className="text-gray-700">
+                        {[inquiry.deliveryAddress.city, inquiry.deliveryAddress.state, inquiry.deliveryAddress.zipCode]
+                          .filter((part) => part && part !== 'N/A')
+                          .join(', ')}
+                      </p>
+                      {inquiry.deliveryAddress.country && inquiry.deliveryAddress.country !== 'N/A' && (
+                        <p className="text-gray-700">{inquiry.deliveryAddress.country}</p>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-700 ml-8">{inquiry.deliveryAddress.city}</p>
-                  <p className="text-sm text-gray-700 ml-8">{inquiry.deliveryAddress.country}</p>
                 </div>
               </div>
 

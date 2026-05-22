@@ -19,7 +19,11 @@ const SignUp = () => {
     company: '',
     gst: '',
     department: '',
-    country: ''
+    country: '',
+    deliveryStreet: '',
+    deliveryCity: '',
+    deliveryState: '',
+    deliveryZipCode: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,7 +45,10 @@ const SignUp = () => {
     console.log('Form data:', formData);
     
     // Check if all required fields are filled
-    const requiredFields = ['firstName', 'lastName', 'email', 'password', 'phone', 'company', 'gst', 'department', 'country'];
+    const requiredFields = [
+      'firstName', 'lastName', 'email', 'password', 'phone', 'company', 'gst',
+      'department', 'country', 'deliveryStreet', 'deliveryCity', 'deliveryState', 'deliveryZipCode'
+    ];
     const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
     
     if (missingFields.length > 0) {
@@ -97,10 +104,10 @@ const SignUp = () => {
         department: formData.department,
         country: formData.country,
         address: {
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
+          street: formData.deliveryStreet.trim(),
+          city: formData.deliveryCity.trim(),
+          state: formData.deliveryState.trim(),
+          zipCode: formData.deliveryZipCode.trim(),
           country: formData.country
         }
       };
@@ -285,6 +292,75 @@ const SignUp = () => {
                     ? 'Invalid GSTIN. Use 15 characters: state code + PAN + entity + Z + checksum.'
                     : '15-character GSTIN (e.g. 22AAAAA0000A1Z5). Letters are auto-capitalized.'}
                 </p>
+              </div>
+
+              {/* Delivery Address */}
+              <div className="border-t border-gray-200 pt-4 sm:pt-5">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Delivery Address</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="deliveryStreet" className="block text-sm font-medium text-gray-700">
+                      Street Address
+                    </label>
+                    <input
+                      id="deliveryStreet"
+                      name="deliveryStreet"
+                      type="text"
+                      required
+                      className="mt-2 block w-full px-2.5 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base"
+                      placeholder="Building, street, area"
+                      value={formData.deliveryStreet}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label htmlFor="deliveryCity" className="block text-sm font-medium text-gray-700">
+                        City
+                      </label>
+                      <input
+                        id="deliveryCity"
+                        name="deliveryCity"
+                        type="text"
+                        required
+                        className="mt-2 block w-full px-2.5 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base"
+                        placeholder="City"
+                        value={formData.deliveryCity}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="deliveryState" className="block text-sm font-medium text-gray-700">
+                        State
+                      </label>
+                      <input
+                        id="deliveryState"
+                        name="deliveryState"
+                        type="text"
+                        required
+                        className="mt-2 block w-full px-2.5 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base"
+                        placeholder="State"
+                        value={formData.deliveryState}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="deliveryZipCode" className="block text-sm font-medium text-gray-700">
+                      PIN / ZIP Code
+                    </label>
+                    <input
+                      id="deliveryZipCode"
+                      name="deliveryZipCode"
+                      type="text"
+                      required
+                      className="mt-2 block w-full px-2.5 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base"
+                      placeholder="PIN / ZIP Code"
+                      value={formData.deliveryZipCode}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Department and Country */}
