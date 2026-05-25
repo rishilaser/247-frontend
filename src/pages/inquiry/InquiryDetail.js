@@ -4,6 +4,8 @@ import { useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import { inquiryAPI, quotationAPI, orderAPI, paymentAPI } from '../../services/api';
 import { getZohoReturnPayload, hasZohoReturnPayload } from '../../utils/zohoReturnParams';
+import { isQuotationVisibleToCustomer, canSendQuotationToCustomer } from '../../utils/quotationVisibility';
+import ConfirmModal from '../../components/ConfirmModal';
 import {
   parseContentDisposition,
   normalizeZipDownloadFilename,
@@ -59,6 +61,8 @@ const InquiryDetail = () => {
   const [materialData, setMaterialData] = useState([]);
   const [acceptingQuote, setAcceptingQuote] = useState(false);
   const [showQuotationPdf, setShowQuotationPdf] = useState(false);
+  const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
+  const [sendingQuotation, setSendingQuotation] = useState(false);
 
   // Get base URL for material data
   const getBaseURL = () => {
@@ -168,12 +172,15 @@ const InquiryDetail = () => {
         color: 'blue'
       });
 
-      timeline.push({
-        event: 'Quotation Ready',
-        description: 'Price and delivery details available',
-        status: 'completed',
-        color: 'green'
-      });
+      const quotationStatus = String(inquiryData.quotation?.status || '').toLowerCase();
+      if (isQuotationVisibleToCustomer(quotationStatus)) {
+        timeline.push({
+          event: 'Quotation Ready',
+          description: 'Price and delivery details available',
+          status: 'completed',
+          color: 'green'
+        });
+      }
     }
 
     if (
@@ -473,7 +480,7 @@ const InquiryDetail = () => {
       console.log('Quotation creation response:', response.data);
       
       if (response.data.success) {
-        toast.success('Quotation saved. Send it from the Quotations tab to email the customer.');
+        toast.success('Quotation saved. Click Send to publish it to the customer.');
         // Refresh inquiry data to show updated status
         await fetchInquiry();
       } else {
@@ -559,7 +566,7 @@ const InquiryDetail = () => {
         // Save Cloudinary URL to context to prevent loss
         saveFromUploadResponse(response);
         
-        toast.success('Quotation uploaded. Send it from the Quotations tab to email the customer.');
+        toast.success('Quotation uploaded. Click Send to publish it to the customer.');
         // Refresh inquiry data
         await fetchInquiry();
       } else {
@@ -996,22 +1003,59 @@ const InquiryDetail = () => {
     isPaymentPending &&
     normalizedQuotationStatus !== 'sent';
 
-  const hasQuotationSubmitted = Boolean(
-    inquiry?.quotationId ||
-    inquiry?.status === 'quoted' ||
-    (normalizedQuotationStatus && normalizedQuotationStatus !== '')
-  );
-
   const isAdminUser =
     user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin';
+
+  const customerSeesQuotation =
+    isAdminUser || isQuotationVisibleToCustomer(normalizedQuotationStatus);
+
+  const hasQuotationSubmitted = isAdminUser
+    ? Boolean(
+        inquiry?.quotationId ||
+        inquiry?.status === 'quoted' ||
+        (normalizedQuotationStatus && normalizedQuotationStatus !== '')
+      )
+    : Boolean(inquiry?.quotationId && customerSeesQuotation);
 
   const canShowQuoteButton =
     isAdminUser &&
     !hasQuotationSubmitted &&
     ['pending', 'reviewed'].includes(inquiry?.status);
 
+  const canShowSendQuotationButton =
+    isAdminUser &&
+    !isEditing &&
+    Boolean(inquiry?.quotationId) &&
+    canSendQuotationToCustomer(normalizedQuotationStatus);
+
+  const handleSendQuotationToCustomer = async () => {
+    const quotationId = inquiry?.quotationId;
+    if (!quotationId || sendingQuotation) return;
+
+    try {
+      setSendingQuotation(true);
+      const response = await quotationAPI.sendQuotation(quotationId);
+      if (response.data.success) {
+        toast.success('Quotation sent! The customer can now view and accept it.');
+        setSendConfirmOpen(false);
+        await fetchInquiry({ silent: true });
+      } else {
+        toast.error(response.data.message || 'Failed to send quotation');
+      }
+    } catch (error) {
+      console.error('Error sending quotation:', error);
+      toast.error(error.response?.data?.message || 'Failed to send quotation');
+    } finally {
+      setSendingQuotation(false);
+    }
+  };
+
   const canShowQuotedBadge =
-    hasQuotationSubmitted && !isGatewayPaid && !isEditing;
+    hasQuotationSubmitted &&
+    !canShowSendQuotationButton &&
+    (isAdminUser ? true : customerSeesQuotation) &&
+    !isGatewayPaid &&
+    !isEditing;
 
   let createdLabel = '';
   let createdTitle = '';
@@ -1093,9 +1137,22 @@ const InquiryDetail = () => {
                     className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 lg:w-auto"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Quote
+                  </button>
+                )}
+
+                {/* Send — publish draft quotation so customer can view it */}
+                {canShowSendQuotationButton && (
+                  <button
+                    type="button"
+                    onClick={() => setSendConfirmOpen(true)}
+                    disabled={sendingQuotation}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                    title="Publish quotation to customer"
+                  >
+                    {sendingQuotation ? 'Sending...' : 'Send'}
                   </button>
                 )}
                 
@@ -1705,6 +1762,19 @@ const InquiryDetail = () => {
         quotationId={inquiry?.quotationId}
         isOpen={showQuotationPdf}
         onClose={() => setShowQuotationPdf(false)}
+      />
+
+      <ConfirmModal
+        isOpen={sendConfirmOpen}
+        onClose={() => {
+          if (!sendingQuotation) setSendConfirmOpen(false);
+        }}
+        onConfirm={handleSendQuotationToCustomer}
+        title="Send quotation to customer?"
+        message="The customer will be able to view, download, and accept this quotation in their account. They will also receive an email notification."
+        confirmLabel="Send to customer"
+        cancelLabel="Cancel"
+        loading={sendingQuotation}
       />
     </div>
   );

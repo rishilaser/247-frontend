@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { customerCanSeeQuotation } from '../../utils/quotationVisibility';
+
 const InquiryList = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -363,7 +365,7 @@ const InquiryList = () => {
                       <span className="mt-0.5 block text-gray-700 lg:mt-0 lg:inline">{inquiry.createdAt}</span>
                     </div>
 
-                    {inquiry.quotation ? (
+                    {customerCanSeeQuotation(inquiry.quotation, user?.role !== 'customer') ? (
                       <div className="space-y-3">
                         <div className="flex flex-wrap items-center gap-2 lg:justify-end">
                           {(() => {

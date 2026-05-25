@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { quotationAPI, inquiryAPI, orderAPI, paymentAPI } from '../services/api';
@@ -12,6 +12,7 @@ import {
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('overview');
@@ -285,19 +286,30 @@ const Dashboard = () => {
     }
   }, [activeTab, user, fetchQuotations, fetchInquiries, fetchOrders]);
 
-  // Initial data fetch on mount
+  // Refetch when customer returns to dashboard (e.g. after Accept Quote without paying)
   useEffect(() => {
-    if (user && 
-        user.role !== 'admin' && 
-        user.role !== 'backoffice' && 
-        user.role !== 'subadmin' &&
-        activeTab === 'overview') {
-      // Fetch all data on initial load
+    if (
+      user?.role === 'customer' &&
+      (location.pathname === '/dashboard' || location.pathname === '/')
+    ) {
       fetchQuotations();
       fetchInquiries();
       fetchOrders();
     }
-  }, [user]); // Only depend on user, not on fetch functions
+  }, [location.pathname, user?.role, fetchQuotations, fetchInquiries, fetchOrders]);
+
+  useEffect(() => {
+    if (user?.role !== 'customer') return undefined;
+
+    const refresh = () => {
+      fetchQuotations();
+      fetchInquiries();
+      fetchOrders();
+    };
+
+    window.addEventListener('focus', refresh);
+    return () => window.removeEventListener('focus', refresh);
+  }, [user?.role, fetchQuotations, fetchInquiries, fetchOrders]);
 
   const [recentActivity] = useState([
     {

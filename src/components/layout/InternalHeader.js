@@ -13,7 +13,8 @@ import {
   BuildingOfficeIcon,
   TagIcon,
   PhoneIcon,
-  EnvelopeIcon
+  EnvelopeIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 import { useSidebarLayout } from '../../contexts/SidebarLayoutContext';
 import { getWordpressUrl } from '../../utils/wordpressUrl';
@@ -39,12 +40,14 @@ const InternalHeader = () => {
       return [
         { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Cog6ToothIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
+        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'backoffice') {
       return [
         { name: 'Back Office Dashboard', href: '/admin/dashboard', icon: BuildingOfficeIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
+        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'subadmin') {

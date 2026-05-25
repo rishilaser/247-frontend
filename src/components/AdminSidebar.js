@@ -33,12 +33,14 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
       return [
         { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Squares2X2Icon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
+        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'backoffice') {
       return [
         { name: 'Back Office Dashboard', href: '/admin/dashboard', icon: BuildingOfficeIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
+        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'subadmin') {

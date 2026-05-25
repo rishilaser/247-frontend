@@ -403,11 +403,6 @@ export const paymentAPI = {
   // Get payment history
   getPaymentHistory: (params = {}) => api.get('/payments/history', { params }),
 
-  // Razorpay Payment Methods
-  createOrder: (data) => api.post('/payment/create-order', data),
-  verifyPayment: (data) => api.post('/payment/verify', data),
-  refundPayment: (data) => api.post('/payment/refund', data),
-
   // Zoho Checkout
   initZohoCheckoutPayment: (quotationId) => api.post('/zoho/init', { quotationId }),
 
@@ -510,6 +505,14 @@ export const adminAPI = {
 
   // Update settings
   updateSettings: (settings) => api.put('/admin/settings', settings),
+};
+
+// User management API
+export const userAPI = {
+  getUsers: (params = {}) => api.get('/users', { params }),
+  getUser: (id) => api.get(`/users/${id}`),
+  exportCustomersExcel: (params = {}) =>
+    api.get('/users/export/excel', { params, responseType: 'blob' }),
 };
 
 // Contact API

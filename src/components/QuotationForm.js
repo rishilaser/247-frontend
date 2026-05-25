@@ -432,7 +432,7 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
           // Save Cloudinary URL to context to prevent loss
           saveFromUploadResponse(response);
           
-          toast.success('Quotation saved. Send it from the Quotations tab to email the customer.');
+          toast.success('Quotation saved. Click Send on the inquiry to publish it to the customer.');
           onSuccess && onSuccess(response.data.quotation);
           onClose();
         } else {
@@ -461,7 +461,7 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
         const response = await quotationAPI.createQuotation(quotationData);
         
         if (response.data.success) {
-          toast.success('Quotation saved. Send it from the Quotations tab to email the customer.');
+          toast.success('Quotation saved. Click Send on the inquiry to publish it to the customer.');
           onSuccess && onSuccess(response.data.quotation);
           onClose();
         } else {

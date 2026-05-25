@@ -5,112 +5,102 @@ import { orderAPI, inquiryAPI, adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { inquiryQuotationPdfPath } from '../utils/quotationRoutes';
 
+const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+const isValidGstin = (gst) => GSTIN_REGEX.test((gst || '').trim().toUpperCase());
+
+const DEPARTMENT_OPTIONS = [
+  'Engineering',
+  'Procurement',
+  'Design',
+  'Manufacturing',
+  'Quality Control',
+  'Other'
+];
+
+const COUNTRY_OPTIONS = ['India', 'United States', 'United Kingdom', 'Germany', 'Other'];
+
 const Profile = () => {
   const { user, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     company: '',
-    address: ''
+    gstNumber: '',
+    department: '',
+    country: '',
+    deliveryStreet: '',
+    deliveryCity: '',
+    deliveryState: '',
+    deliveryZipCode: ''
   });
   const [loading, setLoading] = useState(false);
+  const isCustomer = user?.role === 'customer';
 
   useEffect(() => {
-    console.log('=== PROFILE DATA DEBUG ===');
-    console.log('User object:', user);
+    if (!user) return;
 
-    if (user) {
-      console.log('User firstName:', user.firstName);
-      console.log('User lastName:', user.lastName);
-      console.log('User email:', user.email);
-      console.log('User phoneNumber:', user.phoneNumber);
-      console.log('User phone:', user.phone);
-      console.log('User companyName:', user.companyName);
-      console.log('User address:', user.address);
-
-      // Format address properly
-      let formattedAddress = '';
-      if (user.address) {
-        if (typeof user.address === 'string') {
-          formattedAddress = user.address;
-        } else if (typeof user.address === 'object') {
-          // Format address object into readable text
-          const addr = user.address;
-          const addressParts = [];
-          if (addr.street) addressParts.push(addr.street);
-          if (addr.city) addressParts.push(addr.city);
-          if (addr.state) addressParts.push(addr.state);
-          if (addr.zipCode) addressParts.push(addr.zipCode);
-          if (addr.country) addressParts.push(addr.country);
-          formattedAddress = addressParts.join(', ');
-        }
-      }
-
-      const newFormData = {
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || '',
-        email: user.email || '',
-        phone: user.phoneNumber || user.phone || '',
-        company: user.companyName || '',
-        address: formattedAddress
-      };
-
-      console.log('Setting formData to:', newFormData);
-      setFormData(newFormData);
-    } else {
-      console.log('⚠️ User object is null or undefined!');
-    }
+    const addr = user.address || {};
+    setFormData({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      email: user.email || '',
+      phone: user.phoneNumber || user.phone || '',
+      company: user.companyName || '',
+      gstNumber: user.gstNumber || '',
+      department: user.department || '',
+      country: user.country || addr.country || '',
+      deliveryStreet: addr.street || '',
+      deliveryCity: addr.city || '',
+      deliveryState: addr.state || '',
+      deliveryZipCode: addr.zipCode || ''
+    });
   }, [user]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: name === 'gstNumber' ? value.toUpperCase() : value
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('=== PROFILE UPDATE SUBMIT ===');
-    console.log('Current formData:', formData);
-    console.log('Current user:', user);
+
+    if (formData.gstNumber && !isValidGstin(formData.gstNumber)) {
+      toast.error('Please enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)');
+      return;
+    }
+    if (isCustomer && !formData.gstNumber.trim()) {
+      toast.error('GSTIN is required for customer accounts');
+      return;
+    }
 
     setLoading(true);
 
     try {
-      // Split name into firstName and lastName
-      const nameParts = formData.name.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      // Parse address string back to object if needed
-      let addressObj = user.address || {};
-      if (typeof formData.address === 'string' && formData.address.trim()) {
-        // If address is a simple string, try to preserve the object structure
-        // For now, we'll update the street field with the full address
-        addressObj = {
-          street: formData.address,
-          city: addressObj.city || '',
-          state: addressObj.state || '',
-          zipCode: addressObj.zipCode || '',
-          country: addressObj.country || ''
-        };
-      }
-
-      // Format data to match backend expectations
       const updateData = {
-        firstName: firstName,
-        lastName: lastName,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
         email: formData.email,
-        phoneNumber: formData.phone, // Backend expects phoneNumber
-        companyName: formData.company, // Backend expects companyName
-        address: addressObj
+        phoneNumber: formData.phone,
+        companyName: formData.company,
+        gstNumber: formData.gstNumber.trim().toUpperCase(),
+        department: formData.department,
+        country: formData.country,
+        address: {
+          street: formData.deliveryStreet.trim(),
+          city: formData.deliveryCity.trim(),
+          state: formData.deliveryState.trim(),
+          zipCode: formData.deliveryZipCode.trim(),
+          country: formData.country
+        }
       };
 
-      console.log('Calling updateProfile with formatted data:', updateData);
       const result = await updateProfile(updateData);
-      console.log('Update result:', result);
 
       if (result.success) {
         toast.success('Profile updated successfully!');
@@ -635,14 +625,30 @@ const Profile = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                        Full Name
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                        First Name
                       </label>
                       <input
                         type="text"
-                        name="name"
-                        id="name"
-                        value={formData.name}
+                        name="firstName"
+                        id="firstName"
+                        required
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        required
+                        value={formData.lastName}
                         onChange={handleChange}
                         className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
@@ -656,6 +662,7 @@ const Profile = () => {
                         type="email"
                         name="email"
                         id="email"
+                        required
                         value={formData.email}
                         onChange={handleChange}
                         className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -670,6 +677,7 @@ const Profile = () => {
                         type="tel"
                         name="phone"
                         id="phone"
+                        required
                         value={formData.phone}
                         onChange={handleChange}
                         className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -684,25 +692,138 @@ const Profile = () => {
                         type="text"
                         name="company"
                         id="company"
+                        required
                         value={formData.company}
                         onChange={handleChange}
                         className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
                     </div>
+
+                    <div>
+                      <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700">
+                        GST Number (GSTIN)
+                      </label>
+                      <input
+                        type="text"
+                        name="gstNumber"
+                        id="gstNumber"
+                        maxLength={15}
+                        value={formData.gstNumber}
+                        onChange={handleChange}
+                        placeholder="e.g. 22AAAAA0000A1Z5"
+                        className={`mt-2 block w-full px-4 py-3 border rounded-md shadow-sm uppercase focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                          formData.gstNumber && !isValidGstin(formData.gstNumber)
+                            ? 'border-red-500'
+                            : 'border-gray-300'
+                        }`}
+                      />
+                      {formData.gstNumber && !isValidGstin(formData.gstNumber) && (
+                        <p className="mt-1 text-xs text-red-600">
+                          Invalid GSTIN. Use 15 characters: state code + PAN + entity + Z + checksum.
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+                        Department
+                      </label>
+                      <select
+                        name="department"
+                        id="department"
+                        required={isCustomer}
+                        value={formData.department}
+                        onChange={handleChange}
+                        className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select Department</option>
+                        {DEPARTMENT_OPTIONS.map((dept) => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                        Country/Region
+                      </label>
+                      <select
+                        name="country"
+                        id="country"
+                        required={isCustomer}
+                        value={formData.country}
+                        onChange={handleChange}
+                        className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select Country</option>
+                        {COUNTRY_OPTIONS.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                      Address
-                    </label>
-                    <textarea
-                      name="address"
-                      id="address"
-                      rows={3}
-                      value={formData.address}
-                      onChange={handleChange}
-                      className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
+                  <div className="border-t border-gray-200 pt-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Delivery Address</h3>
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <div className="sm:col-span-2">
+                        <label htmlFor="deliveryStreet" className="block text-sm font-medium text-gray-700">
+                          Street Address
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryStreet"
+                          id="deliveryStreet"
+                          required={isCustomer}
+                          value={formData.deliveryStreet}
+                          onChange={handleChange}
+                          placeholder="Building, street, area"
+                          className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="deliveryCity" className="block text-sm font-medium text-gray-700">
+                          City
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryCity"
+                          id="deliveryCity"
+                          required={isCustomer}
+                          value={formData.deliveryCity}
+                          onChange={handleChange}
+                          className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="deliveryState" className="block text-sm font-medium text-gray-700">
+                          State
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryState"
+                          id="deliveryState"
+                          required={isCustomer}
+                          value={formData.deliveryState}
+                          onChange={handleChange}
+                          className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="deliveryZipCode" className="block text-sm font-medium text-gray-700">
+                          PIN / ZIP Code
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryZipCode"
+                          id="deliveryZipCode"
+                          required={isCustomer}
+                          value={formData.deliveryZipCode}
+                          onChange={handleChange}
+                          className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex justify-end">

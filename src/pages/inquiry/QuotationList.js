@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { quotationAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import { quotationViewPath } from '../../utils/quotationRoutes';
+import { isQuotationVisibleToCustomer } from '../../utils/quotationVisibility';
 
 const getQuotationId = (quotation) => {
   const id = quotation?._id || quotation?.id;
@@ -85,6 +86,7 @@ const QuotationList = () => {
 
   const filteredQuotations = useMemo(() => {
     return quotations.filter((q) => {
+      if (!isQuotationVisibleToCustomer(q.status)) return false;
       const num = (q.quotationNumber || '').toString().toLowerCase();
       const inquiry =
         (q.inquiry?.inquiryNumber || q.inquiryId || '').toString().toLowerCase();

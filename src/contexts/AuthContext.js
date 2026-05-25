@@ -182,10 +182,15 @@ export const AuthProvider = ({ children }) => {
       // Backend returns { success: true, message: ..., user: {...} }
       // So we need to extract the user object
       const updatedUser = response.data.user || response.data;
-      console.log('Setting updated user:', updatedUser);
+      const normalizedUser = {
+        ...updatedUser,
+        role: roleUtils.getUserRole(updatedUser),
+        id: roleUtils.getUserId(updatedUser)
+      };
+      console.log('Setting updated user:', normalizedUser);
 
-      setUser(updatedUser);
-      return { success: true };
+      setUser(normalizedUser);
+      return { success: true, user: normalizedUser };
     } catch (error) {
       console.error('Profile update error:', error);
       return {

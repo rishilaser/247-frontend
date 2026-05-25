@@ -6,8 +6,6 @@ import {
   FaPlus, 
   FaEdit, 
   FaTrash, 
-  FaToggleOn, 
-  FaToggleOff,
   FaUser,
   FaUserShield,
   FaCheck,
@@ -85,27 +83,6 @@ const SubAdminManagement = () => {
       },
       onError: (error) => {
         toast.error(error.response?.data?.message || 'Failed to update permissions');
-      }
-    }
-  );
-
-  // Toggle user status mutation
-  const toggleStatusMutation = useMutation(
-    async ({ userId, isActive }) => {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`/api/admin/subadmin/${userId}/status`, 
-        { isActive }, 
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return response.data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-users');
-        toast.success('User status updated successfully');
-      },
-      onError: (error) => {
-        toast.error(error.response?.data?.message || 'Failed to update user status');
       }
     }
   );
@@ -189,13 +166,6 @@ const SubAdminManagement = () => {
     updatePermissionsMutation.mutate({
       userId: selectedUser._id,
       permissions: formData.permissions
-    });
-  };
-
-  const handleToggleStatus = (user) => {
-    toggleStatusMutation.mutate({
-      userId: user._id,
-      isActive: !user.isActive
     });
   };
 
@@ -339,12 +309,6 @@ const SubAdminManagement = () => {
                           className="text-blue-600 hover:text-blue-900"
                         >
                           <FaEdit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleToggleStatus(user)}
-                          className={user.isActive ? "text-red-600 hover:text-red-900" : "text-green-600 hover:text-green-900"}
-                        >
-                          {user.isActive ? <FaToggleOff className="w-4 h-4" /> : <FaToggleOn className="w-4 h-4" />}
                         </button>
                         <button
                           onClick={() => handleDeleteUser(user)}

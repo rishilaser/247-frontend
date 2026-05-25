@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import BackOfficeMaterialManagement from './BackOfficeMaterialManagement';
 import QuotationForm from '../components/QuotationForm';
-import SubAdminManagement from '../components/SubAdminManagement';
 import ConfirmModal from '../components/ConfirmModal';
 import { inquiryAPI, quotationAPI, adminAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { canSendQuotationToCustomer } from '../utils/quotationVisibility';
 import {
   DocumentTextIcon,
   TagIcon,
@@ -183,7 +183,11 @@ const BackOfficeDashboard = () => {
           _id: inquiry._id,
           inquiryNumber: inquiry.inquiryNumber,
           parts: inquiry.parts || [],
-          customerData: inquiry.customer
+          customerData: inquiry.customer,
+          quotationId: inquiry.quotation?._id || null,
+          quotationStatus: inquiry.quotation?.status || null,
+          quotationNumber: inquiry.quotation?.quotationNumber || null,
+          quotationAmount: inquiry.quotation?.totalAmount ?? null,
         }));
         setPendingInquiries(transformedInquiries);
       }
@@ -257,7 +261,7 @@ const BackOfficeDashboard = () => {
   };
 
   const handleQuotationSuccess = (quotation) => {
-    toast.success(`Quotation ${quotation.quotationNumber} saved. Use Send in the Quotations tab to email the customer.`);
+    toast.success(`Quotation ${quotation.quotationNumber} saved. Click Send on this inquiry to publish it to the customer.`);
     fetchData(true);
   };
 
@@ -280,7 +284,7 @@ const BackOfficeDashboard = () => {
       const response = await quotationAPI.sendQuotation(quotationId);
 
       if (response.data.success) {
-        toast.success('Quotation emailed to customer successfully!');
+        toast.success('Quotation sent! The customer can now view and accept it.');
         setSendConfirmQuotation(null);
         fetchData(true);
       } else {
@@ -294,11 +298,6 @@ const BackOfficeDashboard = () => {
     } finally {
       setSendingQuotationId(null);
     }
-  };
-
-  const canSendQuotation = (status) => {
-    const s = String(status || '').toLowerCase();
-    return s === 'draft' || s === 'uploaded' || s === 'created';
   };
 
   const handleDownloadPDF = async (quotation) => {
@@ -507,12 +506,13 @@ const BackOfficeDashboard = () => {
             />
           )}
           {user?.role === 'admin' && (
-            <TabButton
-              tab="subadmins"
-              icon={UsersIcon}
-              label="Sub-Admins"
-              onClick={() => handleTabChange('subadmins')}
-            />
+            <Link
+              to="/admin/users?tab=subadmins"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-blue-700"
+            >
+              <UsersIcon className="h-5 w-5 shrink-0 text-gray-500" />
+              <span>Users</span>
+            </Link>
           )}
         </div>
       </div>
@@ -614,8 +614,10 @@ const BackOfficeDashboard = () => {
                               </svg>
                               View
                             </Link>
-                            {inquiry.status === 'pending' && (
+                            {!inquiry.quotationId &&
+                              ['pending', 'reviewed'].includes(inquiry.status) && (
                               <button
+                                type="button"
                                 onClick={() => handleCreateQuotation(inquiry)}
                                 className="text-green-600 hover:text-green-900 flex items-center"
                               >
@@ -623,6 +625,25 @@ const BackOfficeDashboard = () => {
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
                                 Quote
+                              </button>
+                            )}
+                            {inquiry.quotationId &&
+                              canSendQuotationToCustomer(inquiry.quotationStatus) && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleSendQuotationClick({
+                                    _id: inquiry.quotationId,
+                                    quotationNumber: inquiry.quotationNumber,
+                                    customer: inquiry.customer,
+                                    company: inquiry.company,
+                                    amount: inquiry.quotationAmount,
+                                  })
+                                }
+                                disabled={sendingQuotationId === inquiry.quotationId}
+                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium flex items-center disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                {sendingQuotationId === inquiry.quotationId ? 'Sending...' : 'Send'}
                               </button>
                             )}
                           </div>
@@ -699,16 +720,6 @@ const BackOfficeDashboard = () => {
                             >
                               View
                             </Link>
-                            {canSendQuotation(quotation.status) && (
-                              <button
-                                type="button"
-                                onClick={() => handleSendQuotationClick(quotation)}
-                                disabled={sendingQuotationId === quotation._id}
-                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
-                              >
-                                {sendingQuotationId === quotation._id ? 'Sending...' : 'Send'}
-                              </button>
-                            )}
                             <button
                               onClick={() => handleDownloadPDF(quotation)}
                               className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1"
@@ -811,10 +822,6 @@ const BackOfficeDashboard = () => {
             <BackOfficeMaterialManagement />
           )}
 
-      {activeTab === 'subadmins' && (
-        <SubAdminManagement />
-      )}
-
       {showQuotationForm && selectedInquiry && (
         <QuotationForm
           inquiry={selectedInquiry}
@@ -830,8 +837,8 @@ const BackOfficeDashboard = () => {
         }}
         onConfirm={handleConfirmSendQuotation}
         title="Send quotation to customer?"
-        message="The customer will receive an email with the quotation PDF and details."
-        confirmLabel="Send email"
+        message="The customer will be able to view, download, and accept this quotation in their account. They will also receive an email notification."
+        confirmLabel="Send to customer"
         cancelLabel="Cancel"
         loading={Boolean(sendingQuotationId)}
       >
