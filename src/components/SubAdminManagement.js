@@ -10,13 +10,100 @@ import {
   FaUser,
   FaUserShield,
   FaCheck,
-  FaTimes
+  FaTimes,
+  FaEye,
+  FaEyeSlash
 } from 'react-icons/fa';
+
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+
+const getPasswordRequirements = (password) => [
+  { text: 'At least 8 characters', met: password.length >= 8 },
+  { text: 'One lowercase letter', met: /[a-z]/.test(password) },
+  { text: 'One uppercase letter', met: /[A-Z]/.test(password) },
+  { text: 'One digit', met: /\d/.test(password) },
+  { text: 'One special character (@$!%*?&)', met: /[@$!%*?&]/.test(password) }
+];
+
+const isPasswordValid = (password) =>
+  password.length >= 8 && PASSWORD_REGEX.test(password);
+
+const formatApiErrors = (error, fallback) => {
+  const data = error?.response?.data;
+  if (data?.errors?.length) {
+    const messages = [...new Set(
+      data.errors.map((e) => {
+        if (e.path === 'password') {
+          return 'Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character (@$!%*?&)';
+        }
+        if (e.path === 'email') return 'Please enter a valid email address';
+        if (e.path === 'firstName' || e.path === 'lastName') return `${e.path} is required`;
+        return e.msg || `${e.path}: invalid`;
+      })
+    )];
+    return messages.join(' ');
+  }
+  return data?.message || fallback;
+};
+
+const PERMISSION_ITEMS = [
+  { key: 'canCreateQuotations', label: 'Create Quotations' },
+  { key: 'canManageUsers', label: 'Manage Users' },
+  { key: 'canViewAllInquiries', label: 'View All Inquiries' },
+  { key: 'canManageOrders', label: 'Manage Orders' }
+];
+
+const PermissionTags = ({ permissions }) => {
+  const active = PERMISSION_ITEMS.filter((item) => permissions?.[item.key]);
+  if (active.length === 0) {
+    return <span className="text-xs text-gray-400">No permissions assigned</span>;
+  }
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {active.map((item) => (
+        <span
+          key={item.key}
+          className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700"
+        >
+          {item.label}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const ModalActions = ({ onCancel, cancelLabel = 'Cancel', submitLabel, submitLoading, submitLoadingLabel, submitDisabled, submitVariant = 'primary', formId }) => (
+  <div className="flex flex-col-reverse gap-2 border-t border-gray-200 pt-4 sm:flex-row sm:justify-end sm:gap-3 sm:pt-6">
+    <button
+      type="button"
+      onClick={onCancel}
+      disabled={submitLoading}
+      className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:py-2"
+    >
+      {cancelLabel}
+    </button>
+    <button
+      type="submit"
+      form={formId}
+      disabled={submitDisabled || submitLoading}
+      className={`w-full rounded-md px-4 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 ${
+        submitVariant === 'danger'
+          ? 'bg-red-600 hover:bg-red-700'
+          : 'bg-blue-600 hover:bg-blue-700'
+      }`}
+    >
+      {submitLoading ? submitLoadingLabel : submitLabel}
+    </button>
+  </div>
+);
 
 const SubAdminManagement = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -61,7 +148,7 @@ const SubAdminManagement = () => {
         resetForm();
       },
       onError: (error) => {
-        toast.error(error.response?.data?.message || 'Failed to create sub-admin');
+        toast.error(formatApiErrors(error, 'Failed to create sub-admin'));
       }
     }
   );
@@ -101,6 +188,8 @@ const SubAdminManagement = () => {
       onSuccess: () => {
         queryClient.invalidateQueries('admin-users');
         toast.success('User deleted successfully');
+        setShowDeleteModal(false);
+        setUserToDelete(null);
       },
       onError: (error) => {
         toast.error(error.response?.data?.message || 'Failed to delete user');
@@ -109,6 +198,7 @@ const SubAdminManagement = () => {
   );
 
   const resetForm = () => {
+    setShowPassword(false);
     setFormData({
       email: '',
       firstName: '',
@@ -145,8 +235,22 @@ const SubAdminManagement = () => {
 
   const handleCreateSubAdmin = (e) => {
     e.preventDefault();
+
+    if (!formData.email.trim() || !formData.firstName.trim() || !formData.lastName.trim()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (!isPasswordValid(formData.password)) {
+      toast.error('Password does not meet the requirements below');
+      return;
+    }
+
     createSubAdminMutation.mutate(formData);
   };
+
+  const passwordRequirements = getPasswordRequirements(formData.password);
+  const passwordValid = isPasswordValid(formData.password);
 
   const handleEditPermissions = (user) => {
     setSelectedUser(user);
@@ -170,10 +274,20 @@ const SubAdminManagement = () => {
     });
   };
 
-  const handleDeleteUser = (user) => {
-    if (window.confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`)) {
-      deleteUserMutation.mutate(user._id);
-    }
+  const openDeleteModal = (user) => {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleteUserMutation.isLoading) return;
+    setShowDeleteModal(false);
+    setUserToDelete(null);
+  };
+
+  const confirmDeleteUser = () => {
+    if (!userToDelete) return;
+    deleteUserMutation.mutate(userToDelete._id);
   };
 
   const getRoleIcon = (role) => {
@@ -214,27 +328,105 @@ const SubAdminManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Sub-Admin Management</h2>
-          <p className="text-gray-600">Manage sub-admin users and their permissions</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">Sub-Admin Management</h2>
+          <p className="mt-1 text-sm text-gray-600 sm:text-base">
+            Manage sub-admin users and their permissions
+          </p>
         </div>
         <button
+          type="button"
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex w-full shrink-0 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto sm:py-2"
         >
-          <FaPlus className="w-4 h-4 mr-2" />
+          <FaPlus className="mr-2 h-4 w-4 shrink-0" />
           Create Sub-Admin
         </button>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Sub-Admin Users</h3>
-          <div className="overflow-x-auto">
+      {/* Users list */}
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="border-b border-gray-200 px-3 py-3 sm:px-6 sm:py-4">
+          <h3 className="text-base font-medium text-gray-900 sm:text-lg">Sub-Admin Users</h3>
+          <p className="mt-0.5 text-xs text-gray-500 sm:text-sm">
+            {subAdmins.length} {subAdmins.length === 1 ? 'user' : 'users'}
+          </p>
+        </div>
+
+        {subAdmins.length === 0 ? (
+          <div className="px-4 py-10 text-center sm:px-6">
+            <p className="text-sm text-gray-500">No sub-admins yet.</p>
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(true)}
+              className="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800"
+            >
+              Create your first sub-admin
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Mobile: card layout */}
+            <div className="divide-y divide-gray-200 md:hidden">
+              {subAdmins.map((user) => (
+                <div key={user._id} className="space-y-3 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200">
+                      {getRoleIcon(user.role)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-gray-900">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <p className="truncate text-xs text-gray-500">{user.email}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                          Sub-Admin
+                        </span>
+                        {getStatusBadge(user.isActive)}
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-gray-500">
+                      Permissions
+                    </p>
+                    <PermissionTags permissions={user.permissions} />
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-3">
+                    <span className="text-xs text-gray-500">
+                      Created {new Date(user.createdAt).toLocaleDateString()}
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEditPermissions(user)}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+                        aria-label={`Edit permissions for ${user.firstName} ${user.lastName}`}
+                      >
+                        <FaEdit className="h-3.5 w-3.5" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openDeleteModal(user)}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100"
+                        aria-label={`Delete ${user.firstName} ${user.lastName}`}
+                      >
+                        <FaTrash className="h-3.5 w-3.5" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto md:block">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -281,21 +473,8 @@ const SubAdminManagement = () => {
                         Sub-Admin
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="space-y-1">
-                        {user.permissions?.canCreateQuotations && (
-                          <div className="text-green-600">✓ Create Quotations</div>
-                        )}
-                        {user.permissions?.canManageUsers && (
-                          <div className="text-green-600">✓ Manage Users</div>
-                        )}
-                        {user.permissions?.canViewAllInquiries && (
-                          <div className="text-green-600">✓ View All Inquiries</div>
-                        )}
-                        {user.permissions?.canManageOrders && (
-                          <div className="text-green-600">✓ Manage Orders</div>
-                        )}
-                      </div>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      <PermissionTags permissions={user.permissions} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(user.isActive)}
@@ -306,14 +485,18 @@ const SubAdminManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
                         <button
+                          type="button"
                           onClick={() => handleEditPermissions(user)}
                           className="text-blue-600 hover:text-blue-900"
+                          aria-label={`Edit permissions for ${user.firstName} ${user.lastName}`}
                         >
                           <FaEdit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDeleteUser(user)}
+                          type="button"
+                          onClick={() => openDeleteModal(user)}
                           className="text-red-600 hover:text-red-900"
+                          aria-label={`Delete ${user.firstName} ${user.lastName}`}
                         >
                           <FaTrash className="w-4 h-4" />
                         </button>
@@ -323,36 +506,47 @@ const SubAdminManagement = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Create Sub-Admin Modal */}
       {showCreateModal && createPortal(
-        <div className="fixed inset-0 z-[200] flex items-start justify-center bg-gray-600 bg-opacity-50 p-4 sm:p-6 overflow-y-auto">
-          <div className="relative mt-8 w-full max-w-4xl p-0 border shadow-lg rounded-lg bg-white">
-            <div className="bg-white rounded-lg">
+        <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 p-0 sm:items-start sm:p-4 sm:pt-6">
+          <div className="flex max-h-[min(100dvh,100vh)] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-xl sm:mt-4 sm:rounded-lg sm:max-h-[calc(100dvh-2rem)]">
               {/* Header */}
-              <div className="px-6 py-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-gray-900">Create Sub-Admin</h3>
+              <div className="shrink-0 border-b border-gray-200 px-4 py-4 sm:px-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 pr-2">
+                    <h3 className="text-lg font-semibold text-gray-900 sm:text-xl">Create Sub-Admin</h3>
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">
+                      Fill in the details to create a new sub-admin user
+                    </p>
+                  </div>
                   <button
+                    type="button"
                     onClick={() => {
                       setShowCreateModal(false);
                       resetForm();
                     }}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                    aria-label="Close"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">Fill in the details to create a new sub-admin user</p>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleCreateSubAdmin} className="px-6 py-6">
+              <form
+                id="create-subadmin-form"
+                onSubmit={handleCreateSubAdmin}
+                className="flex min-h-0 flex-1 flex-col overflow-hidden"
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-6">
                 <div className="space-y-6">
                   {/* Personal Information Section */}
                   <div>
@@ -404,18 +598,52 @@ const SubAdminManagement = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Password <span className="text-red-500">*</span>
                         </label>
-                        <input
-                          type="password"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="Enter password"
-                        />
-                        <p className="mt-1 text-xs text-gray-500">
-                          Password must be at least 8 characters with uppercase, lowercase, number and special character
-                        </p>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            required
+                            minLength={8}
+                            autoComplete="new-password"
+                            className={`w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                              formData.password && !passwordValid
+                                ? 'border-red-300'
+                                : 'border-gray-300'
+                            }`}
+                            placeholder="e.g. Admin@123"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          >
+                            {showPassword ? (
+                              <FaEyeSlash className="h-4 w-4" aria-hidden="true" />
+                            ) : (
+                              <FaEye className="h-4 w-4" aria-hidden="true" />
+                            )}
+                          </button>
+                        </div>
+                        <ul className="mt-2 space-y-1">
+                          {passwordRequirements.map((req) => (
+                            <li
+                              key={req.text}
+                              className={`text-xs flex items-center gap-1.5 ${
+                                req.met ? 'text-green-600' : 'text-gray-500'
+                              }`}
+                            >
+                              {req.met ? (
+                                <FaCheck className="w-3 h-3 shrink-0" />
+                              ) : (
+                                <FaTimes className="w-3 h-3 shrink-0 text-gray-400" />
+                              )}
+                              {req.text}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -482,38 +710,74 @@ const SubAdminManagement = () => {
                     </div>
                   </div>
                 </div>
+                </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => {
+                <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
+                  <ModalActions
+                    formId="create-subadmin-form"
+                    onCancel={() => {
                       setShowCreateModal(false);
                       resetForm();
                     }}
-                    className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={createSubAdminMutation.isLoading}
-                    className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {createSubAdminMutation.isLoading ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Creating...
-                      </span>
-                    ) : (
-                      'Create Sub-Admin'
-                    )}
-                  </button>
+                    submitLabel="Create Sub-Admin"
+                    submitLoading={createSubAdminMutation.isLoading}
+                    submitLoadingLabel="Creating..."
+                    submitDisabled={!passwordValid}
+                  />
                 </div>
               </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && userToDelete && createPortal(
+        <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div
+            className="absolute inset-0"
+            aria-hidden="true"
+            onClick={closeDeleteModal}
+          />
+          <div
+            className="relative w-full max-w-md rounded-t-2xl bg-white shadow-xl sm:rounded-lg"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-subadmin-title"
+          >
+            <div className="border-b border-gray-200 px-4 py-4 sm:px-6">
+              <h3 id="delete-subadmin-title" className="text-lg font-semibold text-gray-900">
+                Delete Sub-Admin
+              </h3>
+            </div>
+            <div className="px-4 py-4 sm:px-6">
+              <p className="text-sm text-gray-600">
+                Are you sure you want to delete{' '}
+                <span className="font-medium text-gray-900 break-words">
+                  {userToDelete.firstName} {userToDelete.lastName}
+                </span>
+                ? This action cannot be undone.
+              </p>
+            </div>
+            <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+                <button
+                  type="button"
+                  onClick={closeDeleteModal}
+                  disabled={deleteUserMutation.isLoading}
+                  className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:py-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteUser}
+                  disabled={deleteUserMutation.isLoading}
+                  className="w-full rounded-md bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2"
+                >
+                  {deleteUserMutation.isLoading ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             </div>
           </div>
         </div>,
@@ -522,25 +786,26 @@ const SubAdminManagement = () => {
 
       {/* Edit Permissions Modal */}
       {showEditModal && selectedUser && createPortal(
-        <div className="fixed inset-0 z-[200] flex items-start justify-center bg-gray-600 bg-opacity-50 p-4 sm:p-6 overflow-y-auto">
-          <div className="relative mt-16 w-full max-w-2xl p-0 border shadow-lg rounded-lg bg-white">
-            <div className="bg-white rounded-lg">
+        <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 p-0 sm:items-start sm:p-4 sm:pt-6">
+          <div className="flex max-h-[min(100dvh,100vh)] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-xl sm:mt-8 sm:rounded-lg sm:max-h-[calc(100dvh-3rem)]">
               {/* Header */}
-              <div className="px-6 py-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900">
+              <div className="shrink-0 border-b border-gray-200 px-4 py-4 sm:px-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 pr-2">
+                    <h3 className="text-lg font-semibold text-gray-900 sm:text-xl">
                       Edit Permissions
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 truncate text-xs text-gray-500 sm:text-sm">
                       Update permissions for {selectedUser.firstName} {selectedUser.lastName}
                     </p>
                   </div>
                   <button
+                    type="button"
                     onClick={() => setShowEditModal(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                    aria-label="Close"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -548,7 +813,12 @@ const SubAdminManagement = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleUpdatePermissions} className="px-6 py-6">
+              <form
+                id="edit-permissions-form"
+                onSubmit={handleUpdatePermissions}
+                className="flex min-h-0 flex-1 flex-col overflow-hidden"
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-6">
                 <div>
                   <h4 className="text-lg font-medium text-gray-900 mb-4">User Permissions</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
@@ -609,36 +879,18 @@ const SubAdminManagement = () => {
                     </div>
                   </div>
                 </div>
+                </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditModal(false)}
-                    className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updatePermissionsMutation.isLoading}
-                    className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {updatePermissionsMutation.isLoading ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Updating...
-                      </span>
-                    ) : (
-                      'Update Permissions'
-                    )}
-                  </button>
+                <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4 sm:px-6">
+                  <ModalActions
+                    formId="edit-permissions-form"
+                    onCancel={() => setShowEditModal(false)}
+                    submitLabel="Update Permissions"
+                    submitLoading={updatePermissionsMutation.isLoading}
+                    submitLoadingLabel="Updating..."
+                  />
                 </div>
               </form>
-            </div>
           </div>
         </div>,
         document.body
