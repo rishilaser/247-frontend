@@ -40,14 +40,14 @@ const InternalHeader = () => {
       return [
         { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Cog6ToothIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
-        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
+        { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'backoffice') {
       return [
         { name: 'Back Office Dashboard', href: '/admin/dashboard', icon: BuildingOfficeIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
-        { name: 'User Management', href: '/admin/users', icon: UsersIcon },
+        { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
         ...baseNavigation
       ];
     } else if (user.role === 'subadmin') {

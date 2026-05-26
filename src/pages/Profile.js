@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { orderAPI, inquiryAPI, adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { inquiryQuotationPdfPath } from '../utils/quotationRoutes';
+import SubAdminManagement from '../components/SubAdminManagement';
+import { roleUtils } from '../utils/authUtils';
 
 const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 const isValidGstin = (gst) => GSTIN_REGEX.test((gst || '').trim().toUpperCase());
@@ -21,6 +23,7 @@ const COUNTRY_OPTIONS = ['India', 'United States', 'United Kingdom', 'Germany', 
 
 const Profile = () => {
   const { user, updateProfile } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('profile');
   const [formData, setFormData] = useState({
     firstName: '',
@@ -58,6 +61,21 @@ const Profile = () => {
       deliveryZipCode: addr.zipCode || ''
     });
   }, [user]);
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'subadmins' && roleUtils.isAdmin(user)) {
+      setActiveTab('subadmins');
+    }
+  }, [searchParams, user]);
+
+  const handleTabSelect = (tabId) => {
+    setActiveTab(tabId);
+    if (tabId === 'subadmins') {
+      setSearchParams({ tab: 'subadmins' });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -546,7 +564,14 @@ const Profile = () => {
 
   // Role-based tabs - admin users don't need Order History and Inquiries
   const getTabs = () => {
-    if (user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin') {
+    if (user?.role === 'admin') {
+      return [
+        { id: 'profile', name: 'Profile Information' },
+        { id: 'subadmins', name: 'Sub-Admins' },
+        { id: 'nomenclature', name: 'ID Nomenclature' }
+      ];
+    }
+    if (user?.role === 'backoffice' || user?.role === 'subadmin') {
       return [
         { id: 'profile', name: 'Profile Information' },
         { id: 'nomenclature', name: 'ID Nomenclature' }
@@ -580,7 +605,7 @@ const Profile = () => {
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => handleTabSelect(tab.id)}
                     className={`shrink-0 whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium ${activeTab === tab.id
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
@@ -1119,6 +1144,12 @@ const Profile = () => {
                     <p className="text-sm text-gray-400 mt-2">Your inquiries will appear here once you submit them.</p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {activeTab === 'subadmins' && roleUtils.isAdmin(user) && (
+              <div className="p-4 sm:p-6 min-w-0">
+                <SubAdminManagement />
               </div>
             )}
 

@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { userAPI, axios } from '../../services/api';
-import SubAdminManagement from '../../components/SubAdminManagement';
 import toast from 'react-hot-toast';
 import {
   MagnifyingGlassIcon,
-  UsersIcon,
-  UserGroupIcon,
   EyeIcon,
   XMarkIcon,
   ArrowDownTrayIcon
@@ -55,10 +51,6 @@ const normalizeUserRecord = (user) => {
 
 const UserManagement = () => {
   const { user: currentUser } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') === 'subadmins' && roleUtils.isAdmin(currentUser)
-    ? 'subadmins'
-    : 'customers';
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +75,9 @@ const UserManagement = () => {
 
       const response = await userAPI.getUsers(params);
       if (response.data.success) {
-        setUsers((response.data.users || []).map(normalizeUserRecord));
+        const fetchedUsers = (response.data.users || []).map(normalizeUserRecord);
+        const customerOnlyUsers = fetchedUsers.filter((u) => u.role === 'customer');
+        setUsers(customerOnlyUsers);
         setPagination(response.data.pagination || { page: 1, total: 0, pages: 1 });
       }
     } catch (error) {
@@ -97,14 +91,8 @@ const UserManagement = () => {
   }, [search, statusFilter]);
 
   useEffect(() => {
-    if (activeTab === 'customers') {
-      fetchCustomers();
-    }
-  }, [activeTab, fetchCustomers]);
-
-  const handleTabChange = (tab) => {
-    setSearchParams(tab === 'subadmins' ? { tab: 'subadmins' } : {});
-  };
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const closeDetails = () => {
     setSelectedUser(null);
@@ -165,7 +153,7 @@ const UserManagement = () => {
   if (!currentUser || (!roleUtils.isAdmin(currentUser) && !roleUtils.isBackOffice(currentUser))) {
     return (
       <div className="max-w-7xl mx-auto py-8 px-4">
-        <p className="text-gray-600">You do not have permission to access user management.</p>
+        <p className="text-gray-600">You do not have permission to access lead management.</p>
       </div>
     );
   }
@@ -173,47 +161,11 @@ const UserManagement = () => {
   return (
     <div className="w-full max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">User Management</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          View registered customer accounts
-          {roleUtils.isAdmin(currentUser) ? ' and sub-admin users' : ''}
-        </p>
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Lead Management</h1>
+        <p className="mt-1 text-sm text-gray-600">View registered customer accounts</p>
       </div>
 
-      {roleUtils.isAdmin(currentUser) && (
-        <div className="mb-6 flex gap-2 border-b border-gray-200">
-          <button
-            type="button"
-            onClick={() => handleTabChange('customers')}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              activeTab === 'customers'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <UsersIcon className="h-5 w-5" />
-            Customers
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('subadmins')}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              activeTab === 'subadmins'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <UserGroupIcon className="h-5 w-5" />
-            Sub-Admins
-          </button>
-        </div>
-      )}
-
-      {activeTab === 'subadmins' ? (
-        <SubAdminManagement />
-      ) : (
-        <>
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative flex-1 max-w-md">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
               <input
@@ -342,8 +294,6 @@ const UserManagement = () => {
               </div>
             )}
           </div>
-        </>
-      )}
 
       <CustomerDetailsModal
         isOpen={Boolean(selectedUser || detailLoading)}

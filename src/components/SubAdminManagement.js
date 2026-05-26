@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
@@ -327,9 +328,9 @@ const SubAdminManagement = () => {
       </div>
 
       {/* Create Sub-Admin Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-0 border w-11/12 max-w-4xl shadow-lg rounded-lg bg-white">
+      {showCreateModal && createPortal(
+        <div className="fixed inset-0 z-[200] flex items-start justify-center bg-gray-600 bg-opacity-50 p-4 sm:p-6 overflow-y-auto">
+          <div className="relative mt-8 w-full max-w-4xl p-0 border shadow-lg rounded-lg bg-white">
             <div className="bg-white rounded-lg">
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-200">
@@ -515,13 +516,14 @@ const SubAdminManagement = () => {
               </form>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Edit Permissions Modal */}
-      {showEditModal && selectedUser && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-0 border w-11/12 max-w-2xl shadow-lg rounded-lg bg-white">
+      {showEditModal && selectedUser && createPortal(
+        <div className="fixed inset-0 z-[200] flex items-start justify-center bg-gray-600 bg-opacity-50 p-4 sm:p-6 overflow-y-auto">
+          <div className="relative mt-16 w-full max-w-2xl p-0 border shadow-lg rounded-lg bg-white">
             <div className="bg-white rounded-lg">
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-200">
@@ -638,7 +640,8 @@ const SubAdminManagement = () => {
               </form>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

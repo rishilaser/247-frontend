@@ -351,6 +351,13 @@ function App() {
                         </AdminLayout>
                       </ProtectedRoute>
                     } />
+                    <Route path="/admin/leads" element={
+                      <ProtectedRoute>
+                        <AdminLayout>
+                          <UserManagement />
+                        </AdminLayout>
+                      </ProtectedRoute>
+                    } />
 
                     {/* Component Manager Routes */}
                     <Route path="/component-manager" element={
