@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { permissionUtils } from '../../utils/permissionUtils';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -58,9 +59,9 @@ const Login = () => {
         
         toast.success(`Login successful! Welcome ${result.user?.firstName || ''} (${roleMessage})`);
         
-        // Redirect based on user role
-        if (userRole === 'admin' || userRole === 'backoffice') {
-          navigate('/admin/dashboard');
+        // Redirect based on role and sub-admin permissions
+        if (userRole === 'admin' || userRole === 'backoffice' || userRole === 'subadmin') {
+          navigate(permissionUtils.getDefaultRoute(result.user));
         } else {
           navigate('/dashboard');
         }

@@ -12,6 +12,8 @@ import Header from './components/layout/Header';
 import InternalHeader from './components/layout/InternalHeader';
 import Footer from './components/layout/Footer';
 import AdminLayout from './components/layout/AdminLayout';
+import PermissionRoute from './components/PermissionRoute';
+import { PERMISSION_KEYS } from './utils/permissionUtils';
 
 // Pages - Lazy load for faster initial page load
 const SignUp = lazy(() => import('./pages/auth/SignUp'));
@@ -239,14 +241,24 @@ function App() {
                     } />
                     <Route path="/inquiries" element={
                       <ProtectedRoute>
-                        <InquiryListWrapper />
+                        <PermissionRoute
+                          permission={PERMISSION_KEYS.CAN_VIEW_ALL_INQUIRIES}
+                          allowCustomer
+                        >
+                          <InquiryListWrapper />
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/inquiry/:id" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <InquiryDetail />
-                        </AdminLayout>
+                        <PermissionRoute
+                          permission={PERMISSION_KEYS.CAN_VIEW_ALL_INQUIRIES}
+                          allowCustomer
+                        >
+                          <AdminLayout>
+                            <InquiryDetail />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/quotations" element={
@@ -325,37 +337,59 @@ function App() {
                     {/* Admin Routes */}
                     <Route path="/admin/dashboard" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <BackOfficeDashboard />
-                        </AdminLayout>
+                        <PermissionRoute
+                          requireStaff
+                          anyPermission={Object.values(PERMISSION_KEYS)}
+                        >
+                          <AdminLayout>
+                            <BackOfficeDashboard />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/admin/orders" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <OrderManagement />
-                        </AdminLayout>
+                        <PermissionRoute
+                          requireStaff
+                          permission={PERMISSION_KEYS.CAN_MANAGE_ORDERS}
+                        >
+                          <AdminLayout>
+                            <OrderManagement />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/admin/material-management" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <BackOfficeMaterialManagement />
-                        </AdminLayout>
+                        <PermissionRoute requireStaff adminOnly>
+                          <AdminLayout>
+                            <BackOfficeMaterialManagement />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/admin/users" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <UserManagement />
-                        </AdminLayout>
+                        <PermissionRoute
+                          requireStaff
+                          permission={PERMISSION_KEYS.CAN_MANAGE_USERS}
+                        >
+                          <AdminLayout>
+                            <UserManagement />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
                     <Route path="/admin/leads" element={
                       <ProtectedRoute>
-                        <AdminLayout>
-                          <UserManagement />
-                        </AdminLayout>
+                        <PermissionRoute
+                          requireStaff
+                          permission={PERMISSION_KEYS.CAN_MANAGE_USERS}
+                        >
+                          <AdminLayout>
+                            <UserManagement />
+                          </AdminLayout>
+                        </PermissionRoute>
                       </ProtectedRoute>
                     } />
 

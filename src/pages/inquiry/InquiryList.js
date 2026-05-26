@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { hasPermission, PERMISSIONS } from '../../utils/permissionUtils';
+import { roleUtils } from '../../utils/authUtils';
 import { customerCanSeeQuotation } from '../../utils/quotationVisibility';
 
 const InquiryList = () => {

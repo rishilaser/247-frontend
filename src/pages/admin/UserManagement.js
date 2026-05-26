@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { parseContentDisposition } from '../../utils/downloadFilename';
 import { roleUtils } from '../../utils/authUtils';
+import { permissionUtils, PERMISSION_KEYS } from '../../utils/permissionUtils';
 
 const ROLE_LABELS = {
   customer: 'Customer',
@@ -150,7 +151,10 @@ const UserManagement = () => {
     }
   };
 
-  if (!currentUser || (!roleUtils.isAdmin(currentUser) && !roleUtils.isBackOffice(currentUser))) {
+  if (
+    !currentUser ||
+    !permissionUtils.hasPermission(currentUser, PERMISSION_KEYS.CAN_MANAGE_USERS)
+  ) {
     return (
       <div className="max-w-7xl mx-auto py-8 px-4">
         <p className="text-gray-600">You do not have permission to access lead management.</p>

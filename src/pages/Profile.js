@@ -571,12 +571,16 @@ const Profile = () => {
         { id: 'nomenclature', name: 'ID Nomenclature' }
       ];
     }
-    if (user?.role === 'backoffice' || user?.role === 'subadmin') {
+    if (user?.role === 'backoffice') {
       return [
         { id: 'profile', name: 'Profile Information' },
         { id: 'nomenclature', name: 'ID Nomenclature' }
       ];
-    } else {
+    }
+    if (user?.role === 'subadmin') {
+      return [{ id: 'profile', name: 'Profile Information' }];
+    }
+    {
       return [
         { id: 'profile', name: 'Profile Information' },
         { id: 'orders', name: 'Order History' },

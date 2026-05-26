@@ -6,6 +6,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import { inquiryAPI, quotationAPI, adminAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { permissionUtils, PERMISSION_KEYS } from '../utils/permissionUtils';
+import { roleUtils } from '../utils/authUtils';
 import { canSendQuotationToCustomer } from '../utils/quotationVisibility';
 import {
   DocumentTextIcon,
@@ -46,10 +48,19 @@ const BackOfficeDashboard = () => {
 
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab) {
+    if (!tab || !user) return;
+
+    if (permissionUtils.canAccessDashboardTab(user, tab)) {
       setActiveTab(tab);
+      return;
     }
-  }, [searchParams]);
+
+    const fallbackTab = permissionUtils.getFirstAllowedDashboardTab(user);
+    if (fallbackTab) {
+      setActiveTab(fallbackTab);
+      setSearchParams({ tab: fallbackTab });
+    }
+  }, [searchParams, user, setSearchParams]);
 
   // Helper function to format dates (reusable)
   const formatDate = useCallback((dateString) => {
@@ -422,9 +433,13 @@ const BackOfficeDashboard = () => {
   );
 
   const handleTabChange = useCallback((tab) => {
+    if (user && !permissionUtils.canAccessDashboardTab(user, tab)) {
+      toast.error('You do not have permission to access this section');
+      return;
+    }
     setActiveTab(tab);
     setSearchParams({ tab });
-  }, [setSearchParams]);
+  }, [setSearchParams, user]);
 
   if (!user) {
     return (
@@ -479,25 +494,31 @@ const BackOfficeDashboard = () => {
       <div className="mb-6 bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <h2 className="text-base font-semibold text-gray-900 mb-3">Admin Dashboard Navigation</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+          {permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_VIEW_ALL_INQUIRIES) && (
           <TabButton
             tab="inquiries"
             icon={DocumentTextIcon}
             label="Inquiries"
             onClick={() => handleTabChange('inquiries')}
           />
+          )}
+          {permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_CREATE_QUOTATIONS) && (
           <TabButton
             tab="quotations"
             icon={TagIcon}
             label="Quotations"
             onClick={() => handleTabChange('quotations')}
           />
+          )}
+          {permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_MANAGE_ORDERS) && (
           <TabButton
             tab="orders"
             icon={ClipboardDocumentListIcon}
             label="Orders"
             onClick={() => handleTabChange('orders')}
           />
-          {(user?.role === 'admin' || user?.role === 'backoffice') && (
+          )}
+          {(roleUtils.isAdmin(user) || roleUtils.isBackOffice(user)) && (
             <TabButton
               tab="material"
               icon={WrenchScrewdriverIcon}

@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getWordpressUrl } from '../utils/wordpressUrl';
 import { SHOW_MY_QUOTATIONS_PAGE } from '../config/featureFlags';
+import { permissionUtils, PERMISSION_KEYS } from '../utils/permissionUtils';
+import { roleUtils } from '../utils/authUtils';
 import {
   Cog6ToothIcon,
   ClipboardDocumentListIcon,
@@ -29,26 +31,58 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
       { name: 'Sign out', href: getWordpressUrl(), icon: ArrowRightOnRectangleIcon, action: logout },
     ];
 
-    if (user.role === 'admin') {
+    if (roleUtils.isAdmin(user)) {
       return [
         { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Squares2X2Icon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
         { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
         ...baseNavigation
       ];
-    } else if (user.role === 'backoffice') {
+    }
+
+    if (roleUtils.isBackOffice(user)) {
       return [
         { name: 'Back Office Dashboard', href: '/admin/dashboard', icon: BuildingOfficeIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
         { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
         ...baseNavigation
       ];
-    } else if (user.role === 'subadmin') {
-      return [
-        { name: 'Sub Admin Dashboard', href: '/admin/dashboard', icon: Squares2X2Icon },
-        ...baseNavigation
-      ];
-    } else {
+    }
+
+    if (roleUtils.isSubAdmin(user)) {
+      const items = [];
+      if (permissionUtils.canAccessDashboard(user)) {
+        items.push({
+          name: 'Sub Admin Dashboard',
+          href: permissionUtils.getDefaultRoute(user),
+          icon: Squares2X2Icon
+        });
+      }
+      if (permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_MANAGE_ORDERS)) {
+        items.push({
+          name: 'Order Management',
+          href: '/admin/orders',
+          icon: ClipboardDocumentListIcon
+        });
+      }
+      if (permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_MANAGE_USERS)) {
+        items.push({
+          name: 'Lead Management',
+          href: '/admin/leads',
+          icon: UsersIcon
+        });
+      }
+      if (permissionUtils.hasPermission(user, PERMISSION_KEYS.CAN_VIEW_ALL_INQUIRIES)) {
+        items.push({
+          name: 'Inquiries',
+          href: '/inquiries',
+          icon: ClipboardDocumentListIcon
+        });
+      }
+      return [...items, ...baseNavigation];
+    }
+
+    {
       // Customer navigation
       return [
         { name: 'Dashboard', href: '/dashboard', icon: Squares2X2Icon },

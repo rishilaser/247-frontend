@@ -57,7 +57,8 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         ...response.data,
         role: roleUtils.getUserRole(response.data),
-        id: roleUtils.getUserId(response.data)
+        id: roleUtils.getUserId(response.data),
+        permissions: response.data.permissions || {}
       };
 
       setUser(userData);
@@ -107,7 +108,8 @@ export const AuthProvider = ({ children }) => {
       const normalizedUserData = {
         ...userData,
         role: roleUtils.getUserRole(userData),
-        id: roleUtils.getUserId(userData)
+        id: roleUtils.getUserId(userData),
+        permissions: userData.permissions || {}
       };
 
       console.log('Setting token and user data:', { newToken, normalizedUserData });
