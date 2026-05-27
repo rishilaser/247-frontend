@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { quotationAPI, pdfAPI } from '../services/api';
 import { useQuotation } from '../contexts/QuotationContext';
@@ -489,44 +490,66 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
 
   if (!currentInquiry) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-3 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {isMultipleInquiries 
-              ? `Create Quotation for ${inquiries.length} Inquiries` 
-              : `Create Quotation for ${currentInquiry.inquiryNumber}`
-            }
-          </h2>
+  const customer = getCustomerData();
+  const inquiryLabel = isMultipleInquiries
+    ? `${inquiries.length} inquiries`
+    : currentInquiry.inquiryNumber || 'Inquiry';
+
+  return createPortal(
+    <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+      <div
+        className="flex max-h-[min(100dvh,100vh)] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-xl sm:max-h-[min(90dvh,90vh)] sm:rounded-lg"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quotation-form-title"
+      >
+        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-gray-200 px-4 py-4 sm:px-6">
+          <div className="min-w-0 pr-2">
+            <h2 id="quotation-form-title" className="text-lg font-semibold text-gray-900 sm:text-xl">
+              Upload Quotation
+            </h2>
+            <p className="mt-0.5 truncate text-xs text-gray-500 sm:text-sm">
+              {inquiryLabel}
+            </p>
+          </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            aria-label="Close"
           >
-            <XMarkIcon className="h-5 w-5" />
+            <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-3">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6">
+          <div className="mb-4 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-sm text-blue-800">
+            This saves a <strong>draft</strong>. The customer stays <strong>Pending</strong> until you click{' '}
+            <strong>Send</strong> on the inquiry row.
+          </div>
+
           {/* Customer Info */}
-          <div className="mb-1 p-3 bg-gray-50 rounded-lg">
-            <h3 className="text-base font-medium text-gray-900 mb-1">Customer Informationd</h3>
-            {(() => {
-              const customer = getCustomerData();
-              return (
-                <>
-                  <p className="text-sm text-gray-600">
-                    <strong>Name:</strong> {customer.firstName} {customer.lastName}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <strong>Company:</strong> {customer.companyName}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <strong>Email:</strong> {customer.email}
-                  </p>
-                </>
-              );
-            })()}
+          <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Customer Information
+            </h3>
+            <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2 sm:gap-3">
+              <div className="min-w-0">
+                <dt className="text-xs font-medium text-gray-500">Name</dt>
+                <dd className="truncate font-medium text-gray-900">
+                  {customer.firstName} {customer.lastName}
+                </dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-xs font-medium text-gray-500">Company</dt>
+                <dd className="truncate font-medium text-gray-900">{customer.companyName}</dd>
+              </div>
+              <div className="min-w-0 sm:col-span-2">
+                <dt className="text-xs font-medium text-gray-500">Email</dt>
+                <dd className="truncate font-medium text-gray-900">{customer.email}</dd>
+              </div>
+            </dl>
           </div>
 
           {/* Bulk Pricing Section - Only for Multiple Inquiries */}
@@ -599,12 +622,9 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
 
           {/* PDF Upload Section - Directly shown, no manual entry option */}
           {isUploadQuotation && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Upload Quotation PDF</h3>
-                {/* Switch to Manual Entry button hidden - only PDF upload is available */}
-              </div>
-              <div className="border-2 border-dashed border-gray-500 bg-gray-50 rounded-lg p-8 text-center hover:border-gray-600 hover:bg-gray-100 hover:shadow-md transition-all duration-200">
+            <div className="mb-2">
+              <h3 className="mb-3 text-base font-medium text-gray-900">Upload Quotation PDF</h3>
+              <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-center transition-colors hover:border-blue-400 hover:bg-blue-50/50 sm:p-8">
                 <input
                   type="file"
                   accept=".pdf"
@@ -616,13 +636,13 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
                   htmlFor="quotation-file-upload"
                   className="cursor-pointer flex flex-col items-center"
                 >
-                  <svg className="mx-auto h-16 w-16 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mx-auto mb-3 h-12 w-12 text-gray-400 sm:h-14 sm:w-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  <p className="text-base text-gray-800 font-medium mb-2">
-                    {uploadedQuotationFile ? uploadedQuotationFile.name : 'Click to upload quotation PDF or drag and drop'}
+                  <p className="mb-1 break-words text-sm font-medium text-gray-800 sm:text-base">
+                    {uploadedQuotationFile ? uploadedQuotationFile.name : 'Tap to upload PDF or drag and drop'}
                   </p>
-                  <p className="text-sm text-gray-600 font-medium">Only PDF files are allowed (Max 5MB)</p>
+                  <p className="text-xs text-gray-500 sm:text-sm">PDF only · Max 5MB</p>
                   {uploadedQuotationFile && (
                     <p className="text-xs text-gray-500 mt-1">
                       File size: {(uploadedQuotationFile.size / 1024 / 1024).toFixed(2)} MB
@@ -686,21 +706,23 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
 
           
 
-          {/* Actions */}
-          <div className="flex justify-end space-x-3">
+          </div>
+
+          <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-gray-200 bg-white px-4 py-4 sm:flex-row sm:justify-end sm:gap-3 sm:px-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              disabled={loading}
+              className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:py-2"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-green-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+              disabled={loading || (isUploadQuotation && !uploadedQuotationFile)}
+              className="w-full rounded-md bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2"
             >
-              {loading ? 'Creating...' : 'Submit Quotation'}
+              {loading ? 'Saving...' : 'Save as draft'}
             </button>
           </div>
         </form>
@@ -781,7 +803,8 @@ const QuotationForm = ({ inquiry, inquiries = [], onClose, onSuccess }) => {
           </div>
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 };
 
