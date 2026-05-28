@@ -12,8 +12,10 @@ const inputClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm';
 const selectClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm custom-select-scroll scrollable-dropdown';
-const gradeFieldClass = `${inputClass} min-w-[90px]`;
-const gradeSelectClass = `${selectClass} min-w-[90px]`;
+const materialSelectClass = `${selectClass} min-w-[150px]`;
+const gradeFieldClass = `${inputClass} min-w-[120px]`;
+const gradeSelectClass = `${selectClass} min-w-[120px]`;
+const thicknessFieldClass = `${inputClass} w-20`;
 
 const MATERIAL_OPTIONS = ['Mild Steel', 'Stainless Steel', 'Other'];
 const GRADE_OPTIONS_BY_MATERIAL = {
@@ -83,6 +85,9 @@ const PDFFileTable = ({
     const fileMaterial = file.material || 'Mild Steel';
     const isPresetMaterial = MATERIAL_OPTIONS.includes(fileMaterial);
     const selectedMaterial = isPresetMaterial ? fileMaterial : 'Other';
+    const gradeOptions = getGradeOptionsForMaterial(selectedMaterial);
+    const fileGrade = file.grade || '';
+    const isKnownGrade = gradeOptions.includes(fileGrade);
 
     setEditingId(fileId);
     setEditingValues({
@@ -90,7 +95,10 @@ const PDFFileTable = ({
       material: selectedMaterial,
       customMaterial: selectedMaterial === 'Other' && fileMaterial !== 'Other' ? fileMaterial : '',
       thickness: file.thickness || '1.5',
-      grade: file.grade || '',
+      grade: selectedMaterial === 'Other' ? 'Other' : (isKnownGrade ? fileGrade : (fileGrade ? 'Other' : (gradeOptions[0] || ''))),
+      customGrade: selectedMaterial === 'Other'
+        ? (fileGrade && fileGrade !== 'Other' ? fileGrade : '')
+        : (!isKnownGrade && fileGrade && fileGrade !== 'Other' ? fileGrade : ''),
       remarks: file.remarks || 'As per drawing',
       quantity: file.quantity || 1
     });
@@ -112,8 +120,8 @@ const PDFFileTable = ({
         ? (editingValues.customMaterial || '').trim() || 'Other'
         : editingValues.material;
     const gradeValue =
-      editingValues.material === 'Other'
-        ? (editingValues.grade || '').trim() || 'Other'
+      editingValues.material === 'Other' || editingValues.grade === 'Other'
+        ? (editingValues.customGrade || '').trim() || 'Other'
         : editingValues.grade;
 
     onUpdateFile(fileId, {
@@ -149,11 +157,19 @@ const PDFFileTable = ({
       if (field === 'material') {
         if (processedValue === 'Other') {
           updated.customMaterial = updated.customMaterial || '';
-          updated.grade = updated.grade || '';
+          updated.grade = 'Other';
+          updated.customGrade = updated.customGrade || '';
         } else {
           const grades = getGradeOptionsForMaterial(processedValue);
           updated.customMaterial = '';
           updated.grade = grades.length > 0 ? grades[0] : '';
+          updated.customGrade = '';
+        }
+      } else if (field === 'grade') {
+        if (processedValue === 'Other') {
+          updated.customGrade = updated.customGrade || '';
+        } else {
+          updated.customGrade = '';
         }
       }
       
@@ -274,7 +290,7 @@ const PDFFileTable = ({
                       <select
                         value={editingValues.material || ''}
                         onChange={(e) => handleInputChange('material', e.target.value)}
-                        className={selectClass}
+                        className={materialSelectClass}
                       >
                         <option value="">Select Material</option>
                         {availableMaterials.map((material) => (
@@ -300,11 +316,13 @@ const PDFFileTable = ({
                   {renderFieldLabel('Thickness')}
                   {isEditing ? (
                     <input
-                      type="text"
+                      type="number"
+                      step="0.1"
+                      min="0"
                       value={editingValues.thickness || ''}
                       onChange={(e) => handleInputChange('thickness', e.target.value)}
                       placeholder="e.g. 1.5"
-                      className={inputClass}
+                      className={thicknessFieldClass}
                       disabled={!selectedMaterial}
                     />
                   ) : (
@@ -315,11 +333,11 @@ const PDFFileTable = ({
                 <div>
                   {renderFieldLabel('Grade')}
                   {isEditing ? (
-                    selectedMaterial === 'Other' ? (
+                    (selectedMaterial === 'Other' || editingValues.grade === 'Other') ? (
                       <input
                         type="text"
-                        value={editingValues.grade || ''}
-                        onChange={(e) => handleInputChange('grade', e.target.value)}
+                        value={editingValues.customGrade || ''}
+                        onChange={(e) => handleInputChange('customGrade', e.target.value)}
                         placeholder="Enter grade (optional)"
                         className={gradeFieldClass}
                       />
@@ -466,7 +484,7 @@ const PDFFileTable = ({
                         <select
                           value={editingValues.material || ''}
                           onChange={(e) => handleInputChange('material', e.target.value)}
-                          className={selectClass}
+                          className={materialSelectClass}
                         >
                           <option value="">Select Material</option>
                           {availableMaterials.map((material) => (
@@ -490,11 +508,13 @@ const PDFFileTable = ({
                   <td className="px-3 py-4">
                     {isEditing ? (
                       <input
-                        type="text"
+                        type="number"
+                        step="0.1"
+                        min="0"
                         value={editingValues.thickness || ''}
                         onChange={(e) => handleInputChange('thickness', e.target.value)}
                         placeholder="e.g. 1.5"
-                        className={inputClass}
+                        className={thicknessFieldClass}
                         disabled={!selectedMaterial}
                       />
                     ) : (
@@ -503,11 +523,11 @@ const PDFFileTable = ({
                   </td>
                   <td className="px-3 py-4">
                     {isEditing ? (
-                      selectedMaterial === 'Other' ? (
+                      (selectedMaterial === 'Other' || editingValues.grade === 'Other') ? (
                         <input
                           type="text"
-                          value={editingValues.grade || ''}
-                          onChange={(e) => handleInputChange('grade', e.target.value)}
+                          value={editingValues.customGrade || ''}
+                          onChange={(e) => handleInputChange('customGrade', e.target.value)}
                           placeholder="Enter grade (optional)"
                           className={gradeFieldClass}
                         />
