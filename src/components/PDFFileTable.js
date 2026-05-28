@@ -11,11 +11,12 @@ import toast from 'react-hot-toast';
 const inputClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm';
 const selectClass =
-  'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm custom-select-scroll scrollable-dropdown';
+  'w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm custom-select-scroll scrollable-dropdown select-with-caret';
+const numberInputClass = `${inputClass} number-input`;
 const materialSelectClass = `${selectClass} min-w-[150px]`;
 const gradeFieldClass = `${inputClass} min-w-[120px]`;
 const gradeSelectClass = `${selectClass} min-w-[120px]`;
-const thicknessFieldClass = `${inputClass} w-20`;
+const thicknessFieldClass = `${numberInputClass} w-20`;
 
 const MATERIAL_OPTIONS = ['Mild Steel', 'Stainless Steel', 'Other'];
 const GRADE_OPTIONS_BY_MATERIAL = {
@@ -237,6 +238,25 @@ const PDFFileTable = ({
         .scrollable-dropdown option:hover {
           background-color: #EFF6FF;
         }
+        .select-with-caret {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236B7280'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 0.6rem center;
+          background-size: 1rem 1rem;
+        }
+        .number-input {
+          appearance: auto;
+          -moz-appearance: auto;
+        }
+        .number-input::-webkit-outer-spin-button,
+        .number-input::-webkit-inner-spin-button {
+          -webkit-appearance: auto;
+          margin: 0;
+          opacity: 1;
+        }
       `}</style>
 
       <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
@@ -282,7 +302,7 @@ const PDFFileTable = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-[1.35fr_1fr] gap-2">
                 <div>
                   {renderFieldLabel('Material')}
                   {isEditing ? (
@@ -290,7 +310,7 @@ const PDFFileTable = ({
                       <select
                         value={editingValues.material || ''}
                         onChange={(e) => handleInputChange('material', e.target.value)}
-                        className={materialSelectClass}
+                        className={selectClass}
                       >
                         <option value="">Select Material</option>
                         {availableMaterials.map((material) => (
@@ -322,7 +342,7 @@ const PDFFileTable = ({
                       value={editingValues.thickness || ''}
                       onChange={(e) => handleInputChange('thickness', e.target.value)}
                       placeholder="e.g. 1.5"
-                      className={thicknessFieldClass}
+                      className={numberInputClass}
                       disabled={!selectedMaterial}
                     />
                   ) : (
@@ -339,13 +359,13 @@ const PDFFileTable = ({
                         value={editingValues.customGrade || ''}
                         onChange={(e) => handleInputChange('customGrade', e.target.value)}
                         placeholder="Enter grade (optional)"
-                        className={gradeFieldClass}
+                        className={inputClass}
                       />
                     ) : (
                       <select
                         value={editingValues.grade || ''}
                         onChange={(e) => handleInputChange('grade', e.target.value)}
-                        className={gradeSelectClass}
+                        className={selectClass}
                         disabled={!selectedMaterial}
                       >
                         {filteredGrades.map((grade) => (
@@ -368,7 +388,7 @@ const PDFFileTable = ({
                         value={editingValues.quantity || ''}
                         onChange={(e) => handleInputChange('quantity', parseInt(e.target.value, 10) || '')}
                         placeholder="Qty"
-                        className={`${inputClass} ${
+                        className={`${numberInputClass} ${
                           !editingValues.quantity || editingValues.quantity < 1
                             ? 'border-red-300 bg-red-50'
                             : ''
@@ -587,7 +607,7 @@ const PDFFileTable = ({
                           value={editingValues.quantity || ''}
                           onChange={(e) => handleInputChange('quantity', parseInt(e.target.value, 10) || '')}
                           placeholder="Qty"
-                          className={`${inputClass} ${
+                          className={`${numberInputClass} ${
                             !editingValues.quantity || editingValues.quantity < 1
                               ? 'border-red-300 bg-red-50'
                               : ''
