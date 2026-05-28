@@ -83,9 +83,9 @@ const PDFFileTable = ({
   };
 
   const handleEdit = (fileId, file) => {
-    const fileMaterial = file.material || 'Mild Steel';
-    const isPresetMaterial = MATERIAL_OPTIONS.includes(fileMaterial);
-    const selectedMaterial = isPresetMaterial ? fileMaterial : 'Other';
+    const fileMaterial = file.material || '';
+    const isPresetMaterial = fileMaterial && MATERIAL_OPTIONS.includes(fileMaterial);
+    const selectedMaterial = isPresetMaterial ? fileMaterial : (fileMaterial ? 'Other' : '');
     const gradeOptions = getGradeOptionsForMaterial(selectedMaterial);
     const fileGrade = file.grade || '';
     const isKnownGrade = gradeOptions.includes(fileGrade);
@@ -95,13 +95,13 @@ const PDFFileTable = ({
       partRef: file.partRef || file.name,
       material: selectedMaterial,
       customMaterial: selectedMaterial === 'Other' && fileMaterial !== 'Other' ? fileMaterial : '',
-      thickness: file.thickness || '1.5',
-      grade: selectedMaterial === 'Other' ? 'Other' : (isKnownGrade ? fileGrade : (fileGrade ? 'Other' : (gradeOptions[0] || ''))),
+      thickness: file.thickness || '',
+      grade: selectedMaterial === 'Other' ? (fileGrade || 'Other') : (isKnownGrade ? fileGrade : (fileGrade ? 'Other' : '')),
       customGrade: selectedMaterial === 'Other'
         ? (fileGrade && fileGrade !== 'Other' ? fileGrade : '')
         : (!isKnownGrade && fileGrade && fileGrade !== 'Other' ? fileGrade : ''),
-      remarks: file.remarks || 'As per drawing',
-      quantity: file.quantity || 1
+      remarks: file.remarks || '',
+      quantity: file.quantity ?? 0
     });
   };
 
@@ -161,9 +161,9 @@ const PDFFileTable = ({
           updated.grade = 'Other';
           updated.customGrade = updated.customGrade || '';
         } else {
-          const grades = getGradeOptionsForMaterial(processedValue);
+          const gradeOptions = getGradeOptionsForMaterial(processedValue);
           updated.customMaterial = '';
-          updated.grade = grades.length > 0 ? grades[0] : '';
+          updated.grade = gradeOptions.length > 0 ? gradeOptions[0] : '';
           updated.customGrade = '';
         }
       } else if (field === 'grade') {
@@ -328,7 +328,7 @@ const PDFFileTable = ({
                       )}
                     </>
                   ) : (
-                    <span className="text-sm text-gray-900">{file.material || availableMaterials[0]}</span>
+                    <span className="text-sm text-gray-900">{file.material || '-'}</span>
                   )}
                 </div>
 
@@ -346,14 +346,14 @@ const PDFFileTable = ({
                       disabled={!selectedMaterial}
                     />
                   ) : (
-                    <span className="text-sm text-gray-900">{file.thickness || '1.5'}mm</span>
+                    <span className="text-sm text-gray-900">{file.thickness ? `${file.thickness}mm` : '-'}</span>
                   )}
                 </div>
 
                 <div>
                   {renderFieldLabel('Grade')}
                   {isEditing ? (
-                    (selectedMaterial === 'Other' || editingValues.grade === 'Other') ? (
+                    selectedMaterial === 'Other' ? (
                       <input
                         type="text"
                         value={editingValues.customGrade || ''}
@@ -362,16 +362,28 @@ const PDFFileTable = ({
                         className={inputClass}
                       />
                     ) : (
-                      <select
-                        value={editingValues.grade || ''}
-                        onChange={(e) => handleInputChange('grade', e.target.value)}
-                        className={selectClass}
-                        disabled={!selectedMaterial}
-                      >
-                        {filteredGrades.map((grade) => (
-                          <option key={grade} value={grade}>{grade}</option>
-                        ))}
-                      </select>
+                      <>
+                        <select
+                          value={editingValues.grade || ''}
+                          onChange={(e) => handleInputChange('grade', e.target.value)}
+                          className={selectClass}
+                          disabled={!selectedMaterial}
+                        >
+                          <option value="">Select Grade</option>
+                          {filteredGrades.map((grade) => (
+                            <option key={grade} value={grade}>{grade}</option>
+                          ))}
+                        </select>
+                        {editingValues.grade === 'Other' && (
+                          <input
+                            type="text"
+                            value={editingValues.customGrade || ''}
+                            onChange={(e) => handleInputChange('customGrade', e.target.value)}
+                            placeholder="Enter grade (optional)"
+                            className={`${inputClass} mt-2`}
+                          />
+                        )}
+                      </>
                     )
                   ) : (
                     <span className="text-sm text-gray-900">{file.grade || '-'}</span>
@@ -457,9 +469,33 @@ const PDFFileTable = ({
         })}
       </div>
 
-      {/* Desktop: table with horizontal scroll fallback */}
-      <div className="hidden md:block overflow-x-auto -mx-px">
-        <table className="min-w-[900px] w-full divide-y divide-gray-200">
+      {/* Desktop: table with wrapped long content */}
+      <div className="hidden md:block -mx-px">
+        <table className="w-full table-fixed divide-y divide-gray-200">
+          <colgroup>
+            {showCreatedColumn ? (
+              <>
+                <col className="w-[20%]" />
+                <col className="w-[16%]" />
+                <col className="w-[11%]" />
+                <col className="w-[11%]" />
+                <col className="w-[14%]" />
+                <col className="w-[8%]" />
+                <col className="w-[10%]" />
+                <col className="w-[10%]" />
+              </>
+            ) : (
+              <>
+                <col className="w-[22%]" />
+                <col className="w-[17%]" />
+                <col className="w-[11%]" />
+                <col className="w-[12%]" />
+                <col className="w-[15%]" />
+                <col className="w-[9%]" />
+                <col className="w-[14%]" />
+              </>
+            )}
+          </colgroup>
           <thead className="bg-gray-50">
             <tr>
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Part Name</th>
@@ -490,9 +526,9 @@ const PDFFileTable = ({
                         className={inputClass}
                       />
                     ) : (
-                      <div className="flex items-center">
+                      <div className="flex items-start">
                         <DocumentIcon className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-                        <span className="text-sm font-medium text-gray-900 truncate" title={file.partRef || file.name}>
+                        <span className="text-sm font-medium text-gray-900 break-all whitespace-normal" title={file.partRef || file.name}>
                           {file.partRef || file.name || 'N/A'}
                         </span>
                       </div>
@@ -504,7 +540,7 @@ const PDFFileTable = ({
                         <select
                           value={editingValues.material || ''}
                           onChange={(e) => handleInputChange('material', e.target.value)}
-                          className={materialSelectClass}
+                          className={selectClass}
                         >
                           <option value="">Select Material</option>
                           {availableMaterials.map((material) => (
@@ -522,7 +558,7 @@ const PDFFileTable = ({
                         )}
                       </>
                     ) : (
-                      <span className="text-sm text-gray-900">{file.material || availableMaterials[0]}</span>
+                      <span className="text-sm text-gray-900">{file.material || '-'}</span>
                     )}
                   </td>
                   <td className="px-3 py-4">
@@ -534,34 +570,46 @@ const PDFFileTable = ({
                         value={editingValues.thickness || ''}
                         onChange={(e) => handleInputChange('thickness', e.target.value)}
                         placeholder="e.g. 1.5"
-                        className={thicknessFieldClass}
+                        className={numberInputClass}
                         disabled={!selectedMaterial}
                       />
                     ) : (
-                      <span className="text-sm text-gray-900">{file.thickness || '1.5'}mm</span>
+                      <span className="text-sm text-gray-900">{file.thickness ? `${file.thickness}mm` : '-'}</span>
                     )}
                   </td>
                   <td className="px-3 py-4">
                     {isEditing ? (
-                      (selectedMaterial === 'Other' || editingValues.grade === 'Other') ? (
+                      selectedMaterial === 'Other' ? (
                         <input
                           type="text"
                           value={editingValues.customGrade || ''}
                           onChange={(e) => handleInputChange('customGrade', e.target.value)}
                           placeholder="Enter grade (optional)"
-                          className={gradeFieldClass}
+                          className={inputClass}
                         />
                       ) : (
-                        <select
-                          value={editingValues.grade || ''}
-                          onChange={(e) => handleInputChange('grade', e.target.value)}
-                          className={gradeSelectClass}
-                          disabled={!selectedMaterial}
-                        >
-                          {filteredGrades.map((grade) => (
-                            <option key={grade} value={grade}>{grade}</option>
-                          ))}
-                        </select>
+                        <>
+                          <select
+                            value={editingValues.grade || ''}
+                            onChange={(e) => handleInputChange('grade', e.target.value)}
+                            className={selectClass}
+                            disabled={!selectedMaterial}
+                          >
+                            <option value="">Select Grade</option>
+                            {filteredGrades.map((grade) => (
+                              <option key={grade} value={grade}>{grade}</option>
+                            ))}
+                          </select>
+                          {editingValues.grade === 'Other' && (
+                            <input
+                              type="text"
+                              value={editingValues.customGrade || ''}
+                              onChange={(e) => handleInputChange('customGrade', e.target.value)}
+                              placeholder="Enter grade (optional)"
+                              className={`${inputClass} mt-2`}
+                            />
+                          )}
+                        </>
                       )
                     ) : (
                       <span className="text-sm text-gray-900">{file.grade || '-'}</span>
@@ -587,7 +635,7 @@ const PDFFileTable = ({
                       </div>
                     ) : (
                       <span
-                        className={`text-sm truncate block ${
+                        className={`text-sm block break-words ${
                           !file.remarks || file.remarks.trim() === ''
                             ? 'text-red-600 italic'
                             : 'text-gray-900'
@@ -634,7 +682,7 @@ const PDFFileTable = ({
                       {formatDate(file.createdAt || file.created)}
                     </td>
                   )}
-                  <td className="px-3 py-4 text-sm font-medium">
+                  <td className="px-2 py-4 text-sm font-medium">
                     <FileActionButtons
                       fileId={fileId}
                       file={file}

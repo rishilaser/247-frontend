@@ -202,17 +202,15 @@ const NewInquiry = () => {
         return;
       }
       
-      const defaultMaterial = materialData[0];
-      
       const processedFiles = validFiles.map((file, index) => ({
         id: `file_${Date.now()}_${index}`,
         name: file.name,
         partRef: file.name,
-        material: defaultMaterial.material,
-        thickness: defaultMaterial.thickness,
-        grade: defaultMaterial.grade || '',
-        remarks: '', // Empty by default - user must fill
-        quantity: 1,
+        material: '',
+        thickness: '0',
+        grade: '',
+        remarks: 'As per drawing',
+        quantity: 0,
         createdAt: new Date().toISOString(),
         file: file,
         fileType: file.name.split('.').pop().toLowerCase()
@@ -282,17 +280,15 @@ const NewInquiry = () => {
       return;
     }
     
-    const defaultMaterial = materialData[0];
-    
     const processedFiles = validFiles.map((file, index) => ({
       id: `file_${Date.now()}_${index}`,
       name: file.name,
       partRef: file.name,
-      material: defaultMaterial.material,
-      thickness: defaultMaterial.thickness,
-      grade: defaultMaterial.grade || '',
-      remarks: '', // Empty by default - user must fill
-      quantity: 1,
+      material: '',
+      thickness: '0',
+      grade: '',
+      remarks: 'As per drawing',
+      quantity: 0,
       createdAt: new Date().toISOString(),
       file: file,
       fileType: file.name.split('.').pop().toLowerCase()
