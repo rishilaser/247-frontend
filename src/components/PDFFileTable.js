@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { 
   PencilIcon, 
   TrashIcon, 
@@ -12,6 +12,14 @@ const inputClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm';
 const selectClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm custom-select-scroll scrollable-dropdown';
+const gradeFieldClass = `${inputClass} min-w-[90px]`;
+const gradeSelectClass = `${selectClass} min-w-[90px]`;
+
+const MATERIAL_OPTIONS = ['Mild Steel', 'Stainless Steel', 'Other'];
+const GRADE_OPTIONS_BY_MATERIAL = {
+  'Mild Steel': ['2062', 'Other'],
+  'Stainless Steel': ['302', 'Other'],
+};
 
 const FileActionButtons = ({ fileId, file, isEditing, onEdit, onSave, onCancel, onDelete }) => (
   <div className="flex items-center gap-2 shrink-0">
@@ -65,40 +73,22 @@ const PDFFileTable = ({
   const [editingId, setEditingId] = useState(null);
   const [editingValues, setEditingValues] = useState({});
 
-  const availableMaterials = useMemo(() => {
-    return materialData.length > 0 
-      ? [...new Set(materialData.map(m => m.material))]
-      : ['Zintec', 'Mild Steel', 'Stainless Steel', 'Aluminum', 'Galvanized Steel'];
-  }, [materialData]);
+  const availableMaterials = MATERIAL_OPTIONS;
   
-  const getThicknessesForMaterial = (material) => {
-    if (!material || materialData.length === 0) {
-      return materialData.length > 0
-        ? [...new Set(materialData.map(m => m.thickness))].sort((a, b) => parseFloat(a) - parseFloat(b))
-        : ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '4.0', '5.0'];
-    }
-    return materialData
-      .filter(m => m.material === material)
-      .map(m => m.thickness)
-      .filter((thickness, index, self) => self.indexOf(thickness) === index)
-      .sort((a, b) => parseFloat(a) - parseFloat(b));
-  };
-  
-  const getGradesForMaterialAndThickness = (material, thickness) => {
-    if (!material || !thickness || materialData.length === 0) {
-      return [];
-    }
-    return materialData
-      .filter(m => m.material === material && m.thickness === thickness && m.grade && m.grade.trim() !== '')
-      .map(m => m.grade)
-      .filter((grade, index, self) => self.indexOf(grade) === index);
+  const getGradeOptionsForMaterial = (material) => {
+    return GRADE_OPTIONS_BY_MATERIAL[material] || [];
   };
 
   const handleEdit = (fileId, file) => {
+    const fileMaterial = file.material || 'Mild Steel';
+    const isPresetMaterial = MATERIAL_OPTIONS.includes(fileMaterial);
+    const selectedMaterial = isPresetMaterial ? fileMaterial : 'Other';
+
     setEditingId(fileId);
     setEditingValues({
       partRef: file.partRef || file.name,
-      material: file.material || 'Zintec',
+      material: selectedMaterial,
+      customMaterial: selectedMaterial === 'Other' && fileMaterial !== 'Other' ? fileMaterial : '',
       thickness: file.thickness || '1.5',
       grade: file.grade || '',
       remarks: file.remarks || 'As per drawing',
@@ -117,7 +107,20 @@ const PDFFileTable = ({
       return;
     }
     
-    onUpdateFile(fileId, editingValues);
+    const materialValue =
+      editingValues.material === 'Other'
+        ? (editingValues.customMaterial || '').trim() || 'Other'
+        : editingValues.material;
+    const gradeValue =
+      editingValues.material === 'Other'
+        ? (editingValues.grade || '').trim() || 'Other'
+        : editingValues.grade;
+
+    onUpdateFile(fileId, {
+      ...editingValues,
+      material: materialValue,
+      grade: gradeValue
+    });
     setEditingId(null);
     setEditingValues({});
     toast.success('File details updated successfully');
@@ -144,18 +147,14 @@ const PDFFileTable = ({
       };
       
       if (field === 'material') {
-        const thicknesses = getThicknessesForMaterial(processedValue);
-        if (thicknesses.length > 0) {
-          updated.thickness = thicknesses[0];
-          const grades = getGradesForMaterialAndThickness(processedValue, thicknesses[0]);
-          updated.grade = grades.length > 0 ? grades[0] : '';
+        if (processedValue === 'Other') {
+          updated.customMaterial = updated.customMaterial || '';
+          updated.grade = updated.grade || '';
         } else {
-          updated.thickness = '';
-          updated.grade = '';
+          const grades = getGradeOptionsForMaterial(processedValue);
+          updated.customMaterial = '';
+          updated.grade = grades.length > 0 ? grades[0] : '';
         }
-      } else if (field === 'thickness') {
-        const grades = getGradesForMaterialAndThickness(updated.material, processedValue);
-        updated.grade = grades.length > 0 ? grades[0] : '';
       }
       
       return updated;
@@ -179,11 +178,9 @@ const PDFFileTable = ({
     const fileId = file.id || index;
     const isEditing = editingId === fileId;
     const selectedMaterial = isEditing ? editingValues.material : file.material;
-    const selectedThickness = isEditing ? editingValues.thickness : file.thickness;
-    const filteredThicknesses = getThicknessesForMaterial(selectedMaterial);
-    const filteredGrades = getGradesForMaterialAndThickness(selectedMaterial, selectedThickness);
+    const filteredGrades = getGradeOptionsForMaterial(selectedMaterial);
 
-    return { fileId, isEditing, selectedMaterial, selectedThickness, filteredThicknesses, filteredGrades };
+    return { fileId, isEditing, selectedMaterial, filteredGrades };
   };
 
   const renderFieldLabel = (label) => (
@@ -234,7 +231,7 @@ const PDFFileTable = ({
       {/* Mobile: card layout */}
       <div className="md:hidden divide-y divide-gray-200">
         {files.map((file, index) => {
-          const { fileId, isEditing, selectedMaterial, selectedThickness, filteredThicknesses, filteredGrades } =
+          const { fileId, isEditing, selectedMaterial, filteredGrades } =
             getFileContext(file, index);
 
           return (
@@ -273,16 +270,27 @@ const PDFFileTable = ({
                 <div>
                   {renderFieldLabel('Material')}
                   {isEditing ? (
-                    <select
-                      value={editingValues.material || ''}
-                      onChange={(e) => handleInputChange('material', e.target.value)}
-                      className={selectClass}
-                    >
-                      <option value="">Select Material</option>
-                      {availableMaterials.map((material) => (
-                        <option key={material} value={material}>{material}</option>
-                      ))}
-                    </select>
+                    <>
+                      <select
+                        value={editingValues.material || ''}
+                        onChange={(e) => handleInputChange('material', e.target.value)}
+                        className={selectClass}
+                      >
+                        <option value="">Select Material</option>
+                        {availableMaterials.map((material) => (
+                          <option key={material} value={material}>{material}</option>
+                        ))}
+                      </select>
+                      {selectedMaterial === 'Other' && (
+                        <input
+                          type="text"
+                          value={editingValues.customMaterial || ''}
+                          onChange={(e) => handleInputChange('customMaterial', e.target.value)}
+                          placeholder="Enter other material (optional)"
+                          className={`${inputClass} mt-2`}
+                        />
+                      )}
+                    </>
                   ) : (
                     <span className="text-sm text-gray-900">{file.material || availableMaterials[0]}</span>
                   )}
@@ -291,16 +299,14 @@ const PDFFileTable = ({
                 <div>
                   {renderFieldLabel('Thickness')}
                   {isEditing ? (
-                    <select
+                    <input
+                      type="text"
                       value={editingValues.thickness || ''}
                       onChange={(e) => handleInputChange('thickness', e.target.value)}
-                      className={selectClass}
+                      placeholder="e.g. 1.5"
+                      className={inputClass}
                       disabled={!selectedMaterial}
-                    >
-                      {filteredThicknesses.map((thickness) => (
-                        <option key={thickness} value={thickness}>{thickness}mm</option>
-                      ))}
-                    </select>
+                    />
                   ) : (
                     <span className="text-sm text-gray-900">{file.thickness || '1.5'}mm</span>
                   )}
@@ -309,16 +315,26 @@ const PDFFileTable = ({
                 <div>
                   {renderFieldLabel('Grade')}
                   {isEditing ? (
-                    <select
-                      value={editingValues.grade || ''}
-                      onChange={(e) => handleInputChange('grade', e.target.value)}
-                      className={selectClass}
-                      disabled={!selectedMaterial || !selectedThickness}
-                    >
-                      {filteredGrades.map((grade) => (
-                        <option key={grade} value={grade}>{grade}</option>
-                      ))}
-                    </select>
+                    selectedMaterial === 'Other' ? (
+                      <input
+                        type="text"
+                        value={editingValues.grade || ''}
+                        onChange={(e) => handleInputChange('grade', e.target.value)}
+                        placeholder="Enter grade (optional)"
+                        className={gradeFieldClass}
+                      />
+                    ) : (
+                      <select
+                        value={editingValues.grade || ''}
+                        onChange={(e) => handleInputChange('grade', e.target.value)}
+                        className={gradeSelectClass}
+                        disabled={!selectedMaterial}
+                      >
+                        {filteredGrades.map((grade) => (
+                          <option key={grade} value={grade}>{grade}</option>
+                        ))}
+                      </select>
+                    )
                   ) : (
                     <span className="text-sm text-gray-900">{file.grade || '-'}</span>
                   )}
@@ -422,7 +438,7 @@ const PDFFileTable = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {files.map((file, index) => {
-              const { fileId, isEditing, selectedMaterial, selectedThickness, filteredThicknesses, filteredGrades } =
+              const { fileId, isEditing, selectedMaterial, filteredGrades } =
                 getFileContext(file, index);
 
               return (
@@ -446,48 +462,67 @@ const PDFFileTable = ({
                   </td>
                   <td className="px-3 py-4">
                     {isEditing ? (
-                      <select
-                        value={editingValues.material || ''}
-                        onChange={(e) => handleInputChange('material', e.target.value)}
-                        className={selectClass}
-                      >
-                        <option value="">Select Material</option>
-                        {availableMaterials.map((material) => (
-                          <option key={material} value={material}>{material}</option>
-                        ))}
-                      </select>
+                      <>
+                        <select
+                          value={editingValues.material || ''}
+                          onChange={(e) => handleInputChange('material', e.target.value)}
+                          className={selectClass}
+                        >
+                          <option value="">Select Material</option>
+                          {availableMaterials.map((material) => (
+                            <option key={material} value={material}>{material}</option>
+                          ))}
+                        </select>
+                        {selectedMaterial === 'Other' && (
+                          <input
+                            type="text"
+                            value={editingValues.customMaterial || ''}
+                            onChange={(e) => handleInputChange('customMaterial', e.target.value)}
+                            placeholder="Enter other material (optional)"
+                            className={`${inputClass} mt-2`}
+                          />
+                        )}
+                      </>
                     ) : (
                       <span className="text-sm text-gray-900">{file.material || availableMaterials[0]}</span>
                     )}
                   </td>
                   <td className="px-3 py-4">
                     {isEditing ? (
-                      <select
+                      <input
+                        type="text"
                         value={editingValues.thickness || ''}
                         onChange={(e) => handleInputChange('thickness', e.target.value)}
-                        className={selectClass}
+                        placeholder="e.g. 1.5"
+                        className={inputClass}
                         disabled={!selectedMaterial}
-                      >
-                        {filteredThicknesses.map((thickness) => (
-                          <option key={thickness} value={thickness}>{thickness}mm</option>
-                        ))}
-                      </select>
+                      />
                     ) : (
                       <span className="text-sm text-gray-900">{file.thickness || '1.5'}mm</span>
                     )}
                   </td>
                   <td className="px-3 py-4">
                     {isEditing ? (
-                      <select
-                        value={editingValues.grade || ''}
-                        onChange={(e) => handleInputChange('grade', e.target.value)}
-                        className={selectClass}
-                        disabled={!selectedMaterial || !selectedThickness}
-                      >
-                        {filteredGrades.map((grade) => (
-                          <option key={grade} value={grade}>{grade}</option>
-                        ))}
-                      </select>
+                      selectedMaterial === 'Other' ? (
+                        <input
+                          type="text"
+                          value={editingValues.grade || ''}
+                          onChange={(e) => handleInputChange('grade', e.target.value)}
+                          placeholder="Enter grade (optional)"
+                          className={gradeFieldClass}
+                        />
+                      ) : (
+                        <select
+                          value={editingValues.grade || ''}
+                          onChange={(e) => handleInputChange('grade', e.target.value)}
+                          className={gradeSelectClass}
+                          disabled={!selectedMaterial}
+                        >
+                          {filteredGrades.map((grade) => (
+                            <option key={grade} value={grade}>{grade}</option>
+                          ))}
+                        </select>
+                      )
                     ) : (
                       <span className="text-sm text-gray-900">{file.grade || '-'}</span>
                     )}
