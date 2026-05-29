@@ -16,6 +16,51 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
 import axios from 'axios';
 
+const MATERIAL_OPTIONS = ['Mild Steel', 'Stainless Steel', 'Other'];
+const GRADE_OPTIONS_BY_MATERIAL = {
+  'Mild Steel': ['2062', 'Other'],
+  'Stainless Steel': ['302', 'Other'],
+};
+
+const fieldInputClass =
+  'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm';
+const fieldSelectClass =
+  'w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm';
+
+const getGradeOptionsForMaterial = (material) => GRADE_OPTIONS_BY_MATERIAL[material] || [];
+
+const normalizePartForEdit = (spec) => {
+  const fileMaterial = spec.material || '';
+  const isPresetMaterial = fileMaterial && MATERIAL_OPTIONS.includes(fileMaterial);
+  const selectedMaterial = isPresetMaterial ? fileMaterial : (fileMaterial ? 'Other' : '');
+  const gradeOptions = getGradeOptionsForMaterial(selectedMaterial);
+  const fileGrade = spec.grade || '';
+  const isKnownGrade = gradeOptions.includes(fileGrade);
+
+  return {
+    ...spec,
+    material: selectedMaterial,
+    customMaterial: selectedMaterial === 'Other' && fileMaterial !== 'Other' ? fileMaterial : '',
+    thickness: spec.thickness ?? '',
+    grade: selectedMaterial === 'Other' ? (fileGrade || 'Other') : (isKnownGrade ? fileGrade : (fileGrade ? 'Other' : '')),
+    customGrade: selectedMaterial === 'Other'
+      ? (fileGrade && fileGrade !== 'Other' ? fileGrade : '')
+      : (!isKnownGrade && fileGrade && fileGrade !== 'Other' ? fileGrade : ''),
+    remarks: spec.remarks || spec.remark || '',
+    quantity: spec.quantity ?? 0,
+  };
+};
+
+const resolvePartValuesForSave = (part) => {
+  const material = part.material === 'Other'
+    ? (part.customMaterial || '').trim() || 'Other'
+    : part.material;
+  const grade = part.material === 'Other' || part.grade === 'Other'
+    ? (part.customGrade || '').trim() || 'Other'
+    : part.grade;
+  return { material, grade };
+};
+
 const isEmptyAddress = (addr) => {
   if (!addr) return true;
   const street = (addr.street || '').trim();
@@ -58,39 +103,17 @@ const InquiryDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingParts, setEditingParts] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [materialData, setMaterialData] = useState([]);
   const [acceptingQuote, setAcceptingQuote] = useState(false);
   const [showQuotationPdf, setShowQuotationPdf] = useState(false);
   const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [sendingQuotation, setSendingQuotation] = useState(false);
 
-  // Get base URL for material data
   const getBaseURL = () => {
-    const url = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const url = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
     return url.replace(/\/api$/, '');
   };
 
   const API_URL = getBaseURL();
-
-  // Fetch material data for edit mode
-  useEffect(() => {
-    if (isEditing) {
-      fetchMaterialData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditing]);
-
-  const fetchMaterialData = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/admin/materials`);
-      if (response.data.success && response.data.materialData) {
-        const activeMaterials = response.data.materialData.filter(m => m.status === 'Active');
-        setMaterialData(activeMaterials);
-      }
-    } catch (error) {
-      console.error('Error fetching material data:', error);
-    }
-  };
 
   // Helper function to remove file extension from part name
   const removeFileExtension = (filename) => {
@@ -583,7 +606,7 @@ const InquiryDetail = () => {
   // Handle edit inquiry for customers
   const handleStartEdit = () => {
     if (inquiry?.specifications && inquiry.specifications.length > 0) {
-      setEditingParts(inquiry.specifications.map(spec => ({ ...spec })));
+      setEditingParts(inquiry.specifications.map((spec) => normalizePartForEdit(spec)));
       setIsEditing(true);
     }
   };
@@ -612,14 +635,17 @@ const InquiryDetail = () => {
     try {
       setSaving(true);
       const response = await inquiryAPI.updateInquiry(inquiry.inquiryId, {
-        parts: editingParts.map(part => ({
-          partRef: part.partRef || part.fileName || 'N/A',
-          material: part.material,
-          thickness: part.thickness,
-          grade: part.grade || '',
-          quantity: part.quantity,
-          remarks: part.remarks || part.remark || ''
-        }))
+        parts: editingParts.map((part) => {
+          const { material, grade } = resolvePartValuesForSave(part);
+          return {
+            partRef: part.partRef || part.fileName || 'N/A',
+            material,
+            thickness: part.thickness,
+            grade: grade || '',
+            quantity: part.quantity,
+            remarks: part.remarks || part.remark || '',
+          };
+        }),
       });
 
       if (response.data.success) {
@@ -639,84 +665,152 @@ const InquiryDetail = () => {
     }
   };
 
-  // Helper function to get thicknesses for a specific material
-  const getThicknessesForMaterial = (material) => {
-    if (!material || materialData.length === 0) {
-      return materialData.length > 0
-        ? [...new Set(materialData.map(m => m.thickness))].sort((a, b) => parseFloat(a) - parseFloat(b))
-        : ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '4.0', '5.0'];
-    }
-    return materialData
-      .filter(m => m.material === material)
-      .map(m => m.thickness)
-      .filter((thickness, index, self) => self.indexOf(thickness) === index)
-      .sort((a, b) => parseFloat(a) - parseFloat(b));
-  };
-  
-  // Helper function to get grades for a specific material and thickness combination
-  const getGradesForMaterialAndThickness = (material, thickness) => {
-    if (!material || !thickness || materialData.length === 0) {
-      return [];
-    }
-    return materialData
-      .filter(m => m.material === material && m.thickness === thickness && m.grade && m.grade.trim() !== '')
-      .map(m => m.grade)
-      .filter((grade, index, self) => self.indexOf(grade) === index);
-  };
-
   const handlePartFieldChange = (index, field, value) => {
     const updatedParts = [...editingParts];
     const currentPart = updatedParts[index];
-    
-    // When material changes, auto-set first available thickness and grade
+    const processedValue = typeof value === 'string' ? value.trim() : value;
+
     if (field === 'material') {
-      const thicknesses = getThicknessesForMaterial(value);
-      let newThickness = '';
-      let newGrade = '';
-      
-      if (thicknesses.length > 0) {
-        // Auto-set first available thickness
-        newThickness = thicknesses[0];
-        
-        // Auto-set first available grade for the new material and thickness
-        const grades = getGradesForMaterialAndThickness(value, newThickness);
-        if (grades.length > 0) {
-          newGrade = grades[0];
-        }
+      if (processedValue === 'Other') {
+        updatedParts[index] = {
+          ...currentPart,
+          material: processedValue,
+          customMaterial: currentPart.customMaterial || '',
+          grade: 'Other',
+          customGrade: currentPart.customGrade || '',
+        };
+      } else {
+        const gradeOptions = getGradeOptionsForMaterial(processedValue);
+        updatedParts[index] = {
+          ...currentPart,
+          material: processedValue,
+          customMaterial: '',
+          grade: gradeOptions.length > 0 ? gradeOptions[0] : '',
+          customGrade: '',
+        };
       }
-      
+    } else if (field === 'grade') {
       updatedParts[index] = {
         ...currentPart,
-        [field]: value,
-        thickness: newThickness,
-        grade: newGrade
+        grade: processedValue,
+        customGrade: processedValue === 'Other' ? (currentPart.customGrade || '') : '',
       };
-    }
-    // When thickness changes, auto-set first available grade
-    else if (field === 'thickness') {
-      const grades = getGradesForMaterialAndThickness(currentPart.material, value);
-      let newGrade = '';
-      
-      if (grades.length > 0) {
-        // Auto-set first available grade
-        newGrade = grades[0];
-      }
-      
+    } else {
       updatedParts[index] = {
         ...currentPart,
-        [field]: value,
-        grade: newGrade
+        [field]: processedValue,
       };
     }
-    // For other fields, just update the field
-    else {
-      updatedParts[index] = {
-        ...currentPart,
-        [field]: value
-      };
-    }
-    
+
     setEditingParts(updatedParts);
+  };
+
+  const renderFieldLabel = (label) => (
+    <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-gray-500">{label}</span>
+  );
+
+  const renderEditablePartFields = (index, spec) => {
+    const selectedMaterial = spec.material;
+    const filteredGrades = getGradeOptionsForMaterial(selectedMaterial);
+
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        <div className="col-span-2 sm:col-span-1">
+          {renderFieldLabel('Material')}
+          <select
+            value={spec.material || ''}
+            onChange={(e) => handlePartFieldChange(index, 'material', e.target.value)}
+            className={fieldSelectClass}
+          >
+            <option value="">Select Material</option>
+            {MATERIAL_OPTIONS.map((material) => (
+              <option key={material} value={material}>{material}</option>
+            ))}
+          </select>
+          {selectedMaterial === 'Other' && (
+            <input
+              type="text"
+              value={spec.customMaterial || ''}
+              onChange={(e) => handlePartFieldChange(index, 'customMaterial', e.target.value)}
+              placeholder="Enter other material (optional)"
+              className={`${fieldInputClass} mt-2`}
+            />
+          )}
+        </div>
+
+        <div>
+          {renderFieldLabel('Thickness')}
+          <input
+            type="number"
+            step="0.1"
+            min="0"
+            value={spec.thickness ?? ''}
+            onChange={(e) => handlePartFieldChange(index, 'thickness', e.target.value)}
+            placeholder="e.g. 1.5"
+            className={fieldInputClass}
+            disabled={!selectedMaterial}
+          />
+        </div>
+
+        <div>
+          {renderFieldLabel('Grade')}
+          {selectedMaterial === 'Other' ? (
+            <input
+              type="text"
+              value={spec.customGrade || ''}
+              onChange={(e) => handlePartFieldChange(index, 'customGrade', e.target.value)}
+              placeholder="Enter grade (optional)"
+              className={fieldInputClass}
+            />
+          ) : (
+            <>
+              <select
+                value={spec.grade || ''}
+                onChange={(e) => handlePartFieldChange(index, 'grade', e.target.value)}
+                className={fieldSelectClass}
+                disabled={!selectedMaterial}
+              >
+                <option value="">Select Grade</option>
+                {filteredGrades.map((grade) => (
+                  <option key={grade} value={grade}>{grade}</option>
+                ))}
+              </select>
+              {spec.grade === 'Other' && (
+                <input
+                  type="text"
+                  value={spec.customGrade || ''}
+                  onChange={(e) => handlePartFieldChange(index, 'customGrade', e.target.value)}
+                  placeholder="Enter grade (optional)"
+                  className={`${fieldInputClass} mt-2`}
+                />
+              )}
+            </>
+          )}
+        </div>
+
+        <div>
+          {renderFieldLabel('Quantity')}
+          <input
+            type="number"
+            min="0"
+            value={spec.quantity ?? ''}
+            onChange={(e) => handlePartFieldChange(index, 'quantity', parseInt(e.target.value, 10) || 0)}
+            className={fieldInputClass}
+          />
+        </div>
+
+        <div className="col-span-2">
+          {renderFieldLabel('Remark')}
+          <input
+            type="text"
+            value={spec.remarks || spec.remark || ''}
+            onChange={(e) => handlePartFieldChange(index, 'remarks', e.target.value)}
+            placeholder="Remarks"
+            className={fieldInputClass}
+          />
+        </div>
+      </div>
+    );
   };
 
   // Handle Accept Quote button click
@@ -1293,6 +1387,46 @@ const InquiryDetail = () => {
               <p className="py-8 text-center text-sm text-gray-500">No technical specifications available</p>
             ) : (
               <>
+                {isEditing && editingParts.length > 0 && (
+                  <div className="mb-4 space-y-3 md:hidden">
+                    {editingParts.map((spec, index) => {
+                      const partLabel = spec.partRef || spec.fileName || 'N/A';
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                        >
+                          <div className="mb-3 flex gap-2 border-b border-gray-100 pb-3">
+                            <svg
+                              className="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              aria-hidden
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Part reference
+                              </p>
+                              <p className="break-all text-sm font-semibold text-gray-900" title={partLabel}>
+                                {partLabel}
+                              </p>
+                            </div>
+                          </div>
+                          {renderEditablePartFields(index, spec)}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {!isEditing && (inquiry.specifications || []).length > 0 && (
                   <div className="mb-4 space-y-3 md:hidden">
                     {(inquiry.specifications || []).map((spec, index) => {
@@ -1321,7 +1455,7 @@ const InquiryDetail = () => {
                               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                                 Part reference
                               </p>
-                              <p className="truncate text-sm font-semibold text-gray-900" title={partLabel}>
+                              <p className="break-all text-sm font-semibold text-gray-900" title={partLabel}>
                                 {partLabel}
                               </p>
                             </div>
@@ -1357,147 +1491,148 @@ const InquiryDetail = () => {
                 )}
                 <div
                   className={
-                    !isEditing && (inquiry.specifications || []).length > 0
-                      ? 'hidden min-w-0 max-w-full overflow-x-auto rounded-lg border border-gray-200 md:block'
-                      : 'min-w-0 max-w-full overflow-x-auto rounded-lg border border-gray-200'
+                    (inquiry.specifications || []).length > 0 && !isEditing
+                      ? 'hidden min-w-0 overflow-hidden rounded-lg border border-gray-200 md:block'
+                      : isEditing
+                        ? 'hidden min-w-0 overflow-hidden rounded-lg border border-gray-200 md:block'
+                        : 'min-w-0 overflow-hidden rounded-lg border border-gray-200'
                   }
                 >
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="w-full table-fixed divide-y divide-gray-200">
+                <colgroup>
+                  <col className="w-[24%]" />
+                  <col className="w-[14%]" />
+                  <col className="w-[10%]" />
+                  <col className="w-[10%]" />
+                  <col className="w-[18%]" />
+                  <col className="w-[8%]" />
+                </colgroup>
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[120px]">
-                      <div className="flex items-center">
-                        PART REF
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Part Ref
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[120px]">
-                      <div className="flex items-center">
-                        MATERIAL
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Material
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[100px]">
-                      <div className="flex items-center">
-                        THICKNESS
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Thickness
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[100px]">
-                      <div className="flex items-center">
-                        GRADE
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Grade
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[120px]">
-                      <div className="flex items-center">
-                        REMARK
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Remark
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[100px]">
-                      <div className="flex items-center">
-                        QUANTITY
-                        <svg className="ml-1 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Qty
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {isEditing && editingParts.length > 0 ? (
                     editingParts.map((spec, index) => {
-                      const availableMaterials = materialData.length > 0 
-                        ? [...new Set(materialData.map(m => m.material))]
-                        : ['Zintec', 'Mild Steel', 'Stainless Steel', 'Aluminum'];
-                      
-                      // Get filtered options based on current selections
                       const selectedMaterial = spec.material;
-                      const selectedThickness = spec.thickness;
-                      const filteredThicknesses = getThicknessesForMaterial(selectedMaterial);
-                      const filteredGrades = getGradesForMaterialAndThickness(selectedMaterial, selectedThickness);
-                      
+                      const filteredGrades = getGradeOptionsForMaterial(selectedMaterial);
+
                       return (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-4 py-4 text-sm text-gray-900 font-medium">
-                            <div className="flex min-w-0 max-w-[18rem] items-center sm:max-w-[22rem]">
-                              <svg className="mr-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <tr key={index} className="align-top hover:bg-gray-50">
+                          <td className="px-3 py-4 text-sm font-medium text-gray-900">
+                            <div className="flex min-w-0 items-start">
+                              <svg className="mr-2 mt-0.5 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
                               <span
                                 title={spec.partRef || spec.fileName || 'N/A'}
-                                className="min-w-0 flex-1 cursor-help truncate"
+                                className="min-w-0 flex-1 break-all whitespace-normal"
                               >
                                 {spec.partRef || spec.fileName || 'N/A'}
                               </span>
                             </div>
                           </td>
-                          <td className="px-4 py-4">
+                          <td className="px-3 py-4">
                             <select
                               value={spec.material || ''}
                               onChange={(e) => handlePartFieldChange(index, 'material', e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                              required
+                              className={fieldSelectClass}
                             >
                               <option value="">Select Material</option>
-                              {availableMaterials.map(mat => (
-                                <option key={mat} value={mat}>{mat}</option>
+                              {MATERIAL_OPTIONS.map((material) => (
+                                <option key={material} value={material}>{material}</option>
                               ))}
                             </select>
+                            {selectedMaterial === 'Other' && (
+                              <input
+                                type="text"
+                                value={spec.customMaterial || ''}
+                                onChange={(e) => handlePartFieldChange(index, 'customMaterial', e.target.value)}
+                                placeholder="Other material (optional)"
+                                className={`${fieldInputClass} mt-2`}
+                              />
+                            )}
                           </td>
-                          <td className="px-4 py-4">
-                            <select
-                              value={spec.thickness || ''}
+                          <td className="px-3 py-4">
+                            <input
+                              type="number"
+                              step="0.1"
+                              min="0"
+                              value={spec.thickness ?? ''}
                               onChange={(e) => handlePartFieldChange(index, 'thickness', e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                              required
+                              placeholder="0"
+                              className={fieldInputClass}
                               disabled={!selectedMaterial}
-                            >
-                              {filteredThicknesses.map(thick => (
-                                <option key={thick} value={thick}>{thick} mm</option>
-                              ))}
-                            </select>
+                            />
                           </td>
-                          <td className="px-4 py-4">
-                            <select
-                              value={spec.grade || ''}
-                              onChange={(e) => handlePartFieldChange(index, 'grade', e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                              disabled={!selectedMaterial || !selectedThickness}
-                            >
-                              {filteredGrades.map(grade => (
-                                <option key={grade} value={grade}>{grade}</option>
-                              ))}
-                            </select>
+                          <td className="px-3 py-4">
+                            {selectedMaterial === 'Other' ? (
+                              <input
+                                type="text"
+                                value={spec.customGrade || ''}
+                                onChange={(e) => handlePartFieldChange(index, 'customGrade', e.target.value)}
+                                placeholder="Grade (optional)"
+                                className={fieldInputClass}
+                              />
+                            ) : (
+                              <>
+                                <select
+                                  value={spec.grade || ''}
+                                  onChange={(e) => handlePartFieldChange(index, 'grade', e.target.value)}
+                                  className={fieldSelectClass}
+                                  disabled={!selectedMaterial}
+                                >
+                                  <option value="">Select Grade</option>
+                                  {filteredGrades.map((grade) => (
+                                    <option key={grade} value={grade}>{grade}</option>
+                                  ))}
+                                </select>
+                                {spec.grade === 'Other' && (
+                                  <input
+                                    type="text"
+                                    value={spec.customGrade || ''}
+                                    onChange={(e) => handlePartFieldChange(index, 'customGrade', e.target.value)}
+                                    placeholder="Grade (optional)"
+                                    className={`${fieldInputClass} mt-2`}
+                                  />
+                                )}
+                              </>
+                            )}
                           </td>
-                          <td className="px-4 py-4">
+                          <td className="px-3 py-4">
                             <input
                               type="text"
                               value={spec.remarks || spec.remark || ''}
                               onChange={(e) => handlePartFieldChange(index, 'remarks', e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                              className={fieldInputClass}
                               placeholder="Remarks"
                             />
                           </td>
-                          <td className="px-4 py-4">
+                          <td className="px-3 py-4">
                             <input
                               type="number"
-                              min="1"
-                              value={spec.quantity || 1}
-                              onChange={(e) => handlePartFieldChange(index, 'quantity', parseInt(e.target.value) || 1)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                              required
+                              min="0"
+                              value={spec.quantity ?? ''}
+                              onChange={(e) => handlePartFieldChange(index, 'quantity', parseInt(e.target.value, 10) || 0)}
+                              className={fieldInputClass}
                             />
                           </td>
                         </tr>
@@ -1505,25 +1640,25 @@ const InquiryDetail = () => {
                     })
                   ) : inquiry.specifications && inquiry.specifications.length > 0 ? (
                     inquiry.specifications.map((spec, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-4 py-4 text-sm text-gray-900 font-medium">
-                          <div className="flex min-w-0 max-w-[18rem] items-center sm:max-w-[22rem]">
-                            <svg className="mr-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <tr key={index} className="align-top hover:bg-gray-50">
+                        <td className="px-3 py-4 text-sm font-medium text-gray-900">
+                          <div className="flex min-w-0 items-start">
+                            <svg className="mr-2 mt-0.5 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             <span
                               title={spec.partRef || spec.fileName || 'N/A'}
-                              className="min-w-0 flex-1 cursor-help truncate"
+                              className="min-w-0 flex-1 break-all"
                             >
                               {spec.partRef || spec.fileName || 'N/A'}
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-sm text-gray-900 font-medium">{spec.material || 'N/A'}</td>
-                        <td className="px-4 py-4 text-sm text-gray-900">{spec.thickness || 'N/A'}</td>
-                        <td className="px-4 py-4 text-sm text-gray-900">{spec.grade || 'N/A'}</td>
-                        <td className="px-4 py-4 text-sm text-gray-900">{spec.remarks || spec.remark || 'No remarks'}</td>
-                        <td className="px-4 py-4 text-sm text-gray-900">{spec.quantity || 'N/A'}</td>
+                        <td className="px-3 py-4 text-sm text-gray-900 break-words">{spec.material || 'N/A'}</td>
+                        <td className="px-3 py-4 text-sm text-gray-900">{spec.thickness || 'N/A'}</td>
+                        <td className="px-3 py-4 text-sm text-gray-900">{spec.grade || 'N/A'}</td>
+                        <td className="px-3 py-4 text-sm text-gray-900 break-words">{spec.remarks || spec.remark || 'No remarks'}</td>
+                        <td className="px-3 py-4 text-sm text-gray-900">{spec.quantity ?? 'N/A'}</td>
                       </tr>
                     ))
                   ) : (

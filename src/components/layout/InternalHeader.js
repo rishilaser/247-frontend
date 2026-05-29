@@ -158,8 +158,8 @@ const InternalHeader = () => {
             <div className="flex max-w-full items-center hover:opacity-80 transition-opacity duration-200">
               <img
                 src="/Logo.png"
-                alt="247CUTBEND Logo"
-                className="h-12 w-auto max-h-14 max-w-full object-contain object-left sm:h-14 sm:max-h-16 lg:h-16 lg:max-h-[4.5rem]"
+                alt="247 Cut Bend"
+                className="h-8 w-auto max-h-9 max-w-[7.5rem] object-contain object-left sm:h-9 sm:max-w-[8.5rem]"
               />
             </div>
           </div>
@@ -223,10 +223,10 @@ const InternalHeader = () => {
               <div className="flex items-center justify-between">
                 {!isAdminPage && (
                   <div className="flex items-center">
-                    <img 
-                      src="/Logo.png" 
-                      alt="247CUTBEND Logo" 
-                      className="h-16 w-auto mr-2"
+                    <img
+                      src="/Logo.png"
+                      alt="247 Cut Bend"
+                      className="mr-2 h-9 w-auto max-w-[8rem] object-contain"
                     />
                   </div>
                 )}

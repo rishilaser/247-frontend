@@ -5,7 +5,7 @@ export { axios };
 
 // Same as AuthContext: use REACT_APP_API_URL directly, no transformation
 const getBaseURL = () => {
-  return (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
+  return (process.env.REACT_APP_API_URL || 'http://localhost:5001/api').trim().replace(/\/+$/, '');
 };
 // Create axios instance with base configuration
 const api = axios.create({
