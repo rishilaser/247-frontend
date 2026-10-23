@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { inquiryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { hasPermission, PERMISSIONS } from '../../utils/permissionUtils';
 import { roleUtils } from '../../utils/authUtils';
 import { customerCanSeeQuotation } from '../../utils/quotationVisibility';
 
@@ -39,7 +38,8 @@ const InquiryList = () => {
       } else {
         // Customer users get their own inquiries
         response = await inquiryAPI.getInquiries({
-          status: statusFilter,
+          // Re-quoted is a kind of quoted inquiry, narrowed down below
+          status: statusFilter === 'requoted' ? 'quoted' : statusFilter,
           search: searchTerm,
           sortBy: sortBy === 'newest' ? 'createdAt' : 'inquiryNumber',
           sortOrder: sortBy === 'newest' ? 'desc' : 'asc'
@@ -112,7 +112,9 @@ const InquiryList = () => {
               totalAmount: inquiry.quotation.totalAmount,
               validUntil: inquiry.quotation.validUntil,
               orderPaymentWorkflowStatus: inquiry.quotation.orderPaymentWorkflowStatus,
-              payment_status: inquiry.quotation.payment_status
+              payment_status: inquiry.quotation.payment_status,
+              isRequoted: Boolean(inquiry.quotation.isRequoted),
+              previousAmount: inquiry.quotation.previousAmount ?? null
             } : null
           };
         });
@@ -165,7 +167,10 @@ const InquiryList = () => {
       const matchesSearch = inquiry.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            inquiry.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            inquiry.contact.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || inquiry.status === statusFilter;
+      const isRequoted = inquiry.status === 'quoted' && Boolean(inquiry.quotation?.isRequoted);
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'requoted' ? isRequoted : inquiry.status === statusFilter && !(statusFilter === 'quoted' && isRequoted));
       return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
@@ -247,7 +252,10 @@ const InquiryList = () => {
                     <option value="all">All Statuses</option>
                     <option value="pending">Pending</option>
                     <option value="quoted">Quoted</option>
-                    <option value="approved">Approved</option>
+                    <option value="requoted">Re-quoted</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="payment_received">Payment received</option>
+                    <option value="rejected">Rejected</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,7 +308,9 @@ const InquiryList = () => {
                 scrollbar-width: none; /* Firefox */
               }
             `}</style>
-            {filteredInquiries.map((inquiry) => (
+            {filteredInquiries.map((inquiry) => {
+              const isRequoted = inquiry.status === 'quoted' && inquiry.quotation?.isRequoted;
+              return (
               <div 
                 key={inquiry.id} 
                 onClick={() => navigate(`/inquiry/${inquiry._id}`)}
@@ -316,7 +326,11 @@ const InquiryList = () => {
                         {inquiry.id}
                       </h3>
                       <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        inquiry.status === 'quoted' 
+                        isRequoted
+                          ? 'bg-purple-100 text-purple-800'
+                          : inquiry.status === 'rejected' || inquiry.status === 'cancelled'
+                          ? 'bg-red-100 text-red-800'
+                          : inquiry.status === 'quoted' 
                           ? 'bg-green-100 text-green-800' 
                           : inquiry.status === 'payment_received'
                           ? 'bg-emerald-100 text-emerald-800'
@@ -333,7 +347,9 @@ const InquiryList = () => {
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                           </svg>
                         )}
-                        {inquiry.status === 'payment_received'
+                        {isRequoted
+                          ? 'Re-quoted'
+                          : inquiry.status === 'payment_received'
                           ? 'Payment received'
                           : inquiry.status.charAt(0).toUpperCase() + inquiry.status.slice(1)}
                       </span>
@@ -382,7 +398,7 @@ const InquiryList = () => {
                             inquiry.quotation.status === 'rejected' ? 'border-red-200 bg-gradient-to-r from-red-100 to-rose-100 text-red-800' :
                             'border-gray-200 bg-gray-100 text-gray-800'
                           }`}>
-                            {inquiry.quotation.status === 'sent' ? 'Quotation Ready' :
+                            {inquiry.quotation.status === 'sent' ? (inquiry.quotation.isRequoted ? 'Revised Quotation' : 'Quotation Ready') :
                              isActuallyPaid ? 'Paid' :
                              inquiry.quotation.status === 'order_created' ? 'Payment Pending' :
                              inquiry.quotation.status === 'accepted' ? 'Accepted' :
@@ -391,6 +407,11 @@ const InquiryList = () => {
                           </span>
                             );
                           })()}
+                          {inquiry.quotation.previousAmount != null && inquiry.quotation.payment_status !== 'Success' && (
+                            <span className="text-sm text-gray-400 line-through" title="Previous quoted amount">
+                              ₹{Number(inquiry.quotation.previousAmount).toFixed(2)}
+                            </span>
+                          )}
                           <span className="text-base font-bold text-gray-900">
                             ₹{(inquiry.quotation.totalAmount || 0).toFixed(2)}
                           </span>
@@ -426,7 +447,8 @@ const InquiryList = () => {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {filteredInquiries.length === 0 && (

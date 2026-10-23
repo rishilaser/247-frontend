@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import PDFFileTable from '../../components/PDFFileTable';
 import UserInfoDisplay from '../../components/UserInfoDisplay';
 import axios from 'axios';
+import { INQUIRY_ACCEPT_ATTR, isAllowedInquiryFile } from '../../config/inquiryFileTypes';
 
 // Remove /api from end of URL if present to avoid double /api/api
 const getBaseURL = () => {
@@ -14,6 +15,8 @@ const getBaseURL = () => {
 };
 
 const API_URL = getBaseURL();
+
+const MAX_FILES = 100;
 
 const NewInquiry = () => {
   const [formData, setFormData] = useState({
@@ -145,143 +148,39 @@ const NewInquiry = () => {
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const files = Array.from(e.dataTransfer.files);
-      
-      const validFiles = files.filter(file => {
-        const extension = file.name.split('.').pop().toLowerCase();
-        const isValidType = ['dwg', 'dxf', 'zip', 'pdf', 'xlsx', 'xls'].includes(extension);
-        
-        // Validate ALL file types - 5MB limit for all files
-        if (file.size > 5 * 1024 * 1024) {
-          toast.error(`File "${file.name}" exceeds 5MB limit. File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
-          return false;
-        }
-        
-        return isValidType;
-      });
-      
-      if (validFiles.length !== files.length) {
-        const invalidCount = files.length - validFiles.length;
-        if (invalidCount > 0) {
-          toast.error(`${invalidCount} file(s) rejected. Only files up to 5MB are allowed (DWG, DXF, ZIP, PDF, XLSX, XLS)`);
-        }
-      }
-      
-      if (validFiles.length === 0) {
-        toast.error('No valid files dropped');
-        return;
-      }
-      
-      // Check total file limit (100 files)
-      const MAX_FILES = 100;
-      const currentFileCount = pdfFiles.length;
-      const newFileCount = validFiles.length;
-      const totalFiles = currentFileCount + newFileCount;
-      
-      if (totalFiles > MAX_FILES) {
-        const allowedFiles = MAX_FILES - currentFileCount;
-        if (allowedFiles <= 0) {
-          toast.error(`Maximum ${MAX_FILES} files allowed. You already have ${currentFileCount} files.`);
-          return;
-        }
-        toast.error(`Maximum ${MAX_FILES} files allowed. You can add ${allowedFiles} more file(s). Currently have ${currentFileCount} files.`);
-        // Only process allowed files - keep first N files
-        const filesToProcess = validFiles.slice(0, allowedFiles);
-        validFiles.length = 0;
-        validFiles.push(...filesToProcess);
-      }
-      // Process ALL files for the table - use admin's material data
-      if (materialData.length === 0) {
-        toast.error('⚠️ No materials available! Please ask admin to add materials first.');
-        return;
-      }
-      
-      const processedFiles = validFiles.map((file, index) => ({
-        id: `file_${Date.now()}_${index}`,
-        name: file.name,
-        partRef: file.name,
-        material: '',
-        thickness: '0',
-        grade: '',
-        remarks: 'As per drawing',
-        quantity: 0,
-        createdAt: new Date().toISOString(),
-        file: file,
-        fileType: file.name.split('.').pop().toLowerCase()
-      }));
-      
-      setPdfFiles(prev => {
-        const newFiles = [...prev, ...processedFiles];
-        // Move toast outside setState to avoid render phase update
-        setTimeout(() => {
-          toast.success(`${validFiles.length} file(s) uploaded successfully`);
-        }, 0);
-        return newFiles;
-      });
+  // Supported drawing/CAD/document/archive/image types of any size, up to MAX_FILES per inquiry
+  const addFiles = (selectedFiles) => {
+    const unsupported = selectedFiles.filter((file) => !isAllowedInquiryFile(file.name));
+    if (unsupported.length > 0) {
+      toast.error(`Unsupported file type: ${unsupported.slice(0, 3).map((file) => file.name).join(', ')}${unsupported.length > 3 ? ` and ${unsupported.length - 3} more` : ''}`);
     }
-  };
-
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    
-    const validFiles = files.filter(file => {
-      const extension = file.name.split('.').pop().toLowerCase();
-      const isValidType = ['dwg', 'dxf', 'zip', 'pdf', 'xlsx', 'xls'].includes(extension);
-      
-      // Validate ALL file types - 5MB limit for all files
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(`File "${file.name}" exceeds 5MB limit. File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
-        return false;
-      }
-      
-      return isValidType;
-    });
-    
-    if (validFiles.length !== files.length) {
-      const invalidCount = files.length - validFiles.length;
-      if (invalidCount > 0) {
-        toast.error(`${invalidCount} file(s) rejected. Only files up to 5MB are allowed (DWG, DXF, ZIP, PDF, XLSX, XLS)`);
-      }
-    }
-    
-    if (validFiles.length === 0) {
-      toast.error('No valid files selected');
+    const files = selectedFiles.filter((file) => isAllowedInquiryFile(file.name));
+    if (files.length === 0) {
+      if (unsupported.length === 0) toast.error('No files selected');
       return;
     }
-    
-    // Check total file limit (100 files)
-    const MAX_FILES = 100;
+
     const currentFileCount = pdfFiles.length;
-    const newFileCount = validFiles.length;
-    const totalFiles = currentFileCount + newFileCount;
-    
-    if (totalFiles > MAX_FILES) {
+    let filesToAdd = files;
+
+    if (currentFileCount + files.length > MAX_FILES) {
       const allowedFiles = MAX_FILES - currentFileCount;
       if (allowedFiles <= 0) {
         toast.error(`Maximum ${MAX_FILES} files allowed. You already have ${currentFileCount} files.`);
         return;
       }
-      toast.error(`Maximum ${MAX_FILES} files allowed. You can add ${allowedFiles} more file(s). Currently have ${currentFileCount} files.`);
-      // Only process allowed files - keep first N files
-      const filesToProcess = validFiles.slice(0, allowedFiles);
-      validFiles.length = 0;
-      validFiles.push(...filesToProcess);
+      toast.error(`Maximum ${MAX_FILES} files allowed. Only the first ${allowedFiles} file(s) were added.`);
+      filesToAdd = files.slice(0, allowedFiles);
     }
-    
-    // Process ALL files for the table (not just PDFs) - use admin's material data
+
     if (materialData.length === 0) {
       toast.error('⚠️ No materials available! Please ask admin to add materials first.');
       return;
     }
-    
-    const processedFiles = validFiles.map((file, index) => ({
-      id: `file_${Date.now()}_${index}`,
+
+    const batchId = Date.now();
+    const processedFiles = filesToAdd.map((file, index) => ({
+      id: `file_${batchId}_${index}`,
       name: file.name,
       partRef: file.name,
       material: '',
@@ -291,17 +190,24 @@ const NewInquiry = () => {
       quantity: 0,
       createdAt: new Date().toISOString(),
       file: file,
-      fileType: file.name.split('.').pop().toLowerCase()
+      fileType: file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : ''
     }));
-    
-    setPdfFiles(prev => {
-      const newFiles = [...prev, ...processedFiles];
-      // Move toast outside setState to avoid render phase update
-      setTimeout(() => {
-        toast.success(`${validFiles.length} file(s) uploaded successfully`);
-      }, 0);
-      return newFiles;
-    });
+
+    setPdfFiles(prev => [...prev, ...processedFiles]);
+    toast.success(`${filesToAdd.length} file(s) added`);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    addFiles(Array.from(e.dataTransfer.files || []));
+  };
+
+  const handleFileUpload = (e) => {
+    addFiles(Array.from(e.target.files || []));
+    // Reset so selecting the same files again still triggers onChange
+    e.target.value = '';
   };
 
   const removeFile = (index) => {
@@ -329,8 +235,6 @@ const NewInquiry = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    
-    const MAX_FILES = 100;
     
     if (pdfFiles.length === 0) {
       toast.error('Please upload at least one file');
@@ -420,27 +324,24 @@ const NewInquiry = () => {
                       Drag files to upload or
                     </p>
                     <p className="text-sm font-semibold text-gray-700 mb-2">
-                      Maximum file size: <span className="text-green-600">5MB</span> (all file types)
+                      Drawings, CAD, documents, ZIP and images (JPG, PNG, GIF, WebP, BMP, TIFF, SVG, HEIC) · <span className="text-green-600">No file size limit</span>
                     </p>
                     <p className="text-sm font-semibold text-gray-700 mb-3">
-                      Maximum files: <span className="text-green-600">100</span> files per inquiry (optional)
+                      Maximum files: <span className="text-green-600">{MAX_FILES}</span> files per inquiry (optional)
                     </p>
                     <label className="bg-green-600 text-white px-6 sm:px-8 py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-green-700 transition-colors duration-200 shadow-lg cursor-pointer">
                     Upload Drawing
                       <input
                         type="file"
                         multiple
-                        accept=".dwg,.dxf,.zip,.pdf,.xlsx,.xls"
+                        accept={INQUIRY_ACCEPT_ATTR}
                         onChange={handleFileUpload}
                         className="hidden"
                       />
                     </label>
-                    <p className="text-sm text-gray-500 mt-4">
-                      Allowed extensions: dwg, dxf, zip, pdf, xlsx, xls (max 5MB each)
-                    </p>
                     {pdfFiles.length > 0 && (
                       <p className="text-sm text-gray-600 mt-2 font-medium">
-                        Files uploaded: <span className={pdfFiles.length >= 100 ? 'text-green-600' : 'text-gray-600'}>{pdfFiles.length}/100</span>
+                        Files uploaded: <span className={pdfFiles.length >= MAX_FILES ? 'text-green-600' : 'text-gray-600'}>{pdfFiles.length}/{MAX_FILES}</span>
                       </p>
                     )}
                   </div>
@@ -496,14 +397,20 @@ const NewInquiry = () => {
                   )}
                   <button
                     type="submit"
-                    disabled={loading || pdfFiles.length === 0 || pdfFiles.length > 100}
+                    disabled={loading || pdfFiles.length === 0 || pdfFiles.length > MAX_FILES}
                     className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
-                    {loading ? (uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Submitting...') : 'Submit Inquiry'}
+                    {loading
+                      ? uploadProgress >= 100
+                        ? 'Processing files...'
+                        : uploadProgress > 0
+                          ? `Uploading... ${uploadProgress}%`
+                          : 'Submitting...'
+                      : 'Submit Inquiry'}
                   </button>
-                  {pdfFiles.length > 100 && (
+                  {pdfFiles.length > MAX_FILES && (
                     <p className="text-sm text-red-600 mt-1">
-                      Maximum 100 files allowed. Please remove {pdfFiles.length - 100} file(s).
+                      Maximum {MAX_FILES} files allowed. Please remove {pdfFiles.length - MAX_FILES} file(s).
                     </p>
                   )}
                 </div>

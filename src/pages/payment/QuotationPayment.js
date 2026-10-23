@@ -222,6 +222,11 @@ const QuotationPayment = () => {
                       <span>Total Amount:</span>
                       <span>₹{quotation.totalAmount?.toFixed(2) || '0.00'}</span>
                     </div>
+                    {quotation.isRequoted && quotation.previousAmount != null && (
+                      <p className="mt-1 text-right text-xs text-purple-700">
+                        Revised quotation · previously <span className="line-through">₹{Number(quotation.previousAmount).toFixed(2)}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

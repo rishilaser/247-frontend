@@ -66,7 +66,7 @@ const AdminLayoutInner = ({ children }) => {
           }`}
         >
           <div
-            className="w-full min-h-[calc(100vh-5rem)] overflow-x-hidden py-6 px-4 sm:px-6 lg:px-8"
+            className="w-full min-h-[calc(100vh-5rem)] overflow-x-clip py-6 px-4 sm:px-6 lg:px-8"
             style={{ minWidth: 0 }}
           >
             <div className="max-w-7xl mr-auto" style={{ minWidth: 0 }}>

@@ -10,7 +10,6 @@ import {
   CpuChipIcon,
   PaintBrushIcon,
   CubeIcon,
-  RulerIcon,
   ClockIcon,
   CurrencyDollarIcon,
   CheckCircleIcon,

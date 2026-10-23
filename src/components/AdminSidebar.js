@@ -15,7 +15,8 @@ import {
   WrenchScrewdriverIcon,
   UsersIcon,
   ShoppingCartIcon,
-  Squares2X2Icon
+  Squares2X2Icon,
+  VideoCameraIcon
 } from '@heroicons/react/24/outline';
 
 const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick }) => {
@@ -36,6 +37,7 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
         { name: 'Admin Dashboard', href: '/admin/dashboard', icon: Squares2X2Icon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
         { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
+        { name: 'CMS', tooltip: 'Content Management', href: '/admin/content', icon: VideoCameraIcon },
         ...baseNavigation
       ];
     }
@@ -45,6 +47,7 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
         { name: 'Back Office Dashboard', href: '/admin/dashboard', icon: BuildingOfficeIcon },
         { name: 'Order Management', href: '/admin/orders', icon: ClipboardDocumentListIcon },
         { name: 'Lead Management', href: '/admin/leads', icon: UsersIcon },
+        { name: 'CMS', tooltip: 'Content Management', href: '/admin/content', icon: VideoCameraIcon },
         ...baseNavigation
       ];
     }
@@ -198,7 +201,7 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
                       ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                   }`}
-                  title={isCollapsed ? item.name : ''}
+                  title={item.tooltip || (isCollapsed ? item.name : '')}
                 >
                   <Icon className={`h-5 w-5 flex-shrink-0 transition-colors ${
                     active ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
@@ -215,7 +218,7 @@ const AdminSidebar = ({ onLinkClick, onToggle, isCollapsed = false, onLogoClick 
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
                     <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-50">
-                      {item.name}
+                      {item.tooltip || item.name}
                       <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
                     </div>
                   )}

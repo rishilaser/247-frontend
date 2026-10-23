@@ -38,6 +38,7 @@ const PaymentThankYouRedirect = lazy(() => import('./pages/payment/PaymentThankY
 const PaymentSuccess = lazy(() => import('./pages/payment/PaymentSuccess'));
 const OrderManagement = lazy(() => import('./pages/order/OrderManagement'));
 const UserManagement = lazy(() => import('./pages/admin/UserManagement'));
+const ContentManagement = lazy(() => import('./pages/admin/ContentManagement'));
 const ServiceContact = lazy(() => import('./pages/ServiceContact'));
 const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
@@ -364,6 +365,15 @@ function App() {
                         <PermissionRoute requireStaff adminOnly>
                           <AdminLayout>
                             <BackOfficeMaterialManagement />
+                          </AdminLayout>
+                        </PermissionRoute>
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/admin/content" element={
+                      <ProtectedRoute>
+                        <PermissionRoute requireStaff adminOnly>
+                          <AdminLayout>
+                            <ContentManagement />
                           </AdminLayout>
                         </PermissionRoute>
                       </ProtectedRoute>

@@ -3,6 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import BackOfficeMaterialManagement from './BackOfficeMaterialManagement';
 import QuotationForm from '../components/QuotationForm';
 import ConfirmModal from '../components/ConfirmModal';
+import RejectInquiryModal from '../components/RejectInquiryModal';
+import ReshareQuotationModal from '../components/ReshareQuotationModal';
 import { inquiryAPI, quotationAPI, adminAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -36,6 +38,8 @@ const BackOfficeDashboard = () => {
   const [showQuotationForm, setShowQuotationForm] = useState(false);
   const [sendingQuotationId, setSendingQuotationId] = useState(null);
   const [sendConfirmQuotation, setSendConfirmQuotation] = useState(null);
+  const [rejectTarget, setRejectTarget] = useState(null);
+  const [reshareTarget, setReshareTarget] = useState(null);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
 
@@ -667,6 +671,33 @@ const BackOfficeDashboard = () => {
                                 {sendingQuotationId === inquiry.quotationId ? 'Sending...' : 'Send'}
                               </button>
                             )}
+                            {inquiry.quotationId &&
+                              ['sent', 'accepted'].includes(inquiry.quotationStatus) &&
+                              !['rejected', 'cancelled', 'payment_received'].includes(inquiry.status) && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setReshareTarget({
+                                    _id: inquiry.quotationId,
+                                    quotationNumber: inquiry.quotationNumber,
+                                    customer: inquiry.customer
+                                  })
+                                }
+                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium"
+                                title="Update and re-share the quotation"
+                              >
+                                Re-share
+                              </button>
+                            )}
+                            {!['rejected', 'cancelled', 'payment_received'].includes(inquiry.status) && (
+                              <button
+                                type="button"
+                                onClick={() => setRejectTarget(inquiry)}
+                                className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1 rounded-md text-sm font-medium"
+                              >
+                                Reject
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -751,6 +782,16 @@ const BackOfficeDashboard = () => {
                               </svg>
                               PDF
                             </button>
+                            {['sent', 'accepted'].includes(quotation.status) && (
+                              <button
+                                type="button"
+                                onClick={() => setReshareTarget(quotation)}
+                                className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md text-sm font-medium"
+                                title="Re-send or upload a revised quotation"
+                              >
+                                Re-share
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -851,6 +892,20 @@ const BackOfficeDashboard = () => {
         />
       )}
 
+      {rejectTarget && (
+        <RejectInquiryModal
+          inquiry={rejectTarget}
+          onClose={() => setRejectTarget(null)}
+          onRejected={() => fetchData(true)}
+        />
+      )}
+      {reshareTarget && (
+        <ReshareQuotationModal
+          quotation={reshareTarget}
+          onClose={() => setReshareTarget(null)}
+          onShared={() => fetchData(true)}
+        />
+      )}
       <ConfirmModal
         isOpen={Boolean(sendConfirmQuotation)}
         onClose={() => {

@@ -269,7 +269,9 @@ export const inquiryAPI = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      timeout: 0, // no limit - large uploads can take a long time
       onUploadProgress: onUploadProgress ? (progressEvent) => {
+        if (!progressEvent.total) return;
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         onUploadProgress(percentCompleted);
       } : undefined,
@@ -282,11 +284,15 @@ export const inquiryAPI = {
   // Update inquiry (admin)
   updateInquiryAdmin: (id, data) => api.put(`/inquiry/admin/${id}`, data),
 
+  // Reject inquiry with a reason; the customer is emailed (staff)
+  rejectInquiry: (id, reason) => api.put(`/inquiry/admin/${id}/reject`, { reason }),
+
   // Upload files to inquiry
   uploadFiles: (id, formData) => api.post(`/inquiry/${id}/upload`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
-    }
+    },
+    timeout: 0
   }),
 
   // Download Excel template
@@ -335,6 +341,18 @@ export const quotationAPI = {
 
   // Send quotation to customer (Admin)
   sendQuotation: (id) => api.post(`/quotation/${id}/send`),
+
+  // Re-send a sent quotation, optionally with a revised file and/or new total (Admin)
+  reshareQuotation: (id, { file, note, totalAmount } = {}) => {
+    const formData = new FormData();
+    if (file) formData.append('quotationPdf', file);
+    if (note) formData.append('note', note);
+    if (totalAmount !== undefined && totalAmount !== null && totalAmount !== '') formData.append('totalAmount', totalAmount);
+    return api.post(`/quotation/${id}/reshare`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 0
+    });
+  },
 
   // Customer response to quotation
   respondToQuotation: (id, response) => api.post(`/quotation/${id}/response`, response),
@@ -588,6 +606,42 @@ export const pdfAPI = {
       },
     });
   },
+};
+
+// Admin-managed content (signup page section, customer instructions)
+export const contentAPI = {
+  getContent: (key) => api.get(`/content/${key}`),
+  getAdminContent: (key) => api.get(`/content/admin/${key}`),
+  saveContent: (key, data) => api.put(`/content/admin/${key}`, data),
+  // Video or photo; responds with { url, mediaType }
+  uploadMedia: (file, onUploadProgress) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/content/admin/upload-media', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 0,
+      onUploadProgress: onUploadProgress ? (progressEvent) => {
+        if (!progressEvent.total) return;
+        onUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+      } : undefined,
+    });
+  },
+};
+
+// Editable customer email templates + payment reminder schedule (admin)
+export const emailTemplateAPI = {
+  list: () => api.get('/email-templates'),
+  save: (key, data) => api.put(`/email-templates/${key}`, data),
+  reset: (key) => api.post(`/email-templates/${key}/reset`),
+  preview: (key, data) => api.post(`/email-templates/${key}/preview`, data),
+  runPaymentReminders: () => api.post('/email-templates/payment_reminder/run'),
+};
+
+// Uploaded media is stored as "/content-media/<file>" on the backend server
+export const resolveMediaUrl = (url) => {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${getBaseURL().replace(/\/api$/, '')}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 // Utility functions

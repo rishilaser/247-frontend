@@ -1,14 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import SignupShowcase, { useSignupMedia } from '../../components/content/SignupShowcase';
 
 // Indian GSTIN: 2-digit state + PAN (5 letters, 4 digits, 1 letter) + entity + Z + checksum (15 chars)
 const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
 const isValidGstin = (gst) => GSTIN_REGEX.test((gst || '').trim().toUpperCase());
 
+const RequiredMark = () => (
+  <span className="text-red-500 ml-0.5" aria-hidden="true">*</span>
+);
+
+// Matches Tailwind's lg breakpoint, where the showcase moves into the right column
+const DESKTOP_QUERY = '(min-width: 1024px)';
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_QUERY).matches);
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP_QUERY);
+    const handleChange = (e) => setIsDesktop(e.matches);
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
+  return isDesktop;
+};
+
 const SignUp = () => {
+  const isDesktop = useIsDesktop();
+  // Images/videos added in Admin → CMS → Signup Page; null while loading
+  const signupMedia = useSignupMedia();
+  const hasMedia = Boolean(signupMedia && signupMedia.length > 0);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -46,7 +68,7 @@ const SignUp = () => {
     
     // Check if all required fields are filled
     const requiredFields = [
-      'firstName', 'lastName', 'email', 'password', 'phone', 'company', 'gst',
+      'firstName', 'lastName', 'email', 'password', 'phone', 'company',
       'department', 'country', 'deliveryStreet', 'deliveryCity', 'deliveryState', 'deliveryZipCode'
     ];
     const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
@@ -57,7 +79,7 @@ const SignUp = () => {
       return;
     }
 
-    if (!isValidGstin(formData.gst)) {
+    if (formData.gst.trim() && !isValidGstin(formData.gst)) {
       toast.error('Please enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)');
       return;
     }
@@ -150,7 +172,7 @@ const SignUp = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row p-3 sm:p-5 lg:p-0">
       {/* Sign Up Form — full width on mobile, left half on large screens */}
-      <div className="order-1 w-full lg:w-1/2 flex flex-col justify-center py-4 sm:py-6 px-4 sm:px-6 lg:px-10 xl:px-14 bg-white border-0 sm:border sm:border-gray-200 lg:border-r lg:border-y-0 lg:border-gray-200 lg:border-solid rounded-none sm:rounded-lg lg:rounded-none min-w-0">
+      <div className={`order-1 w-full ${hasMedia ? 'lg:w-1/2' : ''} flex flex-col justify-center py-4 sm:py-6 px-4 sm:px-6 lg:px-10 xl:px-14 bg-white border-0 sm:border sm:border-gray-200 ${hasMedia ? 'lg:border-r lg:border-y-0' : 'lg:border-0'} lg:border-gray-200 lg:border-solid rounded-none sm:rounded-lg lg:rounded-none min-w-0`}>
         <div className="mx-auto w-full max-w-md min-w-0 pb-6 lg:pb-0">
           {/* Header */}
           <div className="flex items-center justify-between ">
@@ -179,7 +201,7 @@ const SignUp = () => {
               {/* Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
+                  Email<RequiredMark />
                 </label>
                 <input
                   id="email"
@@ -199,7 +221,7 @@ const SignUp = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                    First Name
+                    First Name<RequiredMark />
                   </label>
                   <input
                     id="firstName"
@@ -213,7 +235,7 @@ const SignUp = () => {
                 </div>
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                    Last Name
+                    Last Name<RequiredMark />
                   </label>
                   <input
                     id="lastName"
@@ -230,7 +252,7 @@ const SignUp = () => {
               {/* Phone Number */}
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number
+                  Phone Number<RequiredMark />
                 </label>
                 <div className="mt-2 flex flex-col rounded-md border border-gray-300 shadow-sm overflow-hidden sm:flex-row">
                   <span className="inline-flex items-center justify-center sm:justify-start px-3 py-2.5 bg-gray-50 text-gray-600 text-sm sm:text-base border-b sm:border-b-0 sm:border-r border-gray-200 shrink-0">
@@ -252,7 +274,7 @@ const SignUp = () => {
               {/* Company Name */}
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-                  Company name
+                  Company name<RequiredMark />
                 </label>
                 <input
                   id="company"
@@ -269,13 +291,12 @@ const SignUp = () => {
               {/* GST Number */}
               <div>
                 <label htmlFor="gst" className="block text-sm font-medium text-gray-700">
-                  GST Number (GSTIN)
+                  GST Number (GSTIN) <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <input
                   id="gst"
                   name="gst"
                   type="text"
-                  required
                   maxLength={15}
                   pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}"
                   className={`mt-2 block w-full px-2.5 py-2.5 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 text-base uppercase ${
@@ -300,7 +321,7 @@ const SignUp = () => {
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="deliveryStreet" className="block text-sm font-medium text-gray-700">
-                      Street Address
+                      Street Address<RequiredMark />
                     </label>
                     <input
                       id="deliveryStreet"
@@ -316,7 +337,7 @@ const SignUp = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label htmlFor="deliveryCity" className="block text-sm font-medium text-gray-700">
-                        City
+                        City<RequiredMark />
                       </label>
                       <input
                         id="deliveryCity"
@@ -331,7 +352,7 @@ const SignUp = () => {
                     </div>
                     <div>
                       <label htmlFor="deliveryState" className="block text-sm font-medium text-gray-700">
-                        State
+                        State<RequiredMark />
                       </label>
                       <input
                         id="deliveryState"
@@ -347,7 +368,7 @@ const SignUp = () => {
                   </div>
                   <div>
                     <label htmlFor="deliveryZipCode" className="block text-sm font-medium text-gray-700">
-                      PIN / ZIP Code
+                      PIN / ZIP Code<RequiredMark />
                     </label>
                     <input
                       id="deliveryZipCode"
@@ -367,7 +388,7 @@ const SignUp = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                    Department
+                    Department<RequiredMark />
                   </label>
                   <select
                     id="department"
@@ -388,7 +409,7 @@ const SignUp = () => {
                 </div>
                 <div>
                   <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                    Country/Region
+                    Country/Region<RequiredMark />
                   </label>
                   <select
                     id="country"
@@ -411,7 +432,7 @@ const SignUp = () => {
               {/* Password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
+                  Password<RequiredMark />
                 </label>
                 <div className="mt-2 relative">
                   <input
@@ -447,7 +468,7 @@ const SignUp = () => {
               {/* Confirm Password */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirm password
+                  Confirm password<RequiredMark />
                 </label>
                 <div className="mt-2 relative">
                   <input
@@ -494,89 +515,20 @@ const SignUp = () => {
         </div>
       </div>
 
-      {/* Right Column - Company Information (desktop) */}
-      <div className="order-2 hidden lg:flex lg:w-1/2 bg-yellow-100 flex-col justify-center px-8 xl:px-12 py-12 xl:py-16 relative min-w-0">
-        <div className="max-w-lg mx-auto w-full">
-          <h2 className="text-2xl xl:text-3xl font-bold text-gray-800 mb-6">
-            Delivering Factory Direct Quality Sheet Metal Parts Since 2005
-          </h2>
-          <p className="text-gray-700 mb-10 text-lg">
-            We focus on simplifying and expediting processes without compromising on quality and services
-          </p>
-
-          <div className="mb-10">
-            <h3 className="text-xl font-semibold text-gray-800 mb-6">OUR EXPERTISE</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {[
-                { name: 'Laser Cutting', icon: '⚡' },
-                { name: 'Surface Finishing', icon: '✨' },
-                { name: 'Threading & Chamfering', icon: '🔩' },
-                { name: 'Customer Fastener Bags', icon: '📦' },
-                { name: 'Sheet Metal Bending', icon: '📐' },
-                { name: 'Laser Engraving', icon: '🎨' },
-                { name: 'Bulk Fasteners', icon: '🔧' },
-                { name: 'CNC Turning', icon: '⚙️' }
-              ].map((service) => (
-                <div key={service.name} className="flex items-start sm:items-center gap-3 text-gray-700 text-sm">
-                  <span className="text-gray-800 text-lg shrink-0">{service.icon}</span>
-                  <span className="min-w-0 break-words leading-snug">{service.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Testimonial */}
-          <div className="bg-yellow-200 rounded-lg p-8 mb-8">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <span className="text-green-600 font-bold text-lg">JD</span>
-              </div>
-            </div>
-            <p className="text-gray-700 italic mb-6 leading-relaxed text-sm">
-              "We have been working with the Cutbend platform since its launch and have been very impressed with the quality of the fabrication, the lead times and ease of use of the platform."
-            </p>
-            <p className="text-gray-600 text-sm font-medium">
-              Jonathan D.<br />
-              <span className="text-gray-500">Head of Product Design, HivelQ / Form Studio</span>
-            </p>
-          </div>
-
-          {/* Chat Button */}
-          <div className="absolute bottom-12 right-12">
-            <button className="bg-white text-green-600 px-2.5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">
-              Have a Question? Chat with us
-            </button>
+      {/* Admin-managed images/videos. Only one copy is mounted so videos aren't loaded twice */}
+      {hasMedia && (isDesktop ? (
+        // Desktop: right half, white like the form, media fills the screen height and stays in view
+        <div className="order-2 lg:w-1/2 bg-white min-w-0">
+          <div className="lg:sticky lg:top-0 lg:h-screen p-6 xl:p-10">
+            <SignupShowcase media={signupMedia} />
           </div>
         </div>
-      </div>
-
-      {/* Mobile / tablet — company info below form */}
-      <div className="order-3 w-full lg:hidden bg-green-600 px-4 py-8 sm:p-8 mt-4 sm:mt-6 rounded-lg sm:rounded-xl">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 leading-snug">
-          Delivering Factory Direct Quality Sheet Metal Parts Since 2005
-        </h2>
-        <p className="text-green-100 text-sm sm:text-base mb-5 sm:mb-6 leading-relaxed">
-          We focus on simplifying and expediting processes without compromising on quality and services
-        </p>
-        <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">OUR EXPERTISE</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {[
-            { name: 'Laser Cutting', icon: '⚡' },
-            { name: 'Surface Finishing', icon: '✨' },
-            { name: 'Threading & Chamfering', icon: '🔩' },
-            { name: 'Customer Fastener Bags', icon: '📦' },
-            { name: 'Sheet Metal Bending', icon: '📐' },
-            { name: 'Laser Engraving', icon: '🎨' },
-            { name: 'Bulk Fasteners', icon: '🔧' },
-            { name: 'CNC Turning', icon: '⚙️' }
-          ].map((service) => (
-            <div key={service.name} className="flex items-start sm:items-center gap-3 text-green-100 text-sm">
-              <span className="text-white text-lg shrink-0">{service.icon}</span>
-              <span className="min-w-0 break-words leading-snug">{service.name}</span>
-            </div>
-          ))}
+      ) : (
+        // Mobile / tablet: below the form
+        <div className="order-3 w-full bg-white px-4 py-6 sm:px-6 mt-4 sm:mt-6 rounded-lg sm:border sm:border-gray-200">
+          <SignupShowcase media={signupMedia} fill={false} />
         </div>
-      </div>
+      ))}
     </div>
   );
 };

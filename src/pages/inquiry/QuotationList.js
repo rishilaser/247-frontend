@@ -253,7 +253,7 @@ const QuotationList = () => {
                               isQuotationPaid(quotation) ? 'order_created' : quotation.status
                             )}`}
                           >
-                            {isQuotationPaid(quotation) ? 'Paid' : formatStatus(quotation.status)}
+                            {isQuotationPaid(quotation) ? 'Paid' : quotation.status === 'sent' && quotation.isRequoted ? 'Re-quoted' : formatStatus(quotation.status)}
                           </span>
                         </div>
                         <div className="mt-2 min-w-0 text-sm text-gray-600">
@@ -368,7 +368,7 @@ const QuotationList = () => {
                                       isQuotationPaid(quotation) ? 'order_created' : quotation.status
                                     )}`}
                                   >
-                                    {isQuotationPaid(quotation) ? 'Paid' : formatStatus(quotation.status)}
+                                    {isQuotationPaid(quotation) ? 'Paid' : quotation.status === 'sent' && quotation.isRequoted ? 'Re-quoted' : formatStatus(quotation.status)}
                                   </span>
                                 </td>
                                 <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-gray-900 lg:px-6">

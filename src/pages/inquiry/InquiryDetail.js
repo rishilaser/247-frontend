@@ -15,6 +15,8 @@ import QuotationPdfModal from '../../components/QuotationPdfModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { useQuotation } from '../../contexts/QuotationContext';
 import axios from 'axios';
+import RejectInquiryModal from '../../components/RejectInquiryModal';
+import ReshareQuotationModal from '../../components/ReshareQuotationModal';
 
 const MATERIAL_OPTIONS = ['Mild Steel', 'Stainless Steel', 'Other'];
 const GRADE_OPTIONS_BY_MATERIAL = {
@@ -90,6 +92,16 @@ const resolveDeliveryAddress = (inquiryDelivery, customer) => {
   };
 };
 
+const TIMELINE_DOT_CLASS = {
+  green: 'bg-green-500 ring-green-100',
+  blue: 'bg-blue-500 ring-blue-100',
+  purple: 'bg-purple-500 ring-purple-100',
+  red: 'bg-red-500 ring-red-100',
+  amber: 'bg-amber-500 ring-amber-100',
+  emerald: 'bg-emerald-500 ring-emerald-100',
+  gray: 'bg-gray-400 ring-gray-100'
+};
+
 const InquiryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -98,6 +110,8 @@ const InquiryDetail = () => {
   const { user } = useAuth();
   const { saveFromUploadResponse } = useQuotation();
   const [inquiry, setInquiry] = useState(null);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [reshareOpen, setReshareOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showQuotationModal, setShowQuotationModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -178,56 +192,101 @@ const InquiryDetail = () => {
   };
 
   const generateTimeline = (inquiryData) => {
+    const isStaff = ['admin', 'backoffice', 'subadmin'].includes(user?.role);
+    const quotation = inquiryData.quotation || null;
+    const quotationVisible = isQuotationVisibleToCustomer(String(quotation?.status || '').toLowerCase());
+    const history = Array.isArray(inquiryData.history) ? inquiryData.history : [];
     const timeline = [
-      {
-        event: 'Inquiry Created',
-        date: new Date(inquiryData.createdAt).toLocaleString(),
-        status: 'completed',
-        color: 'green'
-      }
+      { event: 'Inquiry Created', description: 'Inquiry submitted', at: inquiryData.createdAt, color: 'green' }
     ];
 
-    if (['quoted', 'accepted', 'payment_received'].includes(inquiryData.status) || inquiryData.status === 'order_created') {
-      timeline.push({
-        event: 'Under Review',
-        description: 'Being processed by our team',
-        status: 'completed',
-        color: 'blue'
-      });
+    if (inquiryData.status !== 'pending') {
+      timeline.push({ event: 'Under Review', description: 'Being processed by our team', at: null, color: 'blue' });
+    }
 
-      const quotationStatus = String(inquiryData.quotation?.status || '').toLowerCase();
-      if (isQuotationVisibleToCustomer(quotationStatus)) {
-        timeline.push({
-          event: 'Quotation Ready',
-          description: 'Price and delivery details available',
-          status: 'completed',
-          color: 'green'
+    history.forEach((entry) => {
+      switch (entry.type) {
+        case 'quotation_sent':
+          timeline.push({ event: 'Quoted', description: 'Quotation shared', at: entry.at, color: 'blue' });
+          break;
+        case 'quotation_revised':
+          timeline.push({
+            event: 'Re-quoted',
+            description: entry.message,
+            at: entry.at,
+            color: 'purple',
+            fileUrl: isStaff ? entry.fileUrl : null,
+            fileName: entry.fileName
+          });
+          break;
+        case 'quotation_resent':
+          timeline.push({ event: 'Quotation Re-sent', description: entry.message, at: entry.at, color: 'blue' });
+          break;
+        case 'rejected':
+          timeline.push({ event: 'Rejected', description: entry.message, at: entry.at, color: 'red' });
+          break;
+        case 'payment_reminder':
+          timeline.push({ event: 'Payment Reminder', description: entry.message, at: entry.at, color: 'amber' });
+          break;
+        default:
+          break;
+      }
+    });
+
+    // Inquiries quoted or rejected before the activity log existed
+    if (quotationVisible && !history.some((entry) => entry.type === 'quotation_sent')) {
+      timeline.push({ event: 'Quoted', description: 'Quotation shared', at: quotation.sentAt || null, color: 'blue' });
+    }
+    if (inquiryData.status === 'rejected' && !history.some((entry) => entry.type === 'rejected')) {
+      timeline.push({ event: 'Rejected', description: inquiryData.rejectionReason, at: inquiryData.rejectedAt, color: 'red' });
+    }
+    if (quotation?.acceptedAt) {
+      timeline.push({ event: 'Quotation Accepted', description: 'Quotation accepted', at: quotation.acceptedAt, color: 'green' });
+    }
+
+    const paid = inquiryData.status === 'payment_received' || inquiryData.quotationPayment?.gatewayPaid;
+    if (paid) {
+      timeline.push({
+        event: 'Payment Received',
+        description: 'Payment has been received',
+        at: quotation?.payment_date || null,
+        color: 'emerald'
+      });
+    }
+    if (inquiryData.status === 'order_created') {
+      timeline.push({ event: 'Order Created', description: 'Order has been placed', at: null, color: 'purple' });
+    }
+
+    // Dated steps are ordered by time; undated ones stay after the step before them
+    let lastTime = 0;
+    const ordered = timeline
+      .map((item, index) => {
+        const time = item.at ? new Date(item.at).getTime() : lastTime;
+        lastTime = Math.max(lastTime, time);
+        return { item, index, time };
+      })
+      .sort((a, b) => a.time - b.time || a.index - b.index)
+      .map(({ item }) => ({ ...item, date: item.at ? new Date(item.at).toLocaleString() : '' }));
+
+    // What happens next
+    const quotationStatus = String(quotation?.status || '').toLowerCase();
+    if (!['rejected', 'cancelled'].includes(inquiryData.status) && !paid) {
+      if (!quotationVisible) {
+        ordered.push({ event: 'Quotation', description: 'Quotation is being prepared', date: '', color: 'gray', upcoming: true });
+      } else if (quotationStatus === 'sent') {
+        ordered.push({ event: 'Awaiting Acceptance', description: 'Quotation to be reviewed and accepted', date: '', color: 'gray', upcoming: true });
+      } else if (quotationStatus === 'accepted' || quotationStatus === 'order_created') {
+        ordered.push({
+          event: 'Awaiting Payment',
+          description: `₹${Number(quotation.totalAmount || 0).toFixed(2)} to be paid to confirm the order`,
+          date: '',
+          color: 'gray',
+          upcoming: true
         });
       }
     }
 
-    if (
-      inquiryData.status === 'payment_received' ||
-      inquiryData.quotationPayment?.gatewayPaid
-    ) {
-      timeline.push({
-        event: 'Payment received',
-        description: 'Your payment has been received',
-        status: 'completed',
-        color: 'emerald'
-      });
-    }
-
-    if (inquiryData.status === 'order_created') {
-      timeline.push({
-        event: 'Order Created',
-        description: 'Order has been placed',
-        status: 'completed',
-        color: 'purple'
-      });
-    }
-
-    return timeline;
+    return ordered;
   };
 
   const fetchInquiry = async ({ silent = false } = {}) => {
@@ -345,7 +404,10 @@ const InquiryDetail = () => {
           specifications: inquiryData.parts || [],
           files: inquiryData.files || [],
           specialInstructions: inquiryData.specialInstructions || 'No special instructions',
-          timeline: generateTimeline(inquiryData)
+          timeline: generateTimeline(inquiryData),
+          rejectionReason: inquiryData.rejectionReason || '',
+          rejectedAt: inquiryData.rejectedAt || null,
+          history: inquiryData.history || []
         });
       } else {
         console.log('API returned error:', response.data.message);
@@ -1189,10 +1251,25 @@ const InquiryDetail = () => {
             </Link>
           </div>
 
+          {inquiry.status === 'rejected' && (
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 sm:p-5">
+              <h2 className="text-sm font-semibold text-red-800">This inquiry was rejected</h2>
+              {inquiry.rejectionReason && (
+                <p className="mt-1 whitespace-pre-line text-sm text-red-700">{inquiry.rejectionReason}</p>
+              )}
+              {inquiry.rejectedAt && (
+                <p className="mt-2 text-xs text-red-600">{new Date(inquiry.rejectedAt).toLocaleString()}</p>
+              )}
+            </div>
+          )}
+
+          {/* Details on the left, tracking pinned to the right from the top */}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1">
           {/* Inquiry Header */}
           <div className="mb-6 rounded-lg bg-white p-4 shadow sm:p-6">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
-              <div className="min-w-0 w-full lg:flex-1">
+            <div className="flex flex-col gap-4">
+              <div className="min-w-0 w-full">
                 <h1
                   className="min-w-0 max-w-full truncate text-2xl font-bold tabular-nums tracking-tight text-gray-900"
                   title={inquiry.id}
@@ -1206,18 +1283,41 @@ const InquiryDetail = () => {
                   {createdLabel ? `Created ${createdLabel}` : ''}
                 </p>
               </div>
-              <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:flex-shrink-0 lg:flex-row lg:flex-wrap lg:justify-end lg:gap-2">
+              <div className="grid w-full grid-cols-1 gap-2 border-t border-gray-100 pt-4 sm:flex sm:flex-wrap sm:items-center">
                 {/* Download Drawing (All Files as ZIP) - Show for Admin, Back Office, and Sub Admin users */}
                 {(user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin') && inquiry?.files && inquiry.files.length > 0 && (
                   <button 
                     onClick={handleDownloadAllFiles}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 whitespace-nowrap sm:w-auto"
                     title="Download all files as ZIP"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     Download Drawing
+                  </button>
+                )}
+
+                {isAdminUser && !['rejected', 'cancelled', 'payment_received'].includes(inquiry.status) && (
+                  <button
+                    type="button"
+                    onClick={() => setRejectOpen(true)}
+                    className="inline-flex w-full items-center justify-center rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 whitespace-nowrap sm:w-auto"
+                  >
+                    Reject
+                  </button>
+                )}
+
+                {/* Re-share — update (file/amount) and re-send a quotation that was already sent */}
+                {isAdminUser && inquiry.quotationId && !isGatewayPaid &&
+                  ['sent', 'accepted'].includes(normalizedQuotationStatus) &&
+                  !['rejected', 'cancelled', 'payment_received'].includes(inquiry.status) && (
+                  <button
+                    type="button"
+                    onClick={() => setReshareOpen(true)}
+                    className="inline-flex w-full items-center justify-center rounded-md border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 whitespace-nowrap sm:w-auto"
+                  >
+                    Update &amp; Re-share Quotation
                   </button>
                 )}
 
@@ -1228,7 +1328,7 @@ const InquiryDetail = () => {
                     onClick={() => {
                       setShowQuotationModal(true);
                     }}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 whitespace-nowrap sm:w-auto"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -1243,7 +1343,7 @@ const InquiryDetail = () => {
                     type="button"
                     onClick={() => setSendConfirmOpen(true)}
                     disabled={sendingQuotation}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap sm:w-auto"
                     title="Publish quotation to customer"
                   >
                     {sendingQuotation ? 'Sending...' : 'Send'}
@@ -1254,7 +1354,7 @@ const InquiryDetail = () => {
                 {(user?.role === 'admin' || user?.role === 'backoffice' || user?.role === 'subadmin') && (
                   <button 
                     onClick={handleDownloadExcel}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 whitespace-nowrap sm:w-auto"
                     title="Download Technical Specifications as CSV"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1271,7 +1371,7 @@ const InquiryDetail = () => {
                  !isEditing && (
                   <button 
                     onClick={handleStartEdit}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 whitespace-nowrap sm:w-auto"
                     title="Edit inquiry details"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1287,7 +1387,7 @@ const InquiryDetail = () => {
                     <button 
                       onClick={handleSaveEdit}
                       disabled={saving}
-                      className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                      className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap sm:w-auto"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -1297,7 +1397,7 @@ const InquiryDetail = () => {
                     <button 
                       onClick={handleCancelEdit}
                       disabled={saving}
-                      className="inline-flex w-full items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                      className="inline-flex w-full items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap sm:w-auto"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1312,7 +1412,7 @@ const InquiryDetail = () => {
                   <button 
                     onClick={handleAcceptQuote}
                     disabled={acceptingQuote}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap sm:w-auto"
                     title="Accept quote and proceed to payment"
                   >
                     {acceptingQuote ? (
@@ -1339,7 +1439,7 @@ const InquiryDetail = () => {
                   <button
                     onClick={handleAcceptQuote}
                     disabled={acceptingQuote}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap sm:w-auto"
                     title="Complete payment for this quotation"
                   >
                     {acceptingQuote ? 'Loading...' : 'Pay Now'}
@@ -1357,7 +1457,7 @@ const InquiryDetail = () => {
                         toast.error('Quotation is not linked to this inquiry yet.');
                       }
                     }}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 lg:w-auto"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 whitespace-nowrap sm:w-auto"
                     title="View quotation PDF"
                   >
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -1368,7 +1468,7 @@ const InquiryDetail = () => {
                 )}
 
                 {isGatewayPaid && !isEditing && (
-                  <span className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white lg:w-auto">
+                  <span className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white whitespace-nowrap sm:w-auto">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
@@ -1764,29 +1864,6 @@ const InquiryDetail = () => {
                 </div>
               </div>
 
-              {/* Special Instructions */}
-              <div className="bg-white shadow rounded-lg p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Timeline</h3>
-                <div className="space-y-4">
-                  {inquiry.timeline.map((event, index) => (
-                    <div key={index} className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <div className={`w-3 h-3 rounded-full mt-1 ${
-                          event.color === 'green' ? 'bg-green-500' : 
-                          event.color === 'blue' ? 'bg-blue-500' : 'bg-gray-500'
-                        }`}></div>
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-900">{event.event}</p>
-                        {event.description && (
-                          <p className="text-xs text-gray-600">{event.description}</p>
-                        )}
-                        <p className="text-xs text-gray-500">{event.date}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
               {/* <div className="bg-white shadow rounded-lg p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Special Instructions</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
@@ -1863,10 +1940,55 @@ const InquiryDetail = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Timeline */}
-              
             </div>
+          </div>
+          </div>
+
+          {/* Inquiry tracking */}
+          <aside className="w-full lg:sticky lg:top-6 lg:w-80 lg:shrink-0 xl:w-96">
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Inquiry Tracking</h3>
+              <ol className="relative">
+                {inquiry.timeline.map((event, index) => {
+                  const next = inquiry.timeline[index + 1];
+                  return (
+                    <li key={index} className="relative flex gap-4 pb-6 last:pb-0">
+                      {next && (
+                        <span
+                          className={`absolute left-[7px] top-5 h-full ${next.upcoming ? 'border-l-2 border-dashed border-gray-300' : 'w-0.5 bg-gray-200'}`}
+                          aria-hidden
+                        />
+                      )}
+                      <span
+                        className={`relative z-10 mt-1 h-4 w-4 shrink-0 rounded-full border-2 border-white ring-2 ${
+                          event.upcoming ? 'bg-white ring-gray-300' : TIMELINE_DOT_CLASS[event.color] || TIMELINE_DOT_CLASS.gray
+                        }`}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-sm font-semibold ${event.upcoming ? 'text-gray-500' : 'text-gray-900'}`}>{event.event}</p>
+                        {event.description && (
+                          <p className="mt-0.5 whitespace-pre-line break-words text-xs text-gray-600">{event.description}</p>
+                        )}
+                        {(event.date || event.fileUrl) && (
+                          <p className="mt-0.5 text-xs text-gray-400">
+                            {event.date}
+                            {event.fileUrl && (
+                              <>
+                                {event.date ? ' · ' : ''}
+                                <a href={event.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                  Previous file{event.fileName ? ` (${event.fileName})` : ''}
+                                </a>
+                              </>
+                            )}
+                          </p>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </aside>
           </div>
         </div>
       </div>
@@ -1911,6 +2033,23 @@ const InquiryDetail = () => {
         cancelLabel="Cancel"
         loading={sendingQuotation}
       />
+
+
+      {reshareOpen && (
+        <ReshareQuotationModal
+          quotation={{ _id: inquiry.quotationId, customer: inquiry.customer?.name }}
+          onClose={() => setReshareOpen(false)}
+          onShared={() => fetchInquiry({ silent: true })}
+        />
+      )}
+
+      {rejectOpen && (
+        <RejectInquiryModal
+          inquiry={{ _id: inquiry.inquiryId, inquiryNumber: inquiry.id, customer: inquiry.customer?.name }}
+          onClose={() => setRejectOpen(false)}
+          onRejected={() => fetchInquiry({ silent: true })}
+        />
+      )}
     </div>
   );
 };

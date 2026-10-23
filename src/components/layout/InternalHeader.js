@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import NotificationCenter from '../NotificationCenter';
+import InstructionsDrawer from '../content/InstructionsDrawer';
 import { 
   Bars3Icon,
   XMarkIcon, 
@@ -14,7 +15,8 @@ import {
   TagIcon,
   PhoneIcon,
   EnvelopeIcon,
-  UsersIcon
+  UsersIcon,
+  BookOpenIcon
 } from '@heroicons/react/24/outline';
 import { useSidebarLayout } from '../../contexts/SidebarLayoutContext';
 import { getWordpressUrl } from '../../utils/wordpressUrl';
@@ -25,6 +27,7 @@ import { roleUtils } from '../../utils/authUtils';
 const InternalHeader = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
   const sidebarLayout = useSidebarLayout();
@@ -106,6 +109,8 @@ const InternalHeader = () => {
 
   const userNavigation = getRoleBasedNavigation();
 
+  const closeInstructions = useCallback(() => setInstructionsOpen(false), []);
+
   const handleLogout = () => {
     setUserMenuOpen(false);
     logout();
@@ -165,6 +170,22 @@ const InternalHeader = () => {
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-1.5 sm:gap-2">
+            {roleUtils.isCustomer(user) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setInstructionsOpen(true);
+                  setUserMenuOpen(false);
+                }}
+                className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-2.5 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500 sm:px-3"
+                aria-label="Open instructions"
+                aria-expanded={instructionsOpen}
+              >
+                <BookOpenIcon className="h-5 w-5 text-green-600" aria-hidden="true" />
+                <span className="hidden sm:inline">Instructions</span>
+              </button>
+            )}
+
             <div className="flex-shrink-0">
               <NotificationCenter />
             </div>
@@ -213,6 +234,10 @@ const InternalHeader = () => {
           </div>
         </div>
       </div>
+
+      {roleUtils.isCustomer(user) && (
+        <InstructionsDrawer open={instructionsOpen} onClose={closeInstructions} />
+      )}
 
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
